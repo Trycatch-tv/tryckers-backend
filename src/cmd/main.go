@@ -14,7 +14,7 @@ func main() {
 	db := config.InitGormDB(cfg)
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
-
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	db.AutoMigrate(&models.User{})
 
 	r := gin.Default()

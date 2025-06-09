@@ -15,7 +15,13 @@ type Config struct {
 }
 
 func Load() Config {
-	_ = godotenv.Load()
+
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	return Config{
 		Port:  getEnv("PORT", "8080"),
 		DBUrl: getEnv("DATABASE_URL", ""),
