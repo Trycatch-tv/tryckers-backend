@@ -16,6 +16,7 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	api := r.Group("/api/v1")
 	{
 		api.GET("/users", userHandler.GetAll)
-		// More endpoints here...
+		api.POST("/register", userHandler.CreateUser)
+		api.POST("/login", userHandler.Login)
 	}
 }
