@@ -2,8 +2,8 @@ package repository
 
 import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -18,16 +18,14 @@ func (r *UserRepository) GetAll() ([]models.User, error) {
 }
 
 func (r *UserRepository) CreateUser(user *dtos.CreateUserDTO) (models.User, error) {
-	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return models.User{}, err
-	}
 
 	userModel := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
-		Password: string(hashedPassword),
+		Password: string(user.Password),
+		Role:     enums.Member,
+		Points:   0,
+		Country:  enums.Country(user.Country),
 	}
 
 	result := r.DB.Create(&userModel)

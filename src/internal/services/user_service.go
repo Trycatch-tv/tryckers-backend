@@ -6,7 +6,7 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 )
 
 type UserService struct {
@@ -18,22 +18,30 @@ func (s *UserService) GetAllUsers() ([]models.User, error) {
 }
 
 func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) {
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+
+		return models.User{}, err
+	}
+	user.Password = hashedPassword
 	return s.Repo.CreateUser(user)
 }
 
-func (s *UserService) Login(user *dtos.LoginUser) (string, error) {
+func (s *UserService) Login(user *dtos.LoginUser) (models.User, error) {
 
 	userData, err := s.Repo.FindByEmail(user)
 
 	if err != nil {
-		return "", errors.New("email o contraseña incorrecta")
+		return models.User{}, errors.New("email o contraseña incorrecta")
 	}
 
-	IsAuthenticated := bcrypt.CompareHashAndPassword([]byte(userData.Password), []byte(user.Password))
-	if IsAuthenticated != nil {
+	IsAuthenticated := utils.ComparePassword(userData.Password, user.Password)
+	if !IsAuthenticated {
 
-		return "", errors.New("email o contraseña incorrecta")
+		return models.User{}, errors.New("email o contraseña incorrecta")
 	}
 
-	return "token", nil //todo: retornar los datos del usuario y el token
+	userData.Password = ""
+
+	return userData, nil
 }

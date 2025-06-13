@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/gin-gonic/gin"
 )
@@ -29,13 +30,18 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	createdUser, err := h.Service.CreateUser(&newUser)
+	if !enums.IsValidCountry(string(newUser.Country)) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country"})
+		return
+	}
+
+	userCreated, err := h.Service.CreateUser(&newUser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, createdUser)
+	c.JSON(http.StatusCreated, userCreated)
 }
 
 func (h *UserHandler) Login(c *gin.Context) {
@@ -46,11 +52,11 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	login, err := h.Service.Login(&user)
+	loginResponse, err := h.Service.Login(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": login})
+	c.JSON(http.StatusOK, gin.H{"user": loginResponse})
 }
