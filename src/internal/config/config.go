@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,15 +11,31 @@ import (
 )
 
 type Config struct {
-	Port  string
-	DBUrl string
+	Port              string
+	DBUrl             string
+	POSTGRES_DB       string
+	POSTGRES_USER     string
+	POSTGRES_PASSWORD string
+	POSTGRES_HOST     string
+	POSTGRES_PORT     string
 }
 
 func Load() Config {
-	_ = godotenv.Load()
+
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	return Config{
-		Port:  getEnv("PORT", "8080"),
-		DBUrl: getEnv("DATABASE_URL", ""),
+		Port:              getEnv("PORT", "8080"),
+		DBUrl:             getEnv("DATABASE_URL", ""),
+		POSTGRES_DB:       getEnv("POSTGRES_DB", ""),
+		POSTGRES_USER:     getEnv("POSTGRES_USER", ""),
+		POSTGRES_PASSWORD: getEnv("POSTGRES_PASSWORD", ""),
+		POSTGRES_HOST:     getEnv("POSTGRES_HOST", "localhost"),
+		POSTGRES_PORT:     getEnv("POSTGRES_PORT", "5432"),
 	}
 }
 
@@ -30,7 +47,15 @@ func getEnv(key, fallback string) string {
 }
 
 func InitGormDB(cfg Config) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(cfg.DBUrl), &gorm.Config{})
+	dbUrl := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.POSTGRES_USER,
+		cfg.POSTGRES_PASSWORD,
+		cfg.POSTGRES_HOST,
+		cfg.POSTGRES_PORT,
+		cfg.POSTGRES_DB,
+	)
+	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Cannot connect to DB:", err)
 	}
