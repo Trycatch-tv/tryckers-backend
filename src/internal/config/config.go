@@ -34,8 +34,8 @@ func Load() Config {
 		POSTGRES_DB:       getEnv("POSTGRES_DB", ""),
 		POSTGRES_USER:     getEnv("POSTGRES_USER", ""),
 		POSTGRES_PASSWORD: getEnv("POSTGRES_PASSWORD", ""),
-		POSTGRES_HOST:     getEnv("POSTGRES_HOST", "localhost"),
-		POSTGRES_PORT:     getEnv("POSTGRES_PORT", "5432"),
+		POSTGRES_HOST:     getEnv("POSTGRES_HOST", ""),
+		POSTGRES_PORT:     getEnv("POSTGRES_PORT", ""),
 	}
 }
 
