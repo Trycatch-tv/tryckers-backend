@@ -27,21 +27,29 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	return s.Repo.CreateUser(user)
 }
 
-func (s *UserService) Login(user *dtos.LoginUser) (models.User, error) {
+func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
 
 	userData, err := s.Repo.FindByEmail(user)
 
 	if err != nil {
-		return models.User{}, errors.New("incorrect credentials")
+		return dtos.LoginResponse{}, errors.New("incorrect credentials")
 	}
 
 	IsAuthenticated := utils.ComparePassword(userData.Password, user.Password)
 	if !IsAuthenticated {
 
-		return models.User{}, errors.New("incorrect credentials")
+		return dtos.LoginResponse{}, errors.New("incorrect credentials")
 	}
 
-	return userData, nil
+	token, err := utils.CreateToken(userData.ID.String(), userData.Role)
+
+	if err != nil {
+		return dtos.LoginResponse{}, errors.New("internal Server error")
+	}
+
+	return dtos.LoginResponse{
+		UserData: userData,
+		Token:    token}, nil
 }
 
 func (s *UserService) Perfil(name *string) (models.User, error) {

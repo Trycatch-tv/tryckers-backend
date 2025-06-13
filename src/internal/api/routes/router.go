@@ -2,6 +2,8 @@ package routes
 
 import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/handlers"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/middlewares"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/gin-gonic/gin"
@@ -15,9 +17,9 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 
 	api := r.Group("/api/v1")
 	{
-		api.GET("/users", userHandler.GetAll)
+		api.GET("/users", middlewares.AuthMiddleware(), middlewares.RoleMiddleware(enums.Admin), userHandler.GetAll)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
-		api.GET("/perfil/:name", userHandler.Perfil)
+		api.GET("/perfil/:name", middlewares.AuthMiddleware(), userHandler.Perfil)
 	}
 }
