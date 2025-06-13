@@ -1,24 +1,30 @@
 # tryckers-backend
 
-Backen ddel directorio de Tryckers
+Backend del directorio de Tryckers
 
 
 
-# ⚙️ Instalación y ejecución del proyecto
+## ⚙️ Instalación y ejecución del proyecto
 
 1. Instalación de dependencias
    Para instalar las dependencias del proyecto, ejecuta el siguiente comando: "go mod tidy".
 
 📌 Si tu terminal no reconoce el comando go, debes instalar Go desde: https://golang.org/dl/
 
-##  Ejecución del proyecto
-   Tienes dos maneras de ejecutar este proyecto:
+2. copiar y pegar el archivo .env.example en la raiz del proyecto y luego renombrarlo como .env 
+   y configurar las varibles
 
-### 1. 🔹 Opción 1: normal
+## Ejecución del proyecto
+
+1. ejecutar el comando "docker compose up -d" en la raiz del proyecto deben abrir primero docker desktop
+
+### Tienes dos maneras de ejecutar este proyecto:
+
+#### 1. 🔹 Opción 1: normal
 Desde la raíz del proyecto, ejecuta:
 "go run src/cmd/main.go"
 
-### 2. 🔹 Opción 2: Modo desarrollo (dev watch) con "air"
+#### 2. 🔹 Opción 2: Modo desarrollo (dev watch) con "air"
 Esta opción es totalmente opcional, pero mejora la experiencia de desarrollo. air reinicia automáticamente la aplicación cuando detecta cambios en los archivos, evitando tener que detener y reiniciar manualmente el servicio.
 
    ⚠️ La siguiente configuración es específica para Windows. Si estás en Linux o macOS, consulta cómo hacerlo en tu sistema operativo.
