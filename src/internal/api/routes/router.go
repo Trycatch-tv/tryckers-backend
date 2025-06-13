@@ -12,11 +12,24 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	userRepo := &repository.UserRepository{DB: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
-
+	commentService := &services.CommentService{DB: db}
+	commentHandler := &handlers.CommentHandler{Service: commentService}
+	postService := &services.PostService{DB: db}
+	postHandler := &handlers.PostHandler{Service: postService}
 	api := r.Group("/api/v1")
 	{
 		api.GET("/users", userHandler.GetAll)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
+		api.POST("/comments", commentHandler.CreateComment)
+		api.GET("/comments", commentHandler.GetAllComments)
+		api.GET("/comments/:id", commentHandler.GetCommentById)
+		api.PATCH("/comments", commentHandler.UpdateComment)
+		api.DELETE("/comments/:id", commentHandler.DeleteComment)
+		api.POST("/posts", postHandler.CreatePost)
+		api.GET("/posts", postHandler.GetAllPosts)
+		api.GET("/posts/:id", postHandler.GetPostById)
+		api.PATCH("/posts", postHandler.UpdatePost)
+		api.DELETE("/posts/:id", postHandler.DeletePost)
 	}
 }
