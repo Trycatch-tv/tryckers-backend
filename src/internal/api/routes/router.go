@@ -18,6 +18,6 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.GET("/users", userHandler.GetAll)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
-		api.GET("/user/:name", userHandler.Perfil)
+		api.GET("/perfil/:name", userHandler.Perfil)
 	}
 }
