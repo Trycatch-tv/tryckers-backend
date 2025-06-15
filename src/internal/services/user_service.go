@@ -32,16 +32,24 @@ func (s *UserService) Login(user *dtos.LoginUser) (models.User, error) {
 	userData, err := s.Repo.FindByEmail(user)
 
 	if err != nil {
-		return models.User{}, errors.New("email o contraseña incorrecta")
+		return models.User{}, errors.New("incorrect credentials")
 	}
 
 	IsAuthenticated := utils.ComparePassword(userData.Password, user.Password)
 	if !IsAuthenticated {
 
-		return models.User{}, errors.New("email o contraseña incorrecta")
+		return models.User{}, errors.New("incorrect credentials")
 	}
 
-	userData.Password = ""
-
 	return userData, nil
+}
+
+func (s *UserService) Perfil(name *string) (models.User, error) {
+
+	userPerfil, err := s.Repo.FindByName(name)
+	if err != nil {
+		return models.User{}, errors.New("user not found")
+	}
+
+	return userPerfil, nil
 }
