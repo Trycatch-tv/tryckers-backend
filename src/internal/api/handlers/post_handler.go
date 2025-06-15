@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	dtos "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -14,7 +14,7 @@ type PostHandler struct {
 }
 
 func (h *PostHandler) CreatePost(c *gin.Context) {
-	var post dtos.CreatePostRequest
+	var post dtos.CreatePostDto
 
 	if err := c.ShouldBindJSON(&post); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

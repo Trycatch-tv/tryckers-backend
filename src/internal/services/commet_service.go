@@ -21,11 +21,11 @@ func NewCommentService(db *gorm.DB) *CommentService {
 
 func (s *CommentService) CreateComment(comment *dt.CreateCommentRequest) (models.Comment, error) {
 	newComment := models.Comment{
-		Content:   comment.Content,
-		Status:    string(comment.Status),
-		UserID:    comment.UserId,
-		PostID:    comment.PostId,
-		CreatedAt: time.Now(),
+		Content: comment.Content,
+		// Status:    string(comment.Status),
+		UserID: comment.UserId,
+		PostID: comment.PostId,
+		// CreatedAt: time.Now(),
 	}
 	return repository.NewCommentRepository(s.DB).CreateComment(&newComment)
 }
