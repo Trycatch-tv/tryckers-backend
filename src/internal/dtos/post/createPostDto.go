@@ -5,8 +5,8 @@ import (
 	"github.com/google/uuid"
 )
 
-type CreatePostRequest struct {
-	ID      uuid.UUID    `json:"id"`
+type CreatePostDto struct {
+	// ID      uuid.UUID    `json:"id"`
 	Title   string       `json:"title" binding:"required"`
 	Content string       `json:"content" binding:"required"`
 	Status  enums.Status `json:"status" binding:"required"`
