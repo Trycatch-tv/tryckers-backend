@@ -1,82 +1,99 @@
 package services
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
-	d "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	dtos "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
 	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type PostService struct {
-	DB *gorm.DB
+	Repo *repository.PostRepository
 }
 
-func NewPostService(db *gorm.DB) *PostService {
-	return &PostService{DB: db}
-}
+func (s *PostService) CreatePost(post *dtos.CreatePostDto) (models.Post, error) {
+	fmt.Printf("Creando post: %+v\n", post)
 
-func (s *PostService) CreatePost(post *dtos.CreatePostRequest) (models.Post, error) {
 	newPost := models.Post{
 		Title:     post.Title,
 		Content:   post.Content,
+		Image:     post.Image,
+		Type:      string(post.Type),
+		Tags:      post.Tags,
 		Status:    string(post.Status),
 		UserID:    post.UserId,
 		CreatedAt: &time.Time{},
 	}
-	return repository.NewPostRepository(s.DB).CreatePost(&newPost)
+	return s.Repo.CreatePost(&newPost)
 }
-func (s *PostService) GetAllPosts() ([]d.PostDto, error) {
+func (s *PostService) GetAllPosts() ([]dtos.ResponsePostDto, error) {
 	var posts []models.Post
-	err := s.DB.Find(&posts).Error
+	err := s.Repo.DB.Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
 
-	dtos := make([]d.PostDto, len(posts))
+	responsePosts := make([]dtos.ResponsePostDto, len(posts))
 	for i := range posts {
-		dtos[i] = d.PostDto{
+		responsePosts[i] = dtos.ResponsePostDto{
 			ID:        posts[i].ID.String(),
 			Title:     posts[i].Title,
 			Content:   posts[i].Content,
-			Status:    enums.Status(posts[i].Status),
+			Image:     posts[i].Image,
+			Type:      string(posts[i].Type),
+			Tags:      posts[i].Tags,
+			Status:    enums.Status(string(posts[i].Status)),
 			CreatedAt: *posts[i].CreatedAt,
 			UpdatedAt: *posts[i].UpdatedAt,
 			UserId:    posts[i].UserID.String(),
 		}
 	}
-	return dtos, nil
+	return responsePosts, nil
 }
-func (s *PostService) GetPostById(id uuid.UUID) (d.PostDto, error) {
+func (s *PostService) GetPostById(id uuid.UUID) (dtos.ResponsePostDto, error) {
 	var post models.Post
-	err := s.DB.First(&post, id).Error
-	return dtos.PostDto{
+	post, err := s.Repo.GetPostById(id)
+	return dtos.ResponsePostDto{
 		ID:        post.ID.String(),
 		Title:     post.Title,
 		Content:   post.Content,
-		Status:    enums.Status(post.Status),
+		Image:     post.Image,
+		Type:      string(post.Type),
+		Tags:      post.Tags,
+		Status:    enums.Status(string(post.Status)),
 		CreatedAt: *post.CreatedAt,
 		UpdatedAt: *post.UpdatedAt,
 		UserId:    post.UserID.String(),
 	}, err
 }
-func (s *PostService) UpdatePost(post *dtos.CreatePostRequest) (models.Post, error) {
+func (s *PostService) UpdatePost(post *dtos.UpdatePostDto) (models.Post, error) {
 	var updatedPost models.Post
-	err := s.DB.First(&updatedPost, post.ID).Error
+	id := uuid.Must(uuid.Parse(post.ID))
+	updatedPost, err := s.Repo.GetPostById(id)
+	if id == uuid.Nil {
+		return models.Post{}, errors.New("Invalid ID")
+	}
 	if err != nil {
 		return models.Post{}, err
 	}
 	updatedPost.Title = post.Title
 	updatedPost.Content = post.Content
+	updatedPost.Image = post.Image
+	updatedPost.Type = string(post.Type)
+	updatedPost.Tags = post.Tags
 	updatedPost.Status = string(post.Status)
-	updatedPost.UserID = post.UserId
+	updatedPost.UserID = uuid.Must(uuid.Parse(post.UserId))
 	updatedPost.UpdatedAt = &time.Time{}
-	return repository.NewPostRepository(s.DB).UpdatePost(&updatedPost)
+	return s.Repo.UpdatePost(&updatedPost)
 }
 func (s *PostService) DeletePost(id uuid.UUID) error {
-	return repository.NewPostRepository(s.DB).DeletePost(id)
+	if id == uuid.Nil {
+		return errors.New("Invalid ID")
+	}
+	return s.Repo.DeletePost(id)
 }

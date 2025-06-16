@@ -10,12 +10,8 @@ type PostRepository struct {
 	DB *gorm.DB
 }
 
-func NewPostRepository(db *gorm.DB) *PostRepository {
-	return &PostRepository{DB: db}
-}
-
 func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
-	result := r.DB.Create(post)
+	result := r.DB.Create(&post)
 	return *post, result.Error
 }
 func (r *PostRepository) GetAllPosts() ([]models.Post, error) {

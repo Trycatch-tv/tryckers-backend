@@ -12,9 +12,11 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	userRepo := &repository.UserRepository{DB: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
-	commentService := &services.CommentService{DB: db}
+	commentRepo := &repository.CommentRepository{DB: db}
+	commentService := &services.CommentService{Repo: commentRepo}
 	commentHandler := &handlers.CommentHandler{Service: commentService}
-	postService := &services.PostService{DB: db}
+	postRepo := &repository.PostRepository{DB: db}
+	postService := &services.PostService{Repo: postRepo}
 	postHandler := &handlers.PostHandler{Service: postService}
 	api := r.Group("/api/v1")
 	{

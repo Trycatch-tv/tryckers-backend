@@ -14,14 +14,22 @@ type PostHandler struct {
 }
 
 func (h *PostHandler) CreatePost(c *gin.Context) {
-	var post dtos.CreatePostDto
+	var postDto dtos.CreatePostDto
 
-	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// Parsea el JSON del body
+	if err := c.ShouldBindJSON(&postDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
-	createdPost, err := h.Service.CreatePost(&post)
+	// Verifica que UserId no sea cero
+	if postDto.UserId == uuid.Nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Se requiere un UserID válido"})
+		return
+	}
+
+	// Llama al servicio
+	createdPost, err := h.Service.CreatePost(&postDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -53,10 +61,11 @@ func (h *PostHandler) GetPostById(c *gin.Context) {
 	c.JSON(http.StatusOK, post)
 }
 func (h *PostHandler) UpdatePost(c *gin.Context) {
-	var post dtos.CreatePostRequest
+	var post dtos.UpdatePostDto
 
+	// Parsea el JSON del body
 	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 

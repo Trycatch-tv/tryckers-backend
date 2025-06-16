@@ -10,10 +10,6 @@ type CommentRepository struct {
 	DB *gorm.DB
 }
 
-func NewCommentRepository(db *gorm.DB) *CommentRepository {
-	return &CommentRepository{DB: db}
-}
-
 func (r *CommentRepository) CreateComment(comment *models.Comment) (models.Comment, error) {
 	result := r.DB.Create(comment)
 	return *comment, result.Error

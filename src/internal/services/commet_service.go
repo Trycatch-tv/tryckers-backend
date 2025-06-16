@@ -1,43 +1,38 @@
 package services
 
 import (
+	"errors"
 	"time"
 
-	dt "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
-	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
+	dt "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type CommentService struct {
-	DB *gorm.DB
+	Repo *repository.CommentRepository
 }
 
-func NewCommentService(db *gorm.DB) *CommentService {
-	return &CommentService{DB: db}
-}
-
-func (s *CommentService) CreateComment(comment *dt.CreateCommentRequest) (models.Comment, error) {
+func (s *CommentService) CreateComment(comment *dt.CreateCommentDto) (models.Comment, error) {
 	newComment := models.Comment{
 		Content: comment.Content,
-		// Status:    string(comment.Status),
-		UserID: comment.UserId,
-		PostID: comment.PostId,
-		// CreatedAt: time.Now(),
+		Image:   comment.Image,
+		Status:  comment.Status,
+		UserID:  comment.UserId,
+		PostID:  comment.PostId,
 	}
-	return repository.NewCommentRepository(s.DB).CreateComment(&newComment)
+	return s.Repo.CreateComment(&newComment)
 }
-func (s *CommentService) GetAllComments() ([]dt.CommentDto, error) {
+func (s *CommentService) GetAllComments() ([]dt.ResponseCommentDto, error) {
 	var comments []models.Comment
-	err := s.DB.Find(&comments).Error
-	commentsDto := make([]dt.CommentDto, len(comments))
+	err := s.Repo.DB.Find(&comments).Error
+	commentsDto := make([]dt.ResponseCommentDto, len(comments))
 	for i := range comments {
-		commentsDto[i] = dt.CommentDto{
+		commentsDto[i] = dt.ResponseCommentDto{
 			ID:        comments[i].ID.String(),
 			Content:   comments[i].Content,
-			Status:    enums.Status(comments[i].Status),
+			Status:    comments[i].Status,
 			CreatedAt: comments[i].CreatedAt,
 			UpdatedAt: comments[i].UpdatedAt,
 			UserId:    comments[i].UserID.String(),
@@ -46,31 +41,35 @@ func (s *CommentService) GetAllComments() ([]dt.CommentDto, error) {
 	}
 	return commentsDto, err
 }
-func (s *CommentService) GetCommentById(id uuid.UUID) (dt.CommentDto, error) {
+func (s *CommentService) GetCommentById(id uuid.UUID) (dt.ResponseCommentDto, error) {
 	var comment models.Comment
-	err := s.DB.First(&comment, id).Error
-	return dt.CommentDto{
+	err := s.Repo.DB.First(&comment, id).Error
+	return dt.ResponseCommentDto{
 		ID:        comment.ID.String(),
 		Content:   comment.Content,
-		Status:    enums.Status(comment.Status),
+		Status:    comment.Status,
 		CreatedAt: comment.CreatedAt,
 		UpdatedAt: comment.UpdatedAt,
 		UserId:    comment.UserID.String(),
 		PostId:    comment.PostID.String(),
 	}, err
 }
-func (s *CommentService) UpdateComment(comment *dt.CreateCommentRequest) (models.Comment, error) {
+func (s *CommentService) UpdateComment(comment *dt.UpdateCommentDto) (models.Comment, error) {
 	var updatedComment models.Comment
-	err := s.DB.First(&updatedComment, comment.ID).Error
+	commentId := uuid.Must(uuid.Parse(comment.ID))
+	commentData, err := s.Repo.GetCommentById(commentId)
+	if commentData.ID == uuid.Nil {
+		return models.Comment{}, errors.New("Invalid ID")
+	}
 	if err != nil {
 		return models.Comment{}, err
 	}
 	updatedComment.Content = comment.Content
-	updatedComment.Status = string(comment.Status)
+	updatedComment.Status = comment.Status
 	updatedComment.UpdatedAt = time.Now()
-	return repository.NewCommentRepository(s.DB).UpdateComment(&updatedComment)
+	return s.Repo.UpdateComment(&updatedComment)
 }
 func (s *CommentService) DeleteComment(id uuid.UUID) error {
-	err := s.DB.Delete(&models.Comment{}, id).Error
+	err := s.Repo.DeleteComment(id)
 	return err
 }

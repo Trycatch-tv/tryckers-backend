@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	dto "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -14,13 +14,11 @@ type CommentHandler struct {
 }
 
 func (h *CommentHandler) CreateComment(c *gin.Context) {
-	var comment dtos.CreateCommentRequest
-
+	var comment dto.CreateCommentDto
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
-
 	createdComment, err := h.Service.CreateComment(&comment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -53,10 +51,14 @@ func (h *CommentHandler) GetCommentById(c *gin.Context) {
 	c.JSON(http.StatusOK, comment)
 }
 func (h *CommentHandler) UpdateComment(c *gin.Context) {
-	var comment dtos.CreateCommentRequest
-
+	var comment dto.UpdateCommentDto
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		return
+	}
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
 
