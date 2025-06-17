@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	dtos "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
@@ -17,7 +16,6 @@ type PostService struct {
 }
 
 func (s *PostService) CreatePost(post *dtos.CreatePostDto) (models.Post, error) {
-	fmt.Printf("Creando post: %+v\n", post)
 
 	newPost := models.Post{
 		Title:   post.Title,
@@ -25,34 +23,13 @@ func (s *PostService) CreatePost(post *dtos.CreatePostDto) (models.Post, error) 
 		Image:   post.Image,
 		Type:    string(post.Type),
 		Tags:    post.Tags,
-		Status:  string(post.Status),
+		Status:  post.Status,
 		UserID:  post.UserId,
 	}
 	return s.Repo.CreatePost(&newPost)
 }
-func (s *PostService) GetAllPosts() ([]dtos.ResponsePostDto, error) {
-	var posts []models.Post
-	err := s.Repo.DB.Find(&posts).Error
-	if err != nil {
-		return nil, err
-	}
-
-	responsePosts := make([]dtos.ResponsePostDto, len(posts))
-	for i := range posts {
-		responsePosts[i] = dtos.ResponsePostDto{
-			ID:        posts[i].ID.String(),
-			Title:     posts[i].Title,
-			Content:   posts[i].Content,
-			Image:     posts[i].Image,
-			Type:      string(posts[i].Type),
-			Tags:      posts[i].Tags,
-			Status:    enums.Status(string(posts[i].Status)),
-			CreatedAt: *posts[i].CreatedAt,
-			UpdatedAt: *posts[i].UpdatedAt,
-			UserId:    posts[i].UserID.String(),
-		}
-	}
-	return responsePosts, nil
+func (s *PostService) GetAllPosts() ([]models.Post, error) {
+	return s.Repo.GetAllPosts()
 }
 func (s *PostService) GetPostById(id uuid.UUID) (dtos.ResponsePostDto, error) {
 	var post models.Post
@@ -64,7 +41,7 @@ func (s *PostService) GetPostById(id uuid.UUID) (dtos.ResponsePostDto, error) {
 		Image:     post.Image,
 		Type:      string(post.Type),
 		Tags:      post.Tags,
-		Status:    enums.Status(string(post.Status)),
+		Status:    enums.PostStatus(string(post.Status)),
 		CreatedAt: *post.CreatedAt,
 		UpdatedAt: *post.UpdatedAt,
 		UserId:    post.UserID.String(),
@@ -85,7 +62,7 @@ func (s *PostService) UpdatePost(post *dtos.UpdatePostDto) (models.Post, error) 
 	updatedPost.Image = post.Image
 	updatedPost.Type = string(post.Type)
 	updatedPost.Tags = post.Tags
-	updatedPost.Status = string(post.Status)
+	// updatedPost.Status = enums.PostStatus(string(post.Status))
 	updatedPost.UserID = uuid.Must(uuid.Parse(post.UserId))
 	updatedPost.UpdatedAt = &time.Time{}
 	return s.Repo.UpdatePost(&updatedPost)

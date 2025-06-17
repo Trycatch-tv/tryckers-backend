@@ -38,6 +38,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, createdPost)
 }
 func (h *PostHandler) GetAllPosts(c *gin.Context) {
+
 	posts, err := h.Service.GetAllPosts()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -21,7 +22,7 @@ func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
 }
 func (r *PostRepository) GetAllPosts() ([]models.Post, error) {
 	var posts []models.Post
-	err := r.DB.Find(&posts).Error
+	err := r.DB.Preload("User").Where("status != ?", enums.DELETED).Find(&posts).Error
 	return posts, err
 }
 func (r *PostRepository) GetPostById(id uuid.UUID) (models.Post, error) {

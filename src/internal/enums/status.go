@@ -1,10 +1,10 @@
 package enums
 
-type Status string
+type PostStatus string
 
 const (
-	PUBLISHED Status = "published"
-	EDITED    Status = "edited"
-	DRAFT     Status = "draft"
-	DELETED   Status = "deleted"
+	PUBLISHED PostStatus = "published"
+	EDITED    PostStatus = "edited"
+	DRAFT     PostStatus = "draft"
+	DELETED   PostStatus = "deleted"
 )
