@@ -20,14 +20,13 @@ func (s *PostService) CreatePost(post *dtos.CreatePostDto) (models.Post, error) 
 	fmt.Printf("Creando post: %+v\n", post)
 
 	newPost := models.Post{
-		Title:     post.Title,
-		Content:   post.Content,
-		Image:     post.Image,
-		Type:      string(post.Type),
-		Tags:      post.Tags,
-		Status:    string(post.Status),
-		UserID:    post.UserId,
-		CreatedAt: &time.Time{},
+		Title:   post.Title,
+		Content: post.Content,
+		Image:   post.Image,
+		Type:    string(post.Type),
+		Tags:    post.Tags,
+		Status:  string(post.Status),
+		UserID:  post.UserId,
 	}
 	return s.Repo.CreatePost(&newPost)
 }

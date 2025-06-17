@@ -6,7 +6,6 @@ import (
 )
 
 type CreatePostDto struct {
-	// ID      uuid.UUID    `json:"id"`
 	Title   string       `json:"title" binding:"required"`
 	Content string       `json:"content" binding:"required"`
 	Image   string       `json:"image"`

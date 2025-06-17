@@ -18,7 +18,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	// Parsea el JSON del body
 	if err := c.ShouldBindJSON(&postDto); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -12,7 +12,12 @@ type PostRepository struct {
 
 func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
 	result := r.DB.Create(&post)
-	return *post, result.Error
+	if result.Error != nil {
+		return *post, result.Error
+	}
+	var createdPost models.Post
+	err := r.DB.Preload("User").First(&createdPost, post.ID).Error
+	return createdPost, err
 }
 func (r *PostRepository) GetAllPosts() ([]models.Post, error) {
 	var posts []models.Post
