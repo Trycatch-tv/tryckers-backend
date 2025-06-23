@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	dto "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -19,7 +21,12 @@ func (h *CommentHandler) CreateComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
-	createdComment, err := h.Service.CreateComment(&comment)
+	modelComment := models.Comment{
+		Content: comment.Content,
+		Image:   comment.Image,
+		Status:  bool(enums.Active),
+	}
+	createdComment, err := h.Service.CreateComment(&modelComment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -61,8 +68,14 @@ func (h *CommentHandler) UpdateComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
+	modelComment := models.Comment{
+		ID:      comment.ID,
+		Content: comment.Content,
+		Image:   comment.Image,
+		Status:  bool(enums.Active),
+	}
 
-	updatedComment, err := h.Service.UpdateComment(&comment)
+	updatedComment, err := h.Service.UpdateComment(&modelComment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

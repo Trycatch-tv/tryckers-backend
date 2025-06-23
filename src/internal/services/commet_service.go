@@ -2,9 +2,7 @@ package services
 
 import (
 	"errors"
-	"time"
 
-	dt "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
@@ -14,51 +12,22 @@ type CommentService struct {
 	Repo *repository.CommentRepository
 }
 
-func (s *CommentService) CreateComment(comment *dt.CreateCommentDto) (models.Comment, error) {
-	newComment := models.Comment{
-		Content: comment.Content,
-		Image:   comment.Image,
-		Status:  comment.Status,
-		UserID:  comment.UserId,
-		PostID:  comment.PostId,
-	}
-	return s.Repo.CreateComment(&newComment)
+func (s *CommentService) CreateComment(comment *models.Comment) (models.Comment, error) {
+	return s.Repo.CreateComment(comment)
 }
-func (s *CommentService) GetAllComments() ([]dt.ResponseCommentDto, error) {
+func (s *CommentService) GetAllComments() ([]models.Comment, error) {
 	var comments []models.Comment
 	err := s.Repo.DB.Find(&comments).Error
-	commentsDto := make([]dt.ResponseCommentDto, len(comments))
-	for i := range comments {
-		commentsDto[i] = dt.ResponseCommentDto{
-			ID:        comments[i].ID.String(),
-			Content:   comments[i].Content,
-			Status:    comments[i].Status,
-			CreatedAt: comments[i].CreatedAt,
-			UpdatedAt: comments[i].UpdatedAt,
-			UserId:    comments[i].UserID.String(),
-			PostId:    comments[i].PostID.String(),
-		}
-	}
-	return commentsDto, err
+	return comments, err
 }
-func (s *CommentService) GetCommentById(id uuid.UUID) (dt.ResponseCommentDto, error) {
+func (s *CommentService) GetCommentById(id uuid.UUID) (models.Comment, error) {
 	var comment models.Comment
 	err := s.Repo.DB.First(&comment, id).Error
-	return dt.ResponseCommentDto{
-		ID:        comment.ID.String(),
-		Content:   comment.Content,
-		Status:    comment.Status,
-		CreatedAt: comment.CreatedAt,
-		UpdatedAt: comment.UpdatedAt,
-		UserId:    comment.UserID.String(),
-		PostId:    comment.PostID.String(),
-	}, err
+	return comment, err
 }
-func (s *CommentService) UpdateComment(comment *dt.UpdateCommentDto) (models.Comment, error) {
-	var updatedComment models.Comment
-	commentId := uuid.Must(uuid.Parse(comment.ID))
-	commentData, err := s.Repo.GetCommentById(commentId)
-	if commentData.ID == uuid.Nil {
+func (s *CommentService) UpdateComment(comment *models.Comment) (models.Comment, error) {
+	updatedComment, err := s.Repo.GetCommentById(comment.ID)
+	if updatedComment.ID == uuid.Nil {
 		return models.Comment{}, errors.New("Invalid ID")
 	}
 	if err != nil {
@@ -66,9 +35,10 @@ func (s *CommentService) UpdateComment(comment *dt.UpdateCommentDto) (models.Com
 	}
 	updatedComment.Content = comment.Content
 	updatedComment.Status = comment.Status
-	updatedComment.UpdatedAt = time.Now()
+	updatedComment.Image = comment.Image
 	return s.Repo.UpdateComment(&updatedComment)
 }
+
 func (s *CommentService) DeleteComment(id uuid.UUID) error {
 	err := s.Repo.DeleteComment(id)
 	return err

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ func (r *CommentRepository) CreateComment(comment *models.Comment) (models.Comme
 }
 func (r *CommentRepository) GetAllComments() ([]models.Comment, error) {
 	var comments []models.Comment
-	err := r.DB.Find(&comments).Error
+	err := r.DB.Where("status != ?", enums.Inactive).Find(&comments).Error
 	return comments, err
 }
 func (r *CommentRepository) GetCommentById(id uuid.UUID) (models.Comment, error) {
@@ -29,6 +30,6 @@ func (r *CommentRepository) UpdateComment(comment *models.Comment) (models.Comme
 	return *comment, result.Error
 }
 func (r *CommentRepository) DeleteComment(id uuid.UUID) error {
-	err := r.DB.Delete(&models.Comment{}, id).Error
-	return err
+	err := r.DB.Save(&models.Comment{ID: id, Status: bool(enums.Inactive)})
+	return err.Error
 }

@@ -2,10 +2,12 @@ package dtos
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type UpdateCommentDto struct {
-	ID        string    `json:"id"`
+	ID        uuid.UUID `json:"id"`
 	Content   string    `json:"content"`
 	Image     string    `json:"image"`
 	Status    bool      `json:"status"`
