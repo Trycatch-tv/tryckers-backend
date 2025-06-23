@@ -11,10 +11,10 @@ type PostRepository struct {
 	DB *gorm.DB
 }
 
-func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
-	result := r.DB.Create(&post)
+func (r *PostRepository) CreatePost(post models.Post) (models.Post, error) {
+	result := r.DB.Create(post)
 	if result.Error != nil {
-		return *post, result.Error
+		return post, result.Error
 	}
 	var createdPost models.Post
 	err := r.DB.Preload("User").First(&createdPost, post.ID).Error
@@ -27,15 +27,14 @@ func (r *PostRepository) GetAllPosts() ([]models.Post, error) {
 }
 func (r *PostRepository) GetPostById(id uuid.UUID) (models.Post, error) {
 	var post models.Post
-	err := r.DB.First(&post, id).Error
+	err := r.DB.Where("status != ?", enums.DELETED).First(&post, id).Error
 	return post, err
 }
 func (r *PostRepository) UpdatePost(post *models.Post) (models.Post, error) {
-
 	result := r.DB.Save(post)
 	return *post, result.Error
 }
-func (r *PostRepository) DeletePost(id uuid.UUID) error {
-	err := r.DB.Delete(&models.Post{}, id).Error
-	return err
+func (r *PostRepository) DeletePost(post *models.Post) (models.Post, error) {
+	result := r.DB.Save(post)
+	return *post, result.Error
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"net/http"
 
 	dtos "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
@@ -16,20 +17,26 @@ type PostHandler struct {
 func (h *PostHandler) CreatePost(c *gin.Context) {
 	var postDto dtos.CreatePostDto
 
-	// Parsea el JSON del body
 	if err := c.ShouldBindJSON(&postDto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Verifica que UserId no sea cero
 	if postDto.UserId == uuid.Nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Se requiere un UserID válido"})
 		return
 	}
 
-	// Llama al servicio
-	createdPost, err := h.Service.CreatePost(&postDto)
+	newPost := models.Post{
+		Title:   postDto.Title,
+		Content: postDto.Content,
+		Image:   postDto.Image,
+		Type:    postDto.Type,
+		Tags:    postDto.Tags,
+		Status:  postDto.Status,
+	}
+
+	createdPost, err := h.Service.CreatePost(newPost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,13 +71,22 @@ func (h *PostHandler) GetPostById(c *gin.Context) {
 func (h *PostHandler) UpdatePost(c *gin.Context) {
 	var post dtos.UpdatePostDto
 
-	// Parsea el JSON del body
 	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updatedPost, err := h.Service.UpdatePost(&post)
+	updatedPost := models.Post{
+		ID:      post.ID,
+		Title:   post.Title,
+		Content: post.Content,
+		Image:   post.Image,
+		Type:    post.Type,
+		Tags:    post.Tags,
+		Status:  post.Status,
+	}
+
+	updatedPost, err := h.Service.UpdatePost(updatedPost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -85,10 +101,10 @@ func (h *PostHandler) DeletePost(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.DeletePost(uuid.Must(uuid.Parse(id)))
+	_, err := h.Service.DeletePost(uuid.Must(uuid.Parse(id)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Post deleted successfully"})
+	c.JSON(http.StatusNoContent, gin.H{"message": "Post deleted successfully"})
 }

@@ -26,12 +26,12 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.POST("/comments", commentHandler.CreateComment)
 		api.GET("/comments", commentHandler.GetAllComments)
 		api.GET("/comments/:id", commentHandler.GetCommentById)
-		api.PATCH("/comments", commentHandler.UpdateComment)
+		api.PUT("/comments", commentHandler.UpdateComment)
 		api.DELETE("/comments/:id", commentHandler.DeleteComment)
 		api.POST("/posts", postHandler.CreatePost)
 		api.GET("/posts", postHandler.GetAllPosts)
 		api.GET("/posts/:id", postHandler.GetPostById)
-		api.PATCH("/posts", postHandler.UpdatePost)
+		api.PUT("/posts", postHandler.UpdatePost)
 		api.DELETE("/posts/:id", postHandler.DeletePost)
 	}
 }

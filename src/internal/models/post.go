@@ -8,11 +8,11 @@ import (
 )
 
 type Post struct {
-	ID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
-	Title   string    `gorm:"size:1000;not null" json:"title"`
-	Content string    `gorm:"size:1000;not null" json:"content"`
-	Image   string    `gorm:"size:1000" json:"image"`
-	Type    string    `gorm:"size:50;default:'text'" json:"type"`
+	ID      uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	Title   string         `gorm:"size:1000;not null" json:"title"`
+	Content string         `gorm:"size:1000;not null" json:"content"`
+	Image   string         `gorm:"size:1000" json:"image"`
+	Type    enums.PostType `gorm:"size:50;default:'text'" json:"type"`
 	// Tags is a comma-separated string of tags associated with the post
 	Tags      string           `gorm:"size:1000" json:"tags"`
 	Status    enums.PostStatus `gorm:"size:50;default:'draft'" json:"status"`
