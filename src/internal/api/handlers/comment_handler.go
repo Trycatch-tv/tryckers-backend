@@ -36,15 +36,8 @@ func (h *CommentHandler) CreateComment(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, createdComment)
 }
-func (h *CommentHandler) GetAllComments(c *gin.Context) {
-	comments, err := h.Service.GetAllComments()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, comments)
-}
-func (h *CommentHandler) GetCommentById(c *gin.Context) {
+
+func (h *CommentHandler) GetCommentsByPostId(c *gin.Context) {
 	id := c.Param("id")
 
 	if id == "" {
@@ -52,12 +45,12 @@ func (h *CommentHandler) GetCommentById(c *gin.Context) {
 		return
 	}
 
-	comment, err := h.Service.GetCommentById(uuid.Must(uuid.Parse(id)))
+	comments, err := h.Service.GetCommentsByPostId(uuid.Must(uuid.Parse(id)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, comment)
+	c.JSON(http.StatusOK, comments)
 }
 func (h *CommentHandler) UpdateComment(c *gin.Context) {
 	var comment dto.UpdateCommentDto

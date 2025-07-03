@@ -21,15 +21,20 @@ func (r *CommentRepository) CreateComment(comment *models.Comment) (models.Comme
 	err := r.DB.Preload("User").Preload("Post").Preload("Post.User").First(&createdComment, comment.ID).Error
 	return createdComment, err
 }
-func (r *CommentRepository) GetAllComments() ([]models.Comment, error) {
-	var comments []models.Comment
-	err := r.DB.Where("status != ?", enums.Inactive).Find(&comments).Error
-	return comments, err
-}
+
 func (r *CommentRepository) GetCommentById(id uuid.UUID) (models.Comment, error) {
 	var comment models.Comment
-	err := r.DB.First(&comment, id).Error
-	return comment, err
+	err := r.DB.Preload("User").Preload("Post").Preload("Post.User").First(&comment, id).Error
+	if err != nil {
+		return models.Comment{}, err
+	}
+	return comment, nil
+}
+
+func (r *CommentRepository) GetCommentsByPostId(id uuid.UUID) ([]models.Comment, error) {
+	var comments []models.Comment
+	err := r.DB.Preload("User").Where("post_id = ?", id).Find(&comments).Error
+	return comments, err
 }
 func (r *CommentRepository) UpdateComment(comment *models.Comment) (models.Comment, error) {
 	result := r.DB.Save(comment)

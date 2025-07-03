@@ -15,15 +15,13 @@ type CommentService struct {
 func (s *CommentService) CreateComment(comment *models.Comment) (models.Comment, error) {
 	return s.Repo.CreateComment(comment)
 }
-func (s *CommentService) GetAllComments() ([]models.Comment, error) {
-	var comments []models.Comment
-	err := s.Repo.DB.Find(&comments).Error
-	return comments, err
-}
-func (s *CommentService) GetCommentById(id uuid.UUID) (models.Comment, error) {
-	var comment models.Comment
-	err := s.Repo.DB.First(&comment, id).Error
-	return comment, err
+
+func (s *CommentService) GetCommentsByPostId(id uuid.UUID) ([]models.Comment, error) {
+	comments, err := s.Repo.GetCommentsByPostId(id)
+	if err != nil {
+		return []models.Comment{}, err
+	}
+	return comments, nil
 }
 func (s *CommentService) UpdateComment(comment *models.Comment) (models.Comment, error) {
 	updatedComment, err := s.Repo.GetCommentById(comment.ID)
