@@ -24,6 +24,8 @@ func (h *CommentHandler) CreateComment(c *gin.Context) {
 	modelComment := models.Comment{
 		Content: comment.Content,
 		Image:   comment.Image,
+		PostID:  comment.PostId,
+		UserID:  comment.UserId,
 		Status:  bool(enums.Active),
 	}
 	createdComment, err := h.Service.CreateComment(&modelComment)

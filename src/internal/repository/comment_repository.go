@@ -13,7 +13,13 @@ type CommentRepository struct {
 
 func (r *CommentRepository) CreateComment(comment *models.Comment) (models.Comment, error) {
 	result := r.DB.Create(comment)
-	return *comment, result.Error
+	if result.Error != nil {
+		return models.Comment{}, result.Error
+	}
+
+	var createdComment models.Comment
+	err := r.DB.Preload("User").Preload("Post").Preload("Post.User").First(&createdComment, comment.ID).Error
+	return createdComment, err
 }
 func (r *CommentRepository) GetAllComments() ([]models.Comment, error) {
 	var comments []models.Comment
