@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
@@ -26,18 +27,27 @@ func (s *CommentService) GetCommentsByPostId(id uuid.UUID) ([]models.Comment, er
 func (s *CommentService) UpdateComment(comment *models.Comment) (models.Comment, error) {
 	updatedComment, err := s.Repo.GetCommentById(comment.ID)
 	if updatedComment.ID == uuid.Nil {
-		return models.Comment{}, errors.New("Invalid ID")
+		return models.Comment{}, errors.New("invalid ID")
 	}
 	if err != nil {
 		return models.Comment{}, err
 	}
 	updatedComment.Content = comment.Content
-	updatedComment.Status = comment.Status
-	updatedComment.Image = comment.Image
 	return s.Repo.UpdateComment(&updatedComment)
 }
 
-func (s *CommentService) DeleteComment(id uuid.UUID) error {
-	err := s.Repo.DeleteComment(id)
-	return err
+func (s *CommentService) DeleteComment(id uuid.UUID) (models.Comment, error) {
+
+	if id == uuid.Nil {
+		return models.Comment{}, errors.New("invalid ID")
+	}
+	comment, err := s.Repo.GetCommentById(id)
+	if err != nil {
+		return models.Comment{}, err
+	}
+
+	comment.Status = bool(enums.Inactive)
+
+	return s.Repo.DeleteComment(&comment)
+
 }

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -40,7 +39,7 @@ func (r *CommentRepository) UpdateComment(comment *models.Comment) (models.Comme
 	result := r.DB.Save(comment)
 	return *comment, result.Error
 }
-func (r *CommentRepository) DeleteComment(id uuid.UUID) error {
-	err := r.DB.Save(&models.Comment{ID: id, Status: bool(enums.Inactive)})
-	return err.Error
+func (r *CommentRepository) DeleteComment(comment *models.Comment) (models.Comment, error) {
+	result := r.DB.Save(comment)
+	return *comment, result.Error
 }

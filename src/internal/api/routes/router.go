@@ -25,7 +25,7 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.POST("/login", userHandler.Login)
 		api.POST("/comments", commentHandler.CreateComment)
 		api.GET("/posts/:id/comments", commentHandler.GetCommentsByPostId)
-		api.PUT("/comments", commentHandler.UpdateComment)
+		api.PUT("/comments/:id", commentHandler.UpdateComment)
 		api.DELETE("/comments/:id", commentHandler.DeleteComment)
 		api.POST("/posts", postHandler.CreatePost)
 		api.GET("/posts", postHandler.GetAllPosts)

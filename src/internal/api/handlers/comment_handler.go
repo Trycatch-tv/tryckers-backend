@@ -64,10 +64,8 @@ func (h *CommentHandler) UpdateComment(c *gin.Context) {
 		return
 	}
 	modelComment := models.Comment{
-		ID:      comment.ID,
+		ID:      uuid.Must(uuid.Parse(id)),
 		Content: comment.Content,
-		Image:   comment.Image,
-		Status:  bool(enums.Active),
 	}
 
 	updatedComment, err := h.Service.UpdateComment(&modelComment)
@@ -85,10 +83,10 @@ func (h *CommentHandler) DeleteComment(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.DeleteComment(uuid.Must(uuid.Parse(id)))
+	_, err := h.Service.DeleteComment(uuid.Must(uuid.Parse(id)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Comment deleted successfully"})
+	c.JSON(http.StatusNoContent, gin.H{"message": "Comment deleted successfully"})
 }
