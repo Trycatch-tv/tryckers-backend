@@ -27,7 +27,7 @@ type User struct {
 	Country        enums.Country  `json:"country"`
 	Availability   string         `json:"availability"`
 	Interests      string         `json:"interests"`
-	Status         bool           `json:"status" default:"true"`
+	Status         bool           `gorm:"default:true" json:"status" `
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
 }
