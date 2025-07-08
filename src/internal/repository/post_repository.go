@@ -12,7 +12,7 @@ type PostRepository struct {
 }
 
 func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
-	result := r.DB.Create(post)
+	result := r.DB.Create(&post)
 	if result.Error != nil {
 		return *post, result.Error
 	}

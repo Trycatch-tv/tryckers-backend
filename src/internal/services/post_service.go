@@ -39,7 +39,7 @@ func (s *PostService) UpdatePost(post models.Post) (models.Post, error) {
 }
 func (s *PostService) DeletePost(id uuid.UUID) (models.Post, error) {
 	if id == uuid.Nil {
-		return models.Post{}, errors.New("Invalid ID")
+		return models.Post{}, errors.New("invalid ID")
 	}
 	post, err := s.Repo.GetPostById(id)
 	if err != nil {

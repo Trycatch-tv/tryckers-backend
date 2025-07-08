@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	dtoComment "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
 	dtoPost "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/gin-gonic/gin"
@@ -72,4 +73,41 @@ func HelperCreatePost(t *testing.T, router *gin.Engine) models.Post {
 	}
 
 	return response
+}
+
+func HelperCreateComment(t *testing.T, router *gin.Engine) models.Comment {
+	t.Helper() // helper
+
+	var post = HelperCreatePost(t, router)
+	var user = HelperCreateUser(t, router)
+
+	var comment = dtoComment.CreateCommentDto{
+		Content: "comment test" + fmt.Sprint(time.Now().UnixNano()),
+		UserId:  user.ID,
+		PostId:  post.ID,
+	}
+
+	body := EncodeJSON(comment)
+
+	req, _ := http.NewRequest("POST", *GetBaseRoute()+"/comments", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusCreated {
+		t.Fatalf("The comment could not be created, status code: %d, body: %s", w.Code, w.Body.String())
+	}
+
+	response, err := DecodeJSON[models.Comment](w)
+	if err != nil {
+		t.Fatalf("Error deserializing comment response: %v", err)
+	}
+
+	return response
+}
+
+// todo: implementar la funcion
+func HelperGenerateToken() {
+
 }

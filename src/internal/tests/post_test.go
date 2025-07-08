@@ -76,7 +76,6 @@ func TestPosts(t *testing.T) {
 		router.ServeHTTP(w, req)
 
 		response, err := DecodeJSON[models.Post](w)
-		fmt.Print(response)
 		assert.NoError(t, err)
 		assert.Equal(t, createdPost.ID, response.ID)
 	})
@@ -85,15 +84,35 @@ func TestPosts(t *testing.T) {
 
 		var createdPost = HelperCreatePost(t, router)
 
+		var updatePost = createdPost
+
+		updatePost.Title = "update Title"
+
 		w := httptest.NewRecorder()
 
-		req, _ := http.NewRequest("PUT", *GetBaseRoute()+"/posts/"+createdPost.ID.String(), nil)
+		body := EncodeJSON(updatePost)
+		req, _ := http.NewRequest("PUT", *GetBaseRoute()+"/posts", bytes.NewBuffer(body))
 
 		router.ServeHTTP(w, req)
 
 		response, err := DecodeJSON[models.Post](w)
-		fmt.Print(response)
 		assert.NoError(t, err)
 		assert.Equal(t, createdPost.ID, response.ID)
+		assert.NotEqual(t, createdPost.Title, response.Title)
+		assert.Equal(t, updatePost.Title, response.Title)
+		assert.Equal(t, updatePost.ID, response.ID)
+	})
+
+	t.Run("TestDeleteComment", func(t *testing.T) {
+
+		var createdPost = HelperCreatePost(t, router)
+
+		w := httptest.NewRecorder()
+
+		req, _ := http.NewRequest("DELETE", *GetBaseRoute()+"/posts/"+createdPost.ID.String(), nil)
+
+		router.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusNoContent, w.Code)
 	})
 }

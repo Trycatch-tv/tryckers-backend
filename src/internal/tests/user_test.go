@@ -28,7 +28,7 @@ func TestUser(t *testing.T) {
 		body := EncodeJSON(user)
 		req, _ := http.NewRequest("POST", *GetBaseRoute()+"/register", bytes.NewBuffer(body))
 		req.Header.Set("Content-Type", "application/json")
-
+		//req.Header.Set("Authorization", "Bearer "+token)
 		router.ServeHTTP(w, req)
 
 		response, err := DecodeJSON[models.User](w)
