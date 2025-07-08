@@ -46,3 +46,7 @@ Guarda los cambios y cierra.
 Abre una nueva terminal y, desde la raíz del proyecto, ejecuta en la raiz del proyecto: "air"
 
 
+## Testing 
+
+go test ./src/internal/tests -v
+go test ./src/internal/tests 

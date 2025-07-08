@@ -13,7 +13,7 @@ type PostService struct {
 	Repo *repository.PostRepository
 }
 
-func (s *PostService) CreatePost(post models.Post) (models.Post, error) {
+func (s *PostService) CreatePost(post *models.Post) (models.Post, error) {
 	return s.Repo.CreatePost(post)
 }
 func (s *PostService) GetAllPosts() ([]models.Post, error) {

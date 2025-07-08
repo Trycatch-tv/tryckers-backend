@@ -61,3 +61,21 @@ func InitGormDB(cfg Config) *gorm.DB {
 	}
 	return db
 }
+
+func LoadTest() Config {
+	err := godotenv.Load("../../../.env.test")
+
+	if err != nil {
+		log.Fatal("Error loading .env.test file")
+	}
+
+	return Config{
+		Port:              getEnv("PORT", "8080"),
+		DBUrl:             getEnv("DATABASE_URL_TEST", ""),
+		POSTGRES_DB:       getEnv("POSTGRES_DB_TEST", ""),
+		POSTGRES_USER:     getEnv("POSTGRES_USER_TEST", ""),
+		POSTGRES_PASSWORD: getEnv("POSTGRES_PASSWORD_TEST", ""),
+		POSTGRES_HOST:     getEnv("POSTGRES_HOST", ""),
+		POSTGRES_PORT:     getEnv("POSTGRES_PORT_TEST", ""),
+	}
+}

@@ -11,10 +11,10 @@ type PostRepository struct {
 	DB *gorm.DB
 }
 
-func (r *PostRepository) CreatePost(post models.Post) (models.Post, error) {
+func (r *PostRepository) CreatePost(post *models.Post) (models.Post, error) {
 	result := r.DB.Create(post)
 	if result.Error != nil {
-		return post, result.Error
+		return *post, result.Error
 	}
 	var createdPost models.Post
 	err := r.DB.Preload("User").First(&createdPost, post.ID).Error
