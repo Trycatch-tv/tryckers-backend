@@ -50,9 +50,7 @@ func main() {
 
 	// Enable UUID extension
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-
-	// Auto migrate models
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
 
 	// Initialize Gin with default middleware
 	r := gin.Default()

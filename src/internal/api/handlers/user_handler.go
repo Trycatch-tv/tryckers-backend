@@ -109,14 +109,14 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Security     BearerAuth
 // @Router       /profile/{name} [get]
-func (h *UserHandler) Profile(c *gin.Context) {
-	name := c.Param("name")
+func (h *UserHandler) Perfil(c *gin.Context) {
+	email := c.Param("email")
 
-	userProfile, err := h.Service.Profile(&name)
+	userPerfil, err := h.Service.Perfil(email)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": userProfile})
+	c.JSON(http.StatusOK, gin.H{"user": userPerfil})
 }

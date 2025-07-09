@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
@@ -22,29 +23,49 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	if err != nil {
 		return models.User{}, err
 	}
-	user.Password = hashedPassword
-	return s.Repo.CreateUser(user)
+	newPost := models.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: string(hashedPassword),
+		Role:     enums.Member,
+		Points:   0,
+		Country:  enums.Country(user.Country),
+	}
+
+	return s.Repo.CreateUser(&newPost)
 }
 
-func (s *UserService) Login(user *dtos.LoginUser) (models.User, error) {
-	userData, err := s.Repo.FindByEmail(user)
+func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
+
+	userData, err := s.Repo.FindByEmail(user.Email)
+
 	if err != nil {
-		return models.User{}, errors.New("incorrect credentials")
+		return dtos.LoginResponse{}, errors.New("incorrect credentials")
 	}
 
 	IsAuthenticated := utils.ComparePassword(userData.Password, user.Password)
 	if !IsAuthenticated {
-		return models.User{}, errors.New("incorrect credentials")
+
+		return dtos.LoginResponse{}, errors.New("incorrect credentials")
 	}
 
-	return userData, nil
+	token, err := utils.CreateToken(userData.ID.String(), userData.Role)
+
+	if err != nil {
+		return dtos.LoginResponse{}, errors.New("internal Server error")
+	}
+
+	return dtos.LoginResponse{
+		UserData: userData,
+		Token:    token}, nil
 }
 
-func (s *UserService) Profile(name *string) (models.User, error) {
-	userProfile, err := s.Repo.FindByName(name)
+func (s *UserService) Perfil(email string) (models.User, error) {
+
+	userPerfil, err := s.Repo.FindByEmail(email)
 	if err != nil {
 		return models.User{}, errors.New("user not found")
 	}
 
-	return userProfile, nil
+	return userPerfil, nil
 }
