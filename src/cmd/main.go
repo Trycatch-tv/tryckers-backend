@@ -15,7 +15,7 @@ func main() {
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
 
 	r := gin.Default()
 	routes.SetupV1(r, db)

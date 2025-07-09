@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
+	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
@@ -23,8 +24,16 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 
 		return models.User{}, err
 	}
-	user.Password = hashedPassword
-	return s.Repo.CreateUser(user)
+	newPost := models.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: string(hashedPassword),
+		Role:     enums.Member,
+		Points:   0,
+		Country:  enums.Country(user.Country),
+	}
+
+	return s.Repo.CreateUser(&newPost)
 }
 
 func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
