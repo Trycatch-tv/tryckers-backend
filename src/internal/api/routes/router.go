@@ -22,7 +22,7 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	postHandler := &handlers.PostHandler{Service: postService}
 	api := r.Group("/api/v1")
 	{
-		api.GET("/users", middlewares.AuthMiddleware(), middlewares.RoleMiddleware(enums.Admin), userHandler.GetAll)
+		api.GET("/users", middlewares.AuthMiddleware(), middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
 		api.GET("/perfil/:email", middlewares.AuthMiddleware(), userHandler.Perfil)

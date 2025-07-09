@@ -3,7 +3,6 @@ package services
 import (
 	"errors"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
@@ -46,8 +45,5 @@ func (s *CommentService) DeleteComment(id uuid.UUID) (models.Comment, error) {
 		return models.Comment{}, err
 	}
 
-	comment.Status = bool(enums.Inactive)
-
-	return s.Repo.DeleteComment(&comment)
-
+	return s.Repo.DeleteComment(comment.ID)
 }
