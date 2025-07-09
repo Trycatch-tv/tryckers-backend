@@ -29,6 +29,7 @@ import (
 // @BasePath  /api/v1
 
 // @securityDefinitions.apikey BearerAuth
+// @type apiKey
 // @in header
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token. Example: "Bearer abcde12345"
@@ -54,7 +55,11 @@ func main() {
 
 	// Initialize Gin with default middleware
 	r := gin.Default()
-	swaggerURL := fmt.Sprintf("http://localhost:%s/swagger/doc.json", cfg.Port)
+
+	// Servir archivos estáticos de la carpeta docs
+	r.Static("/docs", "./docs")
+
+	swaggerURL := fmt.Sprintf("http://localhost:%s/docs/swagger.json", cfg.Port)
 
 	// Swagger documentation endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler,

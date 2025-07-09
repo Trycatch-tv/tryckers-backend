@@ -104,11 +104,11 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Tags         Profile
 // @Accept       json
 // @Produce      json
-// @Param        name  path      string  true  "Username"
+// @Param        email  path      string  true  "email of the user"
 // @Success      200  {object}  object{user=models.User}  "User profile information"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Security     BearerAuth
-// @Router       /profile/{name} [get]
+// @Router       /profile/{email} [get]
 func (h *UserHandler) Perfil(c *gin.Context) {
 	email := c.Param("email")
 

@@ -80,3 +80,14 @@ This project uses [swaggo/swag](https://github.com/swaggo/swag) to auto-generate
 - `github.com/swaggo/swag/cmd/swag` (dev tool, not required in production)
 - `github.com/swaggo/gin-swagger`
 - `github.com/swaggo/files`
+
+## 📄 Generar documentación Swagger
+
+Para generar la documentación Swagger a partir de las anotaciones en el código, ejecuta desde la raíz del proyecto:
+
+```
+go install github.com/swaggo/swag/cmd/swag@latest
+swag init -g src/internal/api/routes/router.go
+```
+
+Esto generará la carpeta `docs/` con la documentación. Puedes consultar la documentación en el endpoint `/swagger/index.html` si tienes integrado Swagger UI en tu servidor.
