@@ -21,7 +21,6 @@ func (s *UserService) GetAllUsers() ([]models.User, error) {
 func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) {
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
-
 		return models.User{}, err
 	}
 	newPost := models.User{

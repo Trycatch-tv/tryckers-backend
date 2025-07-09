@@ -45,4 +45,49 @@ Haz clic en Editar, luego en Nuevo, y pega la ruta anterior.
 Guarda los cambios y cierra.
 Abre una nueva terminal y, desde la raíz del proyecto, ejecuta en la raiz del proyecto: "air"
 
+## API Documentation (Swagger)
 
+This project uses [swaggo/swag](https://github.com/swaggo/swag) to auto-generate OpenAPI (Swagger) documentation from code comments.
+
+### How to generate/update the docs
+
+1. Install swag CLI (only once per machine):
+   ```bash
+   go install github.com/swaggo/swag/cmd/swag@latest
+   ```
+
+2. Generate the documentation:
+   ```bash
+   swag init -g src/cmd/main.go -o docs
+   ```
+
+3. Start the application:
+   ```bash
+   go run src/cmd/main.go
+   ```
+
+4. Access the Swagger UI at:
+   ```
+   http://localhost:8080/swagger/index.html
+   ```
+
+> **Note:**  
+> Do not commit the generated files in the `docs/` folder (`docs.go`, `swagger.json`, `swagger.yaml`).  
+> These files are auto-generated and should be ignored via `.gitignore`.
+
+### New dependencies
+
+- `github.com/swaggo/swag/cmd/swag` (dev tool, not required in production)
+- `github.com/swaggo/gin-swagger`
+- `github.com/swaggo/files`
+
+## 📄 Generar documentación Swagger
+
+Para generar la documentación Swagger a partir de las anotaciones en el código, ejecuta desde la raíz del proyecto:
+
+```
+go install github.com/swaggo/swag/cmd/swag@latest
+swag init -g src/internal/api/routes/router.go
+```
+
+Esto generará la carpeta `docs/` con la documentación. Puedes consultar la documentación en el endpoint `/swagger/index.html` si tienes integrado Swagger UI en tu servidor.
