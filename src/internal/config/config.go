@@ -18,6 +18,7 @@ type Config struct {
 	POSTGRES_PASSWORD string
 	POSTGRES_HOST     string
 	POSTGRES_PORT     string
+	JWT_SECRET        string
 }
 
 func Load() Config {
@@ -34,8 +35,9 @@ func Load() Config {
 		POSTGRES_DB:       getEnv("POSTGRES_DB", ""),
 		POSTGRES_USER:     getEnv("POSTGRES_USER", ""),
 		POSTGRES_PASSWORD: getEnv("POSTGRES_PASSWORD", ""),
-		POSTGRES_HOST:     getEnv("POSTGRES_HOST", ""),
-		POSTGRES_PORT:     getEnv("POSTGRES_PORT", ""),
+		POSTGRES_HOST:     getEnv("POSTGRES_HOST", "localhost"),
+		POSTGRES_PORT:     getEnv("POSTGRES_PORT", "5432"),
+		JWT_SECRET:        getEnv("JWT_SECRET", ""),
 	}
 }
 
