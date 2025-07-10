@@ -16,8 +16,8 @@ import (
 func TestComments(t *testing.T) {
 	var router = SetupTestRouter()
 
-	var user = HelperCreateUser(t, router)
-	var post = HelperCreatePost(t, router)
+	var user = HelperCreateUser(t)
+	var post = HelperCreatePost(t)
 
 	var comment = dtos.CreateCommentDto{
 		Content: "comment test" + fmt.Sprint(time.Now().UnixNano()),
@@ -45,7 +45,7 @@ func TestComments(t *testing.T) {
 
 	t.Run("TestGetCommentsByPostId", func(t *testing.T) {
 
-		var comment = HelperCreateComment(t, router)
+		var comment = HelperCreateComment(t)
 
 		w := httptest.NewRecorder()
 
@@ -72,7 +72,7 @@ func TestComments(t *testing.T) {
 
 	t.Run("TestUpdateComment", func(t *testing.T) {
 
-		var createdComment = HelperCreateComment(t, router)
+		var createdComment = HelperCreateComment(t)
 
 		var updateComment = createdComment
 
@@ -92,7 +92,7 @@ func TestComments(t *testing.T) {
 
 	t.Run("TestDeleteComments", func(t *testing.T) {
 
-		var createdComment = HelperCreateComment(t, router)
+		var createdComment = HelperCreateComment(t)
 
 		w := httptest.NewRecorder()
 

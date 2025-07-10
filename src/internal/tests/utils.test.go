@@ -6,18 +6,15 @@ import (
 	"net/http/httptest"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/routes"
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupTestRouter() *gin.Engine {
-	cfg := config.Load("test")
-	db := config.InitGormDB(cfg)
 
 	r := gin.Default()
-	routes.SetupV1(r, db)
+	routes.SetupV1(r, Testdb)
 
 	return r
 }

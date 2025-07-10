@@ -11,17 +11,17 @@ import (
 
 func TestMain(m *testing.M) {
 	env := "test"
-	var db = config.InitGormDB(config.Load(env))
+	Testdb = config.InitGormDB(config.Load(env))
 
-	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
-	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
+	Testdb.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+	Testdb.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
 	// Run tests
 	code := m.Run()
 
 	// After all tests: reset DB
 	log.Println("🧹 Cleaning up test DB...")
 	// todo: cada vez que se agregue una entidad o una nueva tabla se debe agregar a la query de limpiar la db de testing
-	db.Exec("TRUNCATE users, posts, comments RESTART IDENTITY CASCADE;")
+	Testdb.Exec("TRUNCATE users, posts, comments RESTART IDENTITY CASCADE;")
 
 	os.Exit(code)
 }

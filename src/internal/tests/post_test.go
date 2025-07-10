@@ -16,7 +16,7 @@ import (
 func TestPosts(t *testing.T) {
 	var router = SetupTestRouter()
 
-	var user = HelperCreateUser(t, router)
+	var user = HelperCreateUser(t)
 
 	var postDto = dtos.CreatePostDto{
 		Title:   "post test" + fmt.Sprint(time.Now().UnixNano()),
@@ -67,7 +67,7 @@ func TestPosts(t *testing.T) {
 
 	t.Run("TestGetPostById", func(t *testing.T) {
 
-		var createdPost = HelperCreatePost(t, router)
+		var createdPost = HelperCreatePost(t)
 
 		w := httptest.NewRecorder()
 
@@ -82,7 +82,7 @@ func TestPosts(t *testing.T) {
 
 	t.Run("TestUpdatePost", func(t *testing.T) {
 
-		var createdPost = HelperCreatePost(t, router)
+		var createdPost = HelperCreatePost(t)
 
 		var updatePost = createdPost
 
@@ -105,7 +105,7 @@ func TestPosts(t *testing.T) {
 
 	t.Run("TestDeleteComment", func(t *testing.T) {
 
-		var createdPost = HelperCreatePost(t, router)
+		var createdPost = HelperCreatePost(t)
 
 		w := httptest.NewRecorder()
 

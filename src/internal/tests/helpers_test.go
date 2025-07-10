@@ -1,113 +1,70 @@
 package tests
 
 import (
-	"bytes"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
-	dtoComment "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/comment"
-	dtoPost "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
-	"github.com/gin-gonic/gin"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 )
 
-func HelperCreateUser(t *testing.T, router *gin.Engine) models.User {
-	t.Helper() // helper
+func HelperCreateUser(t *testing.T) models.User {
+	t.Helper()
 
-	user := dtos.CreateUserDTO{
+	hashedPassword, err := utils.HashPassword("password123")
+	if err != nil {
+		t.Fatalf("Error hashing password: %v", err)
+	}
+	user := models.User{
 		Name:     "Test User",
-		Email:    fmt.Sprintf("testuser_%d@example.com", time.Now().UnixNano()), // email único
-		Password: "password123",
+		Email:    fmt.Sprintf("testuser_%d@example.com", time.Now().UnixNano()),
+		Password: hashedPassword,
 		Country:  "colombia",
 	}
 
-	body := EncodeJSON(user)
-
-	req, _ := http.NewRequest("POST", *GetBaseRoute()+"/register", bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-
-	router.ServeHTTP(w, req)
-
-	if w.Code != http.StatusCreated {
-		t.Fatalf("The user could not be created, status code: %d, body: %s", w.Code, w.Body.String())
+	if err := Testdb.Create(&user).Error; err != nil {
+		t.Fatalf("Error creating test user in DB: %v", err)
 	}
 
-	response, err := DecodeJSON[models.User](w)
-	if err != nil {
-		t.Fatalf("Error deserializing user response: %v", err)
-	}
-
-	return response
+	return user
 }
 
-func HelperCreatePost(t *testing.T, router *gin.Engine) models.Post {
-	t.Helper() // helper
-	var user = HelperCreateUser(t, router)
-	post := dtoPost.CreatePostDto{
-		Title:   "post test" + fmt.Sprint(time.Now().UnixNano()),
+func HelperCreatePost(t *testing.T) models.Post {
+	t.Helper()
+
+	user := HelperCreateUser(t)
+
+	post := models.Post{
+		Title:   "post test " + fmt.Sprint(time.Now().UnixNano()),
 		Content: "este es el post test en tryckers",
 		Status:  "published",
-		UserId:  user.ID,
+		UserID:  user.ID, // Usa el ID del usuario creado
 	}
 
-	body := EncodeJSON(post)
-
-	req, _ := http.NewRequest("POST", *GetBaseRoute()+"/posts", bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-
-	router.ServeHTTP(w, req)
-
-	if w.Code != http.StatusCreated {
-		t.Fatalf("The post could not be created, status code: %d, body: %s", w.Code, w.Body.String())
+	if err := Testdb.Create(&post).Error; err != nil {
+		t.Fatalf("Error creating test post in DB: %v", err)
 	}
 
-	response, err := DecodeJSON[models.Post](w)
-	if err != nil {
-		t.Fatalf("Error deserializing post response: %v", err)
-	}
-
-	return response
+	return post
 }
 
-func HelperCreateComment(t *testing.T, router *gin.Engine) models.Comment {
-	t.Helper() // helper
+func HelperCreateComment(t *testing.T) models.Comment {
+	t.Helper()
 
-	var post = HelperCreatePost(t, router)
-	var user = HelperCreateUser(t, router)
+	// Crear post y usuario directamente en la DB
+	post := HelperCreatePost(t)
+	user := HelperCreateUser(t)
 
-	var comment = dtoComment.CreateCommentDto{
-		Content: "comment test" + fmt.Sprint(time.Now().UnixNano()),
-		UserId:  user.ID,
-		PostId:  post.ID,
+	comment := models.Comment{
+		Content: "comment test " + fmt.Sprint(time.Now().UnixNano()),
+		UserID:  user.ID,
+		PostID:  post.ID,
 	}
 
-	body := EncodeJSON(comment)
-
-	req, _ := http.NewRequest("POST", *GetBaseRoute()+"/comments", bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-
-	router.ServeHTTP(w, req)
-
-	if w.Code != http.StatusCreated {
-		t.Fatalf("The comment could not be created, status code: %d, body: %s", w.Code, w.Body.String())
+	if err := Testdb.Create(&comment).Error; err != nil {
+		t.Fatalf("Error creating test comment in DB: %v", err)
 	}
 
-	response, err := DecodeJSON[models.Comment](w)
-	if err != nil {
-		t.Fatalf("Error deserializing comment response: %v", err)
-	}
-
-	return response
-}
-
-// todo: implementar la funcion
-func HelperGenerateToken() {
-
+	return comment
 }
