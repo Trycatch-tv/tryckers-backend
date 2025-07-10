@@ -6,12 +6,11 @@ import (
 )
 
 type UpdatePostDto struct {
-	ID      uuid.UUID        `json:"id"`
-	Title   string           `json:"title"`
-	Content string           `json:"content"`
+	ID      uuid.UUID        `json:"id" binding:"required"`
+	Title   string           `json:"title" binding:"required"`
+	Content string           `json:"content" binding:"required" `
 	Image   string           `json:"image"`
 	Type    enums.PostType   `json:"type"`
 	Tags    string           `json:"tags"`
-	Status  enums.PostStatus `json:"status"`
-	UserId  string           `json:"user_id"`
+	Status  enums.PostStatus `json:"status" binding:"required"`
 }

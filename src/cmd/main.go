@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/routes"
@@ -10,7 +11,12 @@ import (
 )
 
 func main() {
-	cfg := config.Load()
+
+	env := flag.String("app_env", "development", "Application environment (e.g. development, test, production)")
+	flag.Parse()
+	envString := *env
+
+	cfg := config.Load(envString)
 	db := config.InitGormDB(cfg)
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()

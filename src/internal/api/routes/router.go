@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupV1(r *gin.Engine, db *gorm.DB) {
+func SetupV1(r *gin.Engine, db *gorm.DB) *gin.RouterGroup {
 	userRepo := &repository.UserRepository{DB: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
@@ -35,5 +35,12 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.GET("/posts/:id", postHandler.GetPostById)
 		api.PUT("/posts", postHandler.UpdatePost)
 		api.DELETE("/posts/:id", postHandler.DeletePost)
+
+		// endpoint testing
+		api.GET("/ping", func(c *gin.Context) {
+			c.String(200, "pong")
+		})
 	}
+
+	return api
 }

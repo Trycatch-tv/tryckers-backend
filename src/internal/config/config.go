@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -21,13 +22,25 @@ type Config struct {
 	JWT_SECRET        string
 }
 
-func Load() Config {
+func Load(env string) Config {
 
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	var envFile string
+	switch env {
+	case "production":
+		envFile = ".env.production"
+	case "test":
+		envFile = ".env.test"
+	default:
+		envFile = ".env"
 	}
+
+	rootPath := findProjectRoot()
+	err := godotenv.Load(filepath.Join(rootPath, envFile))
+	if err != nil {
+		log.Fatalf("Error loading %s: %v", envFile, err)
+	}
+
+	fmt.Print("✅ load file  ", envFile)
 
 	return Config{
 		Port:              getEnv("PORT", "8080"),
@@ -62,4 +75,20 @@ func InitGormDB(cfg Config) *gorm.DB {
 		log.Fatal("Cannot connect to DB:", err)
 	}
 	return db
+}
+
+func findProjectRoot() string {
+	dir, _ := os.Getwd()
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break // llegó a la raíz
+		}
+		dir = parent
+	}
+	log.Fatal("❌ No se encontró el archivo go.mod. ¿Estás ejecutando desde dentro de un módulo Go?")
+	return ""
 }
