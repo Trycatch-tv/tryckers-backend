@@ -61,8 +61,8 @@ Abre una nueva terminal y, desde la raíz del proyecto, ejecuta en la raiz del p
 
 ## Testing 
 Tener encuenta que todos los comandos se deben ejecuntar desde la raiz del proyecto 
-1. configuarar la variable de entorno de testing para eso crear un archivo llamado .env.test teniendo como ejemplo
-las variable que estan en el archivo .env.test.example
+1. configuarar las variables de entorno de testing para eso crear un archivo llamado .env.test teniendo como ejemplo
+las variables que estan en el archivo .env.test.example
 2. levantar la db de testing para eso ejecutar el siguiente comando 
 ```bash
 docker compose --env-file .env.test -f docker-compose.test.yml up -d
