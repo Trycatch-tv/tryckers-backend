@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"gorm.io/gorm"
 )
@@ -21,16 +20,9 @@ func (r *UserRepository) CreateUser(user *models.User) (models.User, error) {
 	return *user, result.Error
 }
 
-func (r *UserRepository) FindByEmail(user *dtos.LoginUser) (models.User, error) {
+func (r *UserRepository) FindByEmail(email string) (models.User, error) {
 	var foundUser models.User
 
-	result := r.DB.Where("email = ?", user.Email).First(&foundUser)
-	return foundUser, result.Error
-}
-
-func (r *UserRepository) FindByName(name *string) (models.User, error) {
-	var foundUser models.User
-
-	result := r.DB.Where("name = ?", name).First(&foundUser)
+	result := r.DB.Where("email = ?", email).First(&foundUser)
 	return foundUser, result.Error
 }

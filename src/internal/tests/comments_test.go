@@ -82,7 +82,6 @@ func TestComments(t *testing.T) {
 
 		body := EncodeJSON(updateComment)
 		req, _ := http.NewRequest("PUT", *GetBaseRoute()+"/comments/"+updateComment.ID.String(), bytes.NewBuffer(body))
-
 		router.ServeHTTP(w, req)
 
 		response, err := DecodeJSON[models.Comment](w)
@@ -91,7 +90,7 @@ func TestComments(t *testing.T) {
 		assert.NotEqual(t, createdComment.Content, response.Content)
 	})
 
-	t.Run("TestDeletePost", func(t *testing.T) {
+	t.Run("TestDeleteComments", func(t *testing.T) {
 
 		var createdComment = HelperCreateComment(t, router)
 
@@ -100,7 +99,6 @@ func TestComments(t *testing.T) {
 		req, _ := http.NewRequest("DELETE", *GetBaseRoute()+"/comments/"+createdComment.ID.String(), nil)
 
 		router.ServeHTTP(w, req)
-
 		assert.Equal(t, http.StatusNoContent, w.Code)
 	})
 }

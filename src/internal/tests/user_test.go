@@ -19,7 +19,6 @@ func TestUser(t *testing.T) {
 		Email:    "test@gmail.com",
 		Password: "passwordTesting123456789",
 	}
-
 	var router = SetupTestRouter()
 
 	t.Run("TestRegisterUser", func(t *testing.T) {
@@ -28,7 +27,7 @@ func TestUser(t *testing.T) {
 		body := EncodeJSON(user)
 		req, _ := http.NewRequest("POST", *GetBaseRoute()+"/register", bytes.NewBuffer(body))
 		req.Header.Set("Content-Type", "application/json")
-		//req.Header.Set("Authorization", "Bearer "+token)
+
 		router.ServeHTTP(w, req)
 
 		response, err := DecodeJSON[models.User](w)
@@ -52,23 +51,40 @@ func TestUser(t *testing.T) {
 
 		router.ServeHTTP(w, req)
 
-		//todo: cuando se haga el merge de la pr de jwt toca actulizar el type LoginResponse
-		type LoginResponse struct {
-			User models.User `json:"user"`
-			//token string
+		type LoginResponseuser struct {
+			User dtos.LoginResponse
 		}
 
-		response, err := DecodeJSON[LoginResponse](w)
+		response, err := DecodeJSON[LoginResponseuser](w)
+		assert.NoError(t, err)
+		assert.Equal(t, user.Name, response.User.UserData.Name)
+		assert.Equal(t, user.Email, response.User.UserData.Email)
+	})
+
+	t.Run("TestPerfil", func(t *testing.T) {
+
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", *GetBaseRoute()+"/perfil/"+user.Email, nil)
+		req.Header.Set("Authorization", "Bearer "+GenerateTokenAdmin())
+
+		router.ServeHTTP(w, req)
+
+		type responseUser struct {
+			User models.User
+		}
+
+		response, err := DecodeJSON[responseUser](w)
 
 		assert.NoError(t, err)
-		assert.Equal(t, user.Name, response.User.Name)
 		assert.Equal(t, user.Email, response.User.Email)
+
 	})
 
 	t.Run("TestGetAll", func(t *testing.T) {
-		w := httptest.NewRecorder()
 
+		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", *GetBaseRoute()+"/users", nil)
+		req.Header.Set("Authorization", "Bearer "+GenerateTokenMember())
 
 		router.ServeHTTP(w, req)
 

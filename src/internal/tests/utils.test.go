@@ -7,16 +7,14 @@ import (
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/routes"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupTestRouter() *gin.Engine {
-	cfg := config.LoadTest()
+	cfg := config.Load("test")
 	db := config.InitGormDB(cfg)
-
-	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
-	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
 
 	r := gin.Default()
 	routes.SetupV1(r, db)
@@ -44,4 +42,30 @@ func DecodeJSON[T any](w *httptest.ResponseRecorder) (T, error) {
 	err := json.Unmarshal(w.Body.Bytes(), &target)
 
 	return target, err
+}
+
+func GenerateTokenAdmin() string {
+	var id = "id"
+	var role = enums.Admin
+	token, err := utils.CreateToken(id, role)
+
+	if err != nil {
+		log.Fatal("❌ error generating admin token", err)
+		return ""
+	}
+
+	return token
+}
+
+func GenerateTokenMember() string {
+	var id = "id"
+	var role = enums.Member
+	token, err := utils.CreateToken(id, role)
+
+	if err != nil {
+		log.Fatal("❌ error generating member token", err)
+		return ""
+	}
+
+	return token
 }

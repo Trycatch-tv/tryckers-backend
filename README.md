@@ -67,7 +67,7 @@ las variable que estan en el archivo .env.test.example
 ```bash
 docker compose --env-file .env.test -f docker-compose.test.yml up -d
 ```
-3. ejecutar lost test 
+3. ejecutar los test 
 ```bash
 go test ./src/internal/tests
 ```

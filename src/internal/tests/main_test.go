@@ -6,11 +6,15 @@ import (
 	"testing"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 )
 
 func TestMain(m *testing.M) {
-	var db = config.InitGormDB(config.LoadTest())
+	env := "test"
+	var db = config.InitGormDB(config.Load(env))
 
+	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
 	// Run tests
 	code := m.Run()
 
