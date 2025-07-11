@@ -1,6 +1,6 @@
 module github.com/Trycatch-tv/tryckers-backend
 
-go 1.24.4
+go 1.24
 
 require (
 	github.com/gin-gonic/gin v1.10.1
