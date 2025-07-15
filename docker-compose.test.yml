@@ -4,11 +4,11 @@ services:
     restart: always
     container_name: tryckers_postgres_test
     environment:
-      POSTGRES_DB: ${POSTGRES_DB_TEST}
-      POSTGRES_USER: ${POSTGRES_USER_TEST}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_TEST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5442:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - pgdata_test:/var/lib/postgresql/data  
     networks:
