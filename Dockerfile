@@ -1,20 +1,13 @@
-FROM golang:1.21 AS builder
+FROM golang:1.24.4
 
-WORKDIR /src
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY . .
+COPY . ./
+RUN go build -o main ./src/cmd
 
-RUN go build -o app ./src/cmd
+EXPOSE 8080
 
-FROM debian:bookworm-slim
-
-WORKDIR /app
-
-COPY --from=builder /src/app .
-
-EXPOSE 3000
-
-CMD ["./app"]
+CMD ["sh", "-c", "./main"]

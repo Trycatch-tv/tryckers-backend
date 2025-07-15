@@ -2,9 +2,11 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "8080:8080"
     env_file:
       - .env
+    volumes:
+      - ./.env:/app/.env
     depends_on:
       - postgres-db
     networks:
