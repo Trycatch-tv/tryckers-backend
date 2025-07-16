@@ -2,14 +2,14 @@ package utils
 
 import (
 	"errors"
+	"os"
 	"time"
 
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte(config.Load().JWT_SECRET)
+var secretKey = []byte(os.Getenv("JWT_SECRET"))
 var signingMethod = jwt.SigningMethodHS256
 var tokenExpirationTime = 5 * time.Hour // el tiempo de expiración de los tokens
 

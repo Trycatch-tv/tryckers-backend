@@ -41,7 +41,18 @@ func (r *CommentRepository) UpdateComment(comment *models.Comment) (models.Comme
 	return *comment, result.Error
 }
 func (r *CommentRepository) DeleteComment(id uuid.UUID) (models.Comment, error) {
-	comment := models.Comment{ID: id, Status: bool(enums.Inactive)}
-	result := r.DB.Save(&comment)
-	return comment, result.Error
+	var comment models.Comment
+
+	if err := r.DB.First(&comment, "id = ?", id).Error; err != nil {
+		return comment, err
+	}
+
+	comment.Status = bool(enums.Inactive)
+
+	if err := r.DB.Save(&comment).Error; err != nil {
+		return comment, err
+	}
+
+	return comment, nil
+
 }
