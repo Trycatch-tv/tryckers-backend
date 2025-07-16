@@ -1,0 +1,52 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main"]
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Install swag
+      run: go install github.com/swaggo/swag/cmd/swag@latest
+
+    - name: generate swagger
+      run: swag init -g src/cmd/main.go -o docs
+
+    - name: Build
+      run: go build -v src/cmd/main.go 
+
+    - name: Create .env.test
+      run: |
+        echo "PORT=${{ secrets.PORT }}" >> .env.test
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.test
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.test
+        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env.test
+        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env.test
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env.test
+        echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env.test
+
+    - name: launch DB test 
+      run: docker compose --env-file .env.test -f docker-compose.test.yml up -d
+      
+    - name: await 2 seg
+      run: sleep 2
+  
+    - name: Test
+      run: go test ./src/internal/tests 
+
+    # todo: implementar CD
