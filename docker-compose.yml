@@ -1,4 +1,17 @@
 services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      - postgres-db
+    networks:
+      tryckers_network: {}
+
   postgres-db:
     image: postgres:15
     restart: always
