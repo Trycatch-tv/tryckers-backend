@@ -5,14 +5,13 @@ name: Go
 
 on:
   push:
-    branches: [ "main", "add/ci" ]
+    branches: [ "main" ]
 
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
-    environment: test
     steps:
     - uses: actions/checkout@v4
 
@@ -24,23 +23,7 @@ jobs:
     - name: Build
       run: go build -v src/cmd/main.go 
 
-    - name: Create .env.test
-      run: |
-        echo "PORT=${{ secrets.PORT }}" >> .env.test
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.test
-        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.test
-        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env.test
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env.test
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env.test
-        echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env.test
-
-    - name: launch DB test 
-      run: docker compose --env-file .env.test -f docker-compose.test.yml up -d
-      
-    - name: await 2 seg
-      run: sleep 2
-  
     - name: Test
-      run: go test ./src/internal/tests 
+      run: go test -v ./src/internal/tests 
 
     # todo: implementar CD
