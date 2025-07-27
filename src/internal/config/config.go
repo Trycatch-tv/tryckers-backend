@@ -19,6 +19,7 @@ type Config struct {
 	POSTGRES_HOST     string
 	POSTGRES_PORT     string
 	JWT_SECRET        string
+	FRONTEND_URL      string
 }
 
 func Load() Config {
@@ -38,6 +39,7 @@ func Load() Config {
 		POSTGRES_HOST:     getEnv("POSTGRES_HOST", "localhost"),
 		POSTGRES_PORT:     getEnv("POSTGRES_PORT", "5432"),
 		JWT_SECRET:        getEnv("JWT_SECRET", ""),
+		FRONTEND_URL:      getEnv("FRONTEND_URL", "http://localhost:4200"),
 	}
 }
 
