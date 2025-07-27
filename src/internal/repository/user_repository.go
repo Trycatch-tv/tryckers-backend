@@ -26,3 +26,10 @@ func (r *UserRepository) FindByEmail(email string) (models.User, error) {
 	result := r.DB.Where("email = ?", email).First(&foundUser)
 	return foundUser, result.Error
 }
+
+func (r *UserRepository) IsEmailRegistered(email string) bool {
+	var foundUser models.User
+
+	err := r.DB.Where("email = ?", email).First(&foundUser)
+	return err != nil
+}
