@@ -71,8 +71,8 @@ func (s *UserService) Perfil(email string) (models.User, error) {
 	return userPerfil, nil
 }
 
-func (s *UserService) IsvalidEmail(email string) bool {
-	isEmailRegistered := s.Repo.IsEmailRegistered(email)
+func (s *UserService) IsEmailRegistered(email string) bool {
+	_, err := s.Repo.FindByEmail(email)
 
-	return !isEmailRegistered
+	return err != nil
 }
