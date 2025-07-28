@@ -8,6 +8,7 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/routes"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -55,6 +56,14 @@ func main() {
 
 	// Initialize Gin with default middleware
 	r := gin.Default()
+
+	// configuración de cors
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{cfg.FRONTEND_URL},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+	}))
 
 	// Servir archivos estáticos de la carpeta docs
 	r.Static("/docs", "./docs")
