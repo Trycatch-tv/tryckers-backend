@@ -26,6 +26,7 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	newPost := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
+		Username: user.Username,
 		Password: string(hashedPassword),
 		Role:     enums.Member,
 		Points:   0,
@@ -60,9 +61,9 @@ func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
 		Token:    token}, nil
 }
 
-func (s *UserService) Perfil(email string) (models.User, error) {
+func (s *UserService) Perfil(username string) (models.User, error) {
 
-	userPerfil, err := s.Repo.FindByEmail(email)
+	userPerfil, err := s.Repo.FindByUsername(username)
 	if err != nil {
 		return models.User{}, errors.New("user not found")
 	}
