@@ -38,3 +38,9 @@ func (r *PostRepository) DeletePost(post *models.Post) (models.Post, error) {
 	result := r.DB.Save(post)
 	return *post, result.Error
 }
+
+func (r *PostRepository) GetPostsByUserId(userId uuid.UUID) ([]models.Post, error) {
+	var posts []models.Post
+	err := r.DB.Preload("User").Where("user_id = ? AND status != ?", userId, enums.DELETED).Find(&posts).Error
+	return posts, err
+}

@@ -49,3 +49,7 @@ func (s *PostService) DeletePost(id uuid.UUID) (models.Post, error) {
 	post.Status = enums.DELETED
 	return s.Repo.DeletePost(&post)
 }
+
+func (s *PostService) GetPostsByUserId(userId uuid.UUID) ([]models.Post, error) {
+	return s.Repo.GetPostsByUserId(userId)
+}
