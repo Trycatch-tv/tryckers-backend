@@ -11,6 +11,7 @@ import (
 type User struct {
 	ID             uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
 	Name           string         `gorm:"size:100" json:"name" example:"John Doe"`
+	Username       string         `gorm:"unique;size:100" json:"username" example:"johndoe"`
 	Email          string         `gorm:"unique;size:100" json:"email" example:"john.doe@example.com"`
 	Password       string         `json:"-"`
 	BirthDate      *time.Time     `json:"birth_date" example:"1990-01-15T00:00:00Z"`

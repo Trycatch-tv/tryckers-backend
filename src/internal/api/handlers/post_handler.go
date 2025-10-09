@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"net/http"
+
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 
 	dtos "github.com/Trycatch-tv/tryckers-backend/src/internal/dtos/post"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
@@ -34,6 +35,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		Type:    postDto.Type,
 		Tags:    postDto.Tags,
 		Status:  postDto.Status,
+		UserID:  postDto.UserId,
 	}
 
 	createdPost, err := h.Service.CreatePost(newPost)

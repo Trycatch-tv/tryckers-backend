@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
@@ -108,11 +109,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Success      200  {object}  object{user=models.User}  "User profile information"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Security     BearerAuth
-// @Router       /profile/{email} [get]
+// @Router       /profile/{username} [get]
 func (h *UserHandler) Perfil(c *gin.Context) {
-	email := c.Param("email")
+	// username es en toLowerCase
+	username := strings.ToLower(c.Param("username"))
 
-	userPerfil, err := h.Service.Perfil(email)
+	userPerfil, err := h.Service.Perfil(username)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
