@@ -110,3 +110,18 @@ func (h *PostHandler) DeletePost(c *gin.Context) {
 	}
 	c.JSON(http.StatusNoContent, gin.H{"message": "Post deleted successfully"})
 }
+
+func (h *PostHandler) GetPostsByUserId(c *gin.Context) {
+	userId := c.Param("userId")
+
+	if userId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid User ID"})
+		return
+	}
+	posts, err := h.Service.GetPostsByUserId(uuid.Must(uuid.Parse(userId)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, posts)
+}
