@@ -53,3 +53,11 @@ func (s *PostService) DeletePost(id uuid.UUID) (models.Post, error) {
 func (s *PostService) GetPostsByUserId(userId uuid.UUID) ([]models.Post, error) {
 	return s.Repo.GetPostsByUserId(userId)
 }
+
+func (s *PostService) VotePost(postId uuid.UUID, vote int) (models.Post, error) {
+	post, err := s.Repo.VotePost(postId, vote)
+	if err != nil {
+		return models.Post{}, err
+	}
+	return post, nil
+}

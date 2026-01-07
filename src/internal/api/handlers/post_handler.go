@@ -125,3 +125,23 @@ func (h *PostHandler) GetPostsByUserId(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, posts)
 }
+
+func (h *PostHandler) VotePost(c *gin.Context) {
+	postId := c.Param("id")
+	var voteDto dtos.VotePostDto
+	if err := c.ShouldBindJSON(&voteDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if postId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Post ID"})
+		return
+	}
+
+	updatedPost, err := h.Service.VotePost(uuid.Must(uuid.Parse(postId)), voteDto.Vote)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, updatedPost)
+}

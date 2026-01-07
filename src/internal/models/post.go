@@ -15,6 +15,7 @@ type Post struct {
 	Type    enums.PostType `gorm:"size:50;default:'text'" json:"type"`
 	// Tags is a comma-separated string of tags associated with the post
 	Tags      string           `gorm:"size:1000" json:"tags"`
+	Votes     int              `gorm:"default:0" json:"votes"`
 	Status    enums.PostStatus `gorm:"size:50;default:'draft'" json:"status"`
 	CreatedAt *time.Time       `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt *time.Time       `gorm:"autoUpdateTime" json:"updated_at"`
