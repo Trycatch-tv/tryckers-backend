@@ -44,3 +44,17 @@ func (r *PostRepository) GetPostsByUserId(userId uuid.UUID) ([]models.Post, erro
 	err := r.DB.Preload("User").Where("user_id = ? AND status != ?", userId, enums.DELETED).Find(&posts).Error
 	return posts, err
 }
+
+func (r *PostRepository) VotePost(postId uuid.UUID, vote int) (models.Post, error) {
+	var postVote models.Post
+	err := r.DB.Where("id = ?", postId).First(&postVote).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return models.Post{}, err
+	}
+	postVote.Votes = postVote.Votes + vote
+	err = r.DB.Save(&postVote).Error
+	if err != nil {
+		return models.Post{}, err
+	}
+	return postVote, nil
+}

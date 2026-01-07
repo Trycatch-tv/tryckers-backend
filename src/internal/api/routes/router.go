@@ -34,6 +34,7 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.GET("/posts", postHandler.GetAllPosts)
 		api.GET("/posts/:id", postHandler.GetPostById)
 		api.PUT("/posts", postHandler.UpdatePost)
+		api.POST("/posts/:id/vote", postHandler.VotePost)
 		api.DELETE("/posts/:id", postHandler.DeletePost)
 		api.GET("/users/:userId/posts", postHandler.GetPostsByUserId)
 	}
