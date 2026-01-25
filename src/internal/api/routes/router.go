@@ -32,10 +32,10 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.DELETE("/comments/:id", commentHandler.DeleteComment)
 		api.POST("/posts", postHandler.CreatePost)
 		api.GET("/posts", postHandler.GetAllPosts)
+		api.POST("/posts/:id/vote", middlewares.AuthMiddleware(), postHandler.PostVote)
 		api.GET("/posts/:id", postHandler.GetPostById)
 		api.PUT("/posts", postHandler.UpdatePost)
-		api.POST("/posts/:id/vote", postHandler.VotePost)
 		api.DELETE("/posts/:id", postHandler.DeletePost)
-		api.GET("/users/:userId/posts", postHandler.GetPostsByUserId)
+		api.GET("/users/:ownerId/posts", middlewares.AuthMiddleware(), postHandler.GetPostsByUserId)
 	}
 }

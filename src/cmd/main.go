@@ -45,6 +45,7 @@ import (
 // @tag.description User profile operations
 
 func main() {
+	log.Println("Iniciando backend...")
 	cfg := config.Load()
 	db := config.InitGormDB(cfg)
 	sqlDB, _ := db.DB()
@@ -52,7 +53,7 @@ func main() {
 
 	// Enable UUID extension
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{}, &models.PostVote{})
 
 	// Initialize Gin with default middleware
 	r := gin.Default()
