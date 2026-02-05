@@ -13,7 +13,7 @@ services:
       tryckers_network: {}
 
   postgres-db:
-    image: postgres:15
+    image: postgres:17
     restart: always
     container_name: tryckers_postgres
     environment:

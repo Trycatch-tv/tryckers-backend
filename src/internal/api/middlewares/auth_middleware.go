@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -29,9 +28,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "token invalid",
 			})
+			return
 		}
 
-		fmt.Println(claims)
 		userId := claims["sub"].(string)
 		role := claims["role"].(string)
 
