@@ -19,13 +19,13 @@ func (s *PostService) CreatePost(post models.Post) (models.Post, error) {
 func (s *PostService) GetAllPosts() ([]models.Post, error) {
 	return s.Repo.GetAllPosts()
 }
-func (s *PostService) GetPostById(id uuid.UUID) (models.Post, error) {
-	return s.Repo.GetPostById(id)
+func (s *PostService) GetPostById(id uuid.UUID, loggedUserId *uuid.UUID) (models.Post, int8, error) {
+	return s.Repo.GetPostById(id, loggedUserId)
 }
 func (s *PostService) UpdatePost(post models.Post) (models.Post, error) {
 	var updatedPost models.Post
 
-	updatedPost, err := s.Repo.GetPostById(post.ID)
+	updatedPost, _, err := s.Repo.GetPostById(post.ID, nil)
 	if err != nil {
 		return models.Post{}, err
 	}
@@ -41,7 +41,7 @@ func (s *PostService) DeletePost(id uuid.UUID) (models.Post, error) {
 	if id == uuid.Nil {
 		return models.Post{}, errors.New("Invalid ID")
 	}
-	post, err := s.Repo.GetPostById(id)
+	post, _, err := s.Repo.GetPostById(id, nil)
 	if err != nil {
 		return models.Post{}, err
 	}

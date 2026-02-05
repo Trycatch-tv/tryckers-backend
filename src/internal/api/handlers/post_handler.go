@@ -63,12 +63,36 @@ func (h *PostHandler) GetPostById(c *gin.Context) {
 		return
 	}
 
-	post, err := h.Service.GetPostById(uuid.Must(uuid.Parse(id)))
+	var loggedUserId *uuid.UUID
+	if userIdStr, exists := c.Get("userId"); exists {
+		if uidStr, ok := userIdStr.(string); ok {
+			uid := uuid.Must(uuid.Parse(uidStr))
+			loggedUserId = &uid
+		}
+	}
+
+	post, userVote, err := h.Service.GetPostById(uuid.Must(uuid.Parse(id)), loggedUserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, post)
+
+	response := gin.H{
+		"id":          post.ID,
+		"title":       post.Title,
+		"content":     post.Content,
+		"image":       post.Image,
+		"type":        post.Type,
+		"tags":        post.Tags,
+		"status":      post.Status,
+		"created_at":  post.CreatedAt,
+		"updated_at":  post.UpdatedAt,
+		"user_id":     post.UserID,
+		"user":        post.User,
+		"votes_count": post.VotesCount,
+		"user_vote":   userVote,
+	}
+	c.JSON(http.StatusOK, response)
 }
 func (h *PostHandler) UpdatePost(c *gin.Context) {
 	var post dtos.UpdatePostDto

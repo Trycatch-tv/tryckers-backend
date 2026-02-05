@@ -32,7 +32,7 @@ func (r *PostRepository) GetAllPosts() ([]models.Post, error) {
 
 	return posts, err
 }
-func (r *PostRepository) GetPostById(id uuid.UUID) (models.Post, error) {
+func (r *PostRepository) GetPostById(id uuid.UUID, loggedUserId *uuid.UUID) (models.Post, int8, error) {
 	var post models.Post
 	err := r.DB.Model(&models.Post{}).
 		Select("posts.*, COALESCE(SUM(CASE WHEN post_votes.vote = 1 THEN 1 ELSE 0 END), 0) AS votes_count").
@@ -41,7 +41,21 @@ func (r *PostRepository) GetPostById(id uuid.UUID) (models.Post, error) {
 		Group("posts.id").
 		Preload("User").
 		First(&post).Error
-	return post, err
+	if err != nil {
+		return post, 0, err
+	}
+
+	var userVote int8 = 0
+	if loggedUserId != nil {
+		var postVote models.PostVote
+		voteErr := r.DB.Model(&models.PostVote{}).
+			Where("user_id = ? AND post_id = ?", *loggedUserId, id).
+			First(&postVote).Error
+		if voteErr == nil {
+			userVote = postVote.Vote
+		}
+	}
+	return post, userVote, nil
 }
 func (r *PostRepository) UpdatePost(post *models.Post) (models.Post, error) {
 	result := r.DB.Save(post)
