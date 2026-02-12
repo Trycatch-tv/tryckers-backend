@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 
@@ -15,6 +16,11 @@ type PostHandler struct {
 	Service *services.PostService
 }
 
+// tagsToString convierte un slice de tags a una cadena separada por comas
+func tagsToString(tags []string) string {
+	return strings.Join(tags, ",")
+}
+
 func (h *PostHandler) CreatePost(c *gin.Context) {
 	var postDto dtos.CreatePostDto
 
@@ -23,19 +29,26 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	if postDto.UserId == uuid.Nil {
+	if postDto.UserID == uuid.Nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Se requiere un UserID válido"})
 		return
 	}
 
+	// Validaciones adicionales del DTO
+	if err := postDto.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	newPost := models.Post{
-		Title:   postDto.Title,
-		Content: postDto.Content,
-		Image:   postDto.Image,
-		Type:    postDto.Type,
-		Tags:    postDto.Tags,
-		Status:  postDto.Status,
-		UserID:  postDto.UserId,
+		Title:    postDto.Title,
+		Content:  postDto.Content,
+		Image:    postDto.Image,
+		Type:     postDto.Type,
+		Tags:     tagsToString(postDto.Tags),
+		Status:   postDto.Status,
+		UserID:   postDto.UserID,
+		MediaURL: postDto.MediaURL,
 	}
 
 	createdPost, err := h.Service.CreatePost(newPost)
@@ -44,7 +57,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, createdPost)
+	c.JSON(http.StatusCreated, dtos.ToResponsePostDto(&createdPost, 0))
 }
 func (h *PostHandler) GetAllPosts(c *gin.Context) {
 
@@ -102,22 +115,51 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 		return
 	}
 
-	updatedPost := models.Post{
-		ID:      post.ID,
-		Title:   post.Title,
-		Content: post.Content,
-		Image:   post.Image,
-		Type:    post.Type,
-		Tags:    post.Tags,
-		Status:  post.Status,
+	// Verificar que hay cambios
+	if !post.HasChanges() {
+		c.JSON(http.StatusBadRequest, gin.H{"error": dtos.ErrNoChangesProvided.Error()})
+		return
 	}
 
-	updatedPost, err := h.Service.UpdatePost(updatedPost)
+	// Validaciones adicionales
+	if err := post.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Construir el modelo con solo los campos proporcionados
+	updatedPost := models.Post{
+		ID: post.ID,
+	}
+
+	if post.Title != nil {
+		updatedPost.Title = *post.Title
+	}
+	if post.Content != nil {
+		updatedPost.Content = *post.Content
+	}
+	if post.Image != nil {
+		updatedPost.Image = *post.Image
+	}
+	if post.Type != nil {
+		updatedPost.Type = *post.Type
+	}
+	if post.Tags != nil {
+		updatedPost.Tags = tagsToString(post.Tags)
+	}
+	if post.Status != nil {
+		updatedPost.Status = *post.Status
+	}
+	if post.MediaURL != nil {
+		updatedPost.MediaURL = *post.MediaURL
+	}
+
+	result, err := h.Service.UpdatePost(updatedPost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, updatedPost)
+	c.JSON(http.StatusOK, dtos.ToResponsePostDto(&result, 0))
 }
 func (h *PostHandler) DeletePost(c *gin.Context) {
 	id := c.Param("id")
@@ -151,31 +193,16 @@ func (h *PostHandler) GetPostsByUserId(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	// Mapear a ResponsePostDto y agregar el campo user_vote
-	var resp []dtos.ResponsePostDto
-	for _, p := range posts {
-		dto := dtos.ResponsePostDto{
-			ID:         p.ID.String(),
-			Title:      p.Title,
-			Content:    p.Content,
-			Image:      p.Image,
-			Type:       p.Type,
-			Tags:       p.Tags,
-			Status:     p.Status,
-			CreatedAt:  *p.CreatedAt,
-			UpdatedAt:  *p.UpdatedAt,
-			UserId:     p.UserID.String(),
-			UserVote:   0,
-			VotesCount: p.VotesCount,
-		}
-		if loggedUserId != nil {
-			if v, ok := userVotes[p.ID]; ok {
-				dto.UserVote = v
-			}
-		}
-		resp = append(resp, dto)
+
+	// Convertir userVotes de map[uuid.UUID]int8 a map[string]int8
+	userVotesMap := make(map[string]int8)
+	for id, vote := range userVotes {
+		userVotesMap[id.String()] = vote
 	}
-	c.JSON(http.StatusOK, resp)
+
+	// Usar la función de conversión del DTO
+	response := dtos.ToResponsePostListDto(posts, int64(len(posts)), 1, len(posts), userVotesMap)
+	c.JSON(http.StatusOK, response.Posts)
 }
 
 func (h *PostHandler) PostVote(c *gin.Context) {
