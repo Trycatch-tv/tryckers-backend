@@ -4,9 +4,11 @@ import (
 	"errors"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
+	apperrors "github.com/Trycatch-tv/tryckers-backend/src/internal/errors"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type PostService struct {
@@ -20,14 +22,24 @@ func (s *PostService) GetAllPosts() ([]models.Post, error) {
 	return s.Repo.GetAllPosts()
 }
 func (s *PostService) GetPostById(id uuid.UUID, loggedUserId *uuid.UUID) (models.Post, int8, error) {
-	return s.Repo.GetPostById(id, loggedUserId)
+	post, vote, err := s.Repo.GetPostById(id, loggedUserId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.Post{}, 0, apperrors.ErrPostNotFound
+		}
+		return models.Post{}, 0, apperrors.NewInternalError("error al obtener post", err)
+	}
+	return post, vote, nil
 }
 func (s *PostService) UpdatePost(post models.Post) (models.Post, error) {
 	var updatedPost models.Post
 
 	updatedPost, _, err := s.Repo.GetPostById(post.ID, nil)
 	if err != nil {
-		return models.Post{}, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.Post{}, apperrors.ErrPostNotFound
+		}
+		return models.Post{}, apperrors.NewInternalError("error al buscar post", err)
 	}
 	updatedPost.Title = post.Title
 	updatedPost.Content = post.Content
@@ -39,11 +51,14 @@ func (s *PostService) UpdatePost(post models.Post) (models.Post, error) {
 }
 func (s *PostService) DeletePost(id uuid.UUID) (models.Post, error) {
 	if id == uuid.Nil {
-		return models.Post{}, errors.New("Invalid ID")
+		return models.Post{}, apperrors.ErrInvalidID
 	}
 	post, _, err := s.Repo.GetPostById(id, nil)
 	if err != nil {
-		return models.Post{}, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.Post{}, apperrors.ErrPostNotFound
+		}
+		return models.Post{}, apperrors.NewInternalError("error al buscar post", err)
 	}
 
 	post.Status = enums.DELETED

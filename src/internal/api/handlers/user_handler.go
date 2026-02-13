@@ -32,7 +32,7 @@ type ErrorResponse struct {
 func (h *UserHandler) GetAll(c *gin.Context) {
 	users, err := h.Service.GetAllUsers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, users)
@@ -53,18 +53,18 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	var newUser dtos.CreateUserDTO
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, "datos de entrada inválidos")
 		return
 	}
 
 	if !enums.IsValidCountry(string(newUser.Country)) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country"})
+		HandleBadRequest(c, "país inválido")
 		return
 	}
 
 	userCreated, err := h.Service.CreateUser(&newUser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -86,13 +86,13 @@ func (h *UserHandler) Login(c *gin.Context) {
 	var user dtos.LoginUser
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, "datos de entrada inválidos")
 		return
 	}
 
 	loginResponse, err := h.Service.Login(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -114,9 +114,14 @@ func (h *UserHandler) Perfil(c *gin.Context) {
 	// username es en toLowerCase
 	username := strings.ToLower(c.Param("username"))
 
+	if username == "" {
+		HandleBadRequest(c, "username requerido")
+		return
+	}
+
 	userPerfil, err := h.Service.Perfil(username)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 

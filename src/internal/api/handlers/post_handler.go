@@ -25,18 +25,18 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	var postDto dtos.CreatePostDto
 
 	if err := c.ShouldBindJSON(&postDto); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, "datos de entrada inválidos")
 		return
 	}
 
 	if postDto.UserID == uuid.Nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Se requiere un UserID válido"})
+		HandleBadRequest(c, "se requiere un UserID válido")
 		return
 	}
 
 	// Validaciones adicionales del DTO
 	if err := postDto.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, err.Error())
 		return
 	}
 
@@ -53,7 +53,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	createdPost, err := h.Service.CreatePost(newPost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -63,7 +63,7 @@ func (h *PostHandler) GetAllPosts(c *gin.Context) {
 
 	posts, err := h.Service.GetAllPosts()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, posts)
@@ -71,22 +71,25 @@ func (h *PostHandler) GetAllPosts(c *gin.Context) {
 func (h *PostHandler) GetPostById(c *gin.Context) {
 	id := c.Param("id")
 
-	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+	parsedId, err := ParseUUID(id)
+	if err != nil {
+		HandleError(c, err)
 		return
 	}
 
 	var loggedUserId *uuid.UUID
 	if userIdStr, exists := c.Get("userId"); exists {
 		if uidStr, ok := userIdStr.(string); ok {
-			uid := uuid.Must(uuid.Parse(uidStr))
-			loggedUserId = &uid
+			uid, err := uuid.Parse(uidStr)
+			if err == nil {
+				loggedUserId = &uid
+			}
 		}
 	}
 
-	post, userVote, err := h.Service.GetPostById(uuid.Must(uuid.Parse(id)), loggedUserId)
+	post, userVote, err := h.Service.GetPostById(parsedId, loggedUserId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -111,19 +114,19 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 	var post dtos.UpdatePostDto
 
 	if err := c.ShouldBindJSON(&post); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, "datos de entrada inválidos")
 		return
 	}
 
 	// Verificar que hay cambios
 	if !post.HasChanges() {
-		c.JSON(http.StatusBadRequest, gin.H{"error": dtos.ErrNoChangesProvided.Error()})
+		HandleBadRequest(c, dtos.ErrNoChangesProvided.Error())
 		return
 	}
 
 	// Validaciones adicionales
 	if err := post.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, err.Error())
 		return
 	}
 
@@ -156,7 +159,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 
 	result, err := h.Service.UpdatePost(updatedPost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, dtos.ToResponsePostDto(&result, 0))
@@ -164,14 +167,15 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 func (h *PostHandler) DeletePost(c *gin.Context) {
 	id := c.Param("id")
 
-	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+	parsedId, err := ParseUUID(id)
+	if err != nil {
+		HandleError(c, err)
 		return
 	}
 
-	_, err := h.Service.DeletePost(uuid.Must(uuid.Parse(id)))
+	_, err = h.Service.DeletePost(parsedId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusNoContent, gin.H{"message": "Post deleted successfully"})
@@ -179,18 +183,23 @@ func (h *PostHandler) DeletePost(c *gin.Context) {
 
 func (h *PostHandler) GetPostsByUserId(c *gin.Context) {
 	ownerId := c.Param("ownerId")
-	if ownerId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Owner ID"})
+	parsedOwnerId, err := ParseUUID(ownerId)
+	if err != nil {
+		HandleError(c, err)
 		return
 	}
 	var loggedUserId *uuid.UUID
 	if v, exists := c.Get("userId"); exists {
-		id := uuid.Must(uuid.Parse(v.(string)))
-		loggedUserId = &id
+		if uidStr, ok := v.(string); ok {
+			id, err := uuid.Parse(uidStr)
+			if err == nil {
+				loggedUserId = &id
+			}
+		}
 	}
-	posts, userVotes, err := h.Service.GetPostsByUserId(uuid.Must(uuid.Parse(ownerId)), loggedUserId)
+	posts, userVotes, err := h.Service.GetPostsByUserId(parsedOwnerId, loggedUserId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -209,22 +218,28 @@ func (h *PostHandler) PostVote(c *gin.Context) {
 	postId := c.Param("id")
 	userId, exists := c.Get("userId")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in context"})
+		HandleUnauthorized(c, "usuario no autenticado")
 		return
 	}
 	var voteDto dtos.VotePostDto
 	if err := c.ShouldBindJSON(&voteDto); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBadRequest(c, "datos de entrada inválidos")
 		return
 	}
-	if postId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Post ID"})
+	parsedPostId, err := ParseUUID(postId)
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+	parsedUserId, err := ParseUUID(userId.(string))
+	if err != nil {
+		HandleError(c, err)
 		return
 	}
 
-	postVote, err := h.Service.PostVote(uuid.Must(uuid.Parse(postId)), uuid.Must(uuid.Parse(userId.(string))), int8(voteDto.Vote))
+	postVote, err := h.Service.PostVote(parsedPostId, parsedUserId, int8(voteDto.Vote))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, postVote)
