@@ -17,7 +17,7 @@ type CommentHandler struct {
 func (h *CommentHandler) CreateComment(c *gin.Context) {
 	var comment dto.CreateCommentDto
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		HandleBadRequest(c, "datos de entrada inválidos")
+		HandleBindingError(c, err)
 		return
 	}
 	modelComment := models.Comment{
@@ -55,7 +55,7 @@ func (h *CommentHandler) GetCommentsByPostId(c *gin.Context) {
 func (h *CommentHandler) UpdateComment(c *gin.Context) {
 	var comment dto.UpdateCommentDto
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		HandleBadRequest(c, "datos de entrada inválidos")
+		HandleBindingError(c, err)
 		return
 	}
 	id := c.Param("id")

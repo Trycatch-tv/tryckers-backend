@@ -25,7 +25,7 @@ func (h *PostHandler) CreatePost(c *gin.Context) {
 	var postDto dtos.CreatePostDto
 
 	if err := c.ShouldBindJSON(&postDto); err != nil {
-		HandleBadRequest(c, "datos de entrada inválidos")
+		HandleBindingError(c, err)
 		return
 	}
 
@@ -114,7 +114,7 @@ func (h *PostHandler) UpdatePost(c *gin.Context) {
 	var post dtos.UpdatePostDto
 
 	if err := c.ShouldBindJSON(&post); err != nil {
-		HandleBadRequest(c, "datos de entrada inválidos")
+		HandleBindingError(c, err)
 		return
 	}
 
@@ -223,7 +223,7 @@ func (h *PostHandler) PostVote(c *gin.Context) {
 	}
 	var voteDto dtos.VotePostDto
 	if err := c.ShouldBindJSON(&voteDto); err != nil {
-		HandleBadRequest(c, "datos de entrada inválidos")
+		HandleBindingError(c, err)
 		return
 	}
 	parsedPostId, err := ParseUUID(postId)

@@ -51,9 +51,15 @@ func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
 		return dtos.LoginResponse{}, apperrors.NewInternalError("error al generar token", err)
 	}
 
+	refreshToken, err := utils.CreateRefreshToken(userData.ID.String(), userData.Role)
+	if err != nil {
+		return dtos.LoginResponse{}, apperrors.NewInternalError("error al generar refresh token", err)
+	}
+
 	return dtos.LoginResponse{
-		UserData: userData,
-		Token:    token,
+		UserData:     userData,
+		Token:        token,
+		RefreshToken: refreshToken,
 	}, nil
 }
 
