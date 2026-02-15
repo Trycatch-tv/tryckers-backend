@@ -25,6 +25,7 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 		api.GET("/users", middlewares.AuthMiddleware(), middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
+		api.POST("/refresh-token", userHandler.RefreshToken)
 		api.GET("/perfil/:username", middlewares.AuthMiddleware(), userHandler.Perfil)
 		api.POST("/comments", commentHandler.CreateComment)
 		api.GET("/posts/:id/comments", commentHandler.GetCommentsByPostId)

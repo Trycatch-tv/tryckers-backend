@@ -7,6 +7,7 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,7 +33,7 @@ type ErrorResponse struct {
 func (h *UserHandler) GetAll(c *gin.Context) {
 	users, err := h.Service.GetAllUsers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, users)
@@ -53,18 +54,18 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	var newUser dtos.CreateUserDTO
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBindingError(c, err)
 		return
 	}
 
 	if !enums.IsValidCountry(string(newUser.Country)) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid country"})
+		HandleBadRequest(c, "país inválido")
 		return
 	}
 
 	userCreated, err := h.Service.CreateUser(&newUser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -86,13 +87,13 @@ func (h *UserHandler) Login(c *gin.Context) {
 	var user dtos.LoginUser
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		HandleBindingError(c, err)
 		return
 	}
 
 	loginResponse, err := h.Service.Login(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
@@ -114,11 +115,47 @@ func (h *UserHandler) Perfil(c *gin.Context) {
 	// username es en toLowerCase
 	username := strings.ToLower(c.Param("username"))
 
+	if username == "" {
+		HandleBadRequest(c, "username requerido")
+		return
+	}
+
 	userPerfil, err := h.Service.Perfil(username)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		HandleError(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": userPerfil})
+}
+
+// RefreshToken godoc
+// @Summary      Refresh access token
+// @Description  Generate new access and refresh tokens using a valid refresh token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        refresh_token  body      dtos.RefreshTokenRequest  true  "Refresh token"
+// @Success      200  {object}  dtos.RefreshTokenResponse  "New tokens"
+// @Failure      400  {object}  ErrorResponse  "Invalid request format"
+// @Failure      401  {object}  ErrorResponse  "Invalid or expired refresh token"
+// @Router       /refresh-token [post]
+func (h *UserHandler) RefreshToken(c *gin.Context) {
+	var req dtos.RefreshTokenRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		HandleBadRequest(c, "refresh_token es requerido")
+		return
+	}
+
+	accessToken, refreshToken, err := utils.RefreshAccessToken(req.RefreshToken)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "code": 401})
+		return
+	}
+
+	c.JSON(http.StatusOK, dtos.RefreshTokenResponse{
+		Token:        accessToken,
+		RefreshToken: refreshToken,
+	})
 }
