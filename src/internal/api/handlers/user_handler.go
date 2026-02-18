@@ -63,6 +63,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
+	if !h.Service.IsEmailRegistered(newUser.Email) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "the email is already registered"})
+		return
+	}
+
 	userCreated, err := h.Service.CreateUser(&newUser)
 	if err != nil {
 		HandleError(c, err)

@@ -22,7 +22,8 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	if err != nil {
 		return models.User{}, err
 	}
-	newPost := models.User{
+
+	newUser := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
 		Username: user.Username,
@@ -32,7 +33,7 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 		Country:  enums.Country(user.Country),
 	}
 
-	return s.Repo.CreateUser(&newPost)
+	return s.Repo.CreateUser(&newUser)
 }
 
 func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
@@ -70,4 +71,10 @@ func (s *UserService) Perfil(username string) (models.User, error) {
 	}
 
 	return userPerfil, nil
+}
+
+func (s *UserService) IsEmailRegistered(email string) bool {
+	_, err := s.Repo.FindByEmail(email)
+
+	return err != nil
 }
