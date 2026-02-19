@@ -77,3 +77,11 @@ func (s *PostService) PostVote(postId uuid.UUID, userId uuid.UUID, vote int8) (m
 	}
 	return postvote, nil
 }
+
+// GetCartelera devuelve los posts más populares de la semana
+func (s *PostService) GetCartelera(limit int) ([]models.Post, error) {
+	if limit <= 0 {
+		limit = 10
+	}
+	return s.Repo.GetTopPostsOfTheWeek(limit)
+}
