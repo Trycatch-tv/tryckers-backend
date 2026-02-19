@@ -26,7 +26,7 @@ type ErrorResponse struct {
 // @Tags         Users
 // @Accept       json
 // @Produce      json
-// @Success      200  {array}   models.User  "List of users"
+// @Success      200  {array}   dtos.CreateUserDTO  "List of users"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     BearerAuth
 // @Router       /users [get]
@@ -46,7 +46,7 @@ func (h *UserHandler) GetAll(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        user  body      dtos.CreateUserDTO  true  "User registration information"
-// @Success      201  {object}  models.User  "Created user"
+// @Success      201  {object}  dtos.CreateUserDTO  "Created user"
 // @Failure      400  {object}  ErrorResponse  "Invalid input or country"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Router       /register [post]
@@ -79,7 +79,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        credentials  body      dtos.LoginUser  true  "Login credentials"
-// @Success      200  {object}  object{user=models.User}  "User information"
+// @Success      200  {object}  dtos.LoginResponse  "User information"
 // @Failure      400  {object}  ErrorResponse  "Invalid credentials format"
 // @Failure      500  {object}  ErrorResponse  "Authentication failed or internal server error"
 // @Router       /login [post]
@@ -107,7 +107,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        email  path      string  true  "email of the user"
-// @Success      200  {object}  object{user=models.User}  "User profile information"
+// @Success      200  {object}  dtos.LoginResponse  "User profile information"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Security     BearerAuth
 // @Router       /profile/{username} [get]

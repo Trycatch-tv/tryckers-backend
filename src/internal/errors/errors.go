@@ -22,6 +22,10 @@ var (
 	ErrCommentNotFound  = NewNotFound("comentario")
 	ErrResourceNotFound = NewNotFound("recurso")
 
+	// Errores de duplicados
+	ErrDuplicateUsername = NewConflict("el nombre de usuario ya está en uso")
+	ErrDuplicateEmail    = NewConflict("el email ya está registrado")
+
 	// Errores de permisos
 	ErrForbidden     = NewForbidden("no tiene permisos para esta acción")
 	ErrNotAuthorized = NewForbidden("usuario no autorizado")
