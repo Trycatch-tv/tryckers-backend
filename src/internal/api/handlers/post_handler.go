@@ -244,3 +244,24 @@ func (h *PostHandler) PostVote(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, postVote)
 }
+
+// Cartelera godoc
+// @Summary      Get top posts of the week
+// @Description  Retrieve the most popular posts of the last 7 days, ordered by votes
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}   dtos.ResponsePostDto  "Top posts of the week"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /cartelera [get]
+func (h *PostHandler) Cartelera(c *gin.Context) {
+	posts, err := h.Service.GetCartelera(10)
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	emptyVotes := make(map[string]int8)
+	response := dtos.ToResponsePostListDto(posts, int64(len(posts)), 1, len(posts), emptyVotes)
+	c.JSON(http.StatusOK, response.Posts)
+}
