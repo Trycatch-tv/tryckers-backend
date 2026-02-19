@@ -137,3 +137,21 @@ func (r *PostRepository) PostVote(postId uuid.UUID, userId uuid.UUID, vote int8)
 	}
 	return postVote, nil
 }
+
+// GetTopPostsOfTheWeek devuelve los posts más populares de la última semana, ordenados por votos
+func (r *PostRepository) GetTopPostsOfTheWeek(limit int) ([]models.Post, error) {
+	var posts []models.Post
+	err := r.DB.Model(&models.Post{}).
+		Select("posts.*, COALESCE(SUM(CASE WHEN post_votes.vote = 1 THEN 1 ELSE 0 END), 0) AS votes_count").
+		Joins("LEFT JOIN post_votes ON post_votes.post_id = posts.id").
+		Where("posts.status != ? AND posts.created_at >= NOW() - INTERVAL '7 days'", enums.DELETED).
+		Group("posts.id").
+		Order("COALESCE(SUM(CASE WHEN post_votes.vote = 1 THEN 1 ELSE 0 END), 0) DESC").
+		Limit(limit).
+		Preload("User").
+		Find(&posts).Error
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener cartelera: %w", err)
+	}
+	return posts, nil
+}
