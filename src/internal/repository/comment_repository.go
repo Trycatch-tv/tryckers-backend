@@ -54,10 +54,11 @@ func (r *CommentRepository) UpdateComment(comment *models.Comment) (models.Comme
 }
 
 func (r *CommentRepository) DeleteComment(id uuid.UUID) (models.Comment, error) {
-	comment := models.Comment{ID: id, Status: bool(enums.Inactive)}
-	result := r.DB.Save(&comment)
+	result := r.DB.Model(&models.Comment{}).Where("id = ?", id).Update("status", bool(enums.Inactive))
 	if result.Error != nil {
 		return models.Comment{}, fmt.Errorf("error al eliminar comentario: %w", result.Error)
 	}
+	var comment models.Comment
+	r.DB.Preload("User").First(&comment, id)
 	return comment, nil
 }

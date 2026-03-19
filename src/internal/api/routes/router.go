@@ -14,30 +14,42 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	userRepo := &repository.UserRepository{DB: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
-	commentRepo := &repository.CommentRepository{DB: db}
-	commentService := &services.CommentService{Repo: commentRepo}
-	commentHandler := &handlers.CommentHandler{Service: commentService}
 	postRepo := &repository.PostRepository{DB: db}
 	postService := &services.PostService{Repo: postRepo}
 	postHandler := &handlers.PostHandler{Service: postService}
+	commentRepo := &repository.CommentRepository{DB: db}
+	commentService := &services.CommentService{Repo: commentRepo}
+	commentHandler := &handlers.CommentHandler{Service: commentService, PostService: postService}
 	api := r.Group("/api/v1")
 	{
-		api.GET("/users", middlewares.AuthMiddleware(), middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
+		// Rutas públicas (no requieren autenticación)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)
 		api.POST("/refresh-token", userHandler.RefreshToken)
-		api.GET("/perfil/:username", middlewares.AuthMiddleware(), userHandler.Perfil)
-		api.POST("/comments", commentHandler.CreateComment)
-		api.GET("/posts/:id/comments", commentHandler.GetCommentsByPostId)
-		api.PUT("/comments/:id", commentHandler.UpdateComment)
-		api.DELETE("/comments/:id", commentHandler.DeleteComment)
-		api.POST("/posts", postHandler.CreatePost)
-		api.GET("/posts", postHandler.GetAllPosts)
-		api.GET("/cartelera", postHandler.Cartelera)
-		api.POST("/posts/:id/vote", middlewares.AuthMiddleware(), postHandler.PostVote)
-		api.GET("/posts/:id", middlewares.AuthMiddleware(), postHandler.GetPostById)
-		api.PUT("/posts", postHandler.UpdatePost)
-		api.DELETE("/posts/:id", postHandler.DeletePost)
-		api.GET("/users/:ownerId/posts", middlewares.AuthMiddleware(), postHandler.GetPostsByUserId)
+
+		// Rutas protegidas (requieren autenticación)
+		protected := api.Group("/")
+		protected.Use(middlewares.AuthMiddleware())
+		{
+			// Users
+			protected.GET("/users", middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
+			protected.GET("/perfil/:username", userHandler.Perfil)
+
+			// Posts
+			protected.POST("/posts", postHandler.CreatePost)
+			protected.GET("/posts", postHandler.GetAllPosts)
+			protected.GET("/cartelera", postHandler.Cartelera)
+			protected.GET("/posts/:id", postHandler.GetPostById)
+			protected.PUT("/posts", postHandler.UpdatePost)
+			protected.DELETE("/posts/:id", postHandler.DeletePost)
+			protected.POST("/posts/:id/vote", postHandler.PostVote)
+			protected.GET("/users/:ownerId/posts", postHandler.GetPostsByUserId)
+
+			// Comments
+			protected.POST("/comments", commentHandler.CreateComment)
+			protected.GET("/posts/:id/comments", commentHandler.GetCommentsByPostId)
+			protected.PUT("/comments/:id", commentHandler.UpdateComment)
+			protected.DELETE("/comments/:id", commentHandler.DeleteComment)
+		}
 	}
 }

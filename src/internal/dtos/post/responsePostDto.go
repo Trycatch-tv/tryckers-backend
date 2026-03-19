@@ -95,6 +95,13 @@ func ToResponsePostDto(post *models.Post, userVote int8) ResponsePostDto {
 
 // ToResponsePostListDto convierte una lista de posts a ResponsePostListDto
 func ToResponsePostListDto(posts []models.Post, total int64, page, pageSize int, userVotes map[string]int8) ResponsePostListDto {
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 1
+	}
+
 	totalPages := int(total) / pageSize
 	if int(total)%pageSize > 0 {
 		totalPages++

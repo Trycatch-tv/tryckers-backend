@@ -44,6 +44,12 @@ import (
 // @tag.name Profile
 // @tag.description User profile operations
 
+// @tag.name Posts
+// @tag.description Post management operations
+
+// @tag.name Comments
+// @tag.description Comment management operations
+
 func main() {
 	log.Println("Iniciando backend...")
 	cfg := config.Load()

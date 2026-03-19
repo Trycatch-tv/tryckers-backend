@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strings"
+
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	apperrors "github.com/Trycatch-tv/tryckers-backend/src/internal/errors"
@@ -22,7 +24,7 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	if err != nil {
 		return models.User{}, err
 	}
-	newPost := models.User{
+	newUser := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
 		Username: user.Username,
@@ -32,7 +34,18 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 		Country:  enums.Country(user.Country),
 	}
 
-	return s.Repo.CreateUser(&newPost)
+	createdUser, err := s.Repo.CreateUser(&newUser)
+	if err != nil {
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "uni_users_username") {
+			return models.User{}, apperrors.ErrDuplicateUsername
+		}
+		if strings.Contains(errMsg, "uni_users_email") {
+			return models.User{}, apperrors.ErrDuplicateEmail
+		}
+		return models.User{}, apperrors.NewInternalError("error al crear usuario", err)
+	}
+	return createdUser, nil
 }
 
 func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
