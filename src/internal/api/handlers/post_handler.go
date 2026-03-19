@@ -403,7 +403,10 @@ func (h *PostHandler) Cartelera(c *gin.Context) {
 		return
 	}
 
-	emptyVotes := make(map[string]int8)
-	response := dtos.ToResponsePostListDto(posts, int64(len(posts)), 1, len(posts), emptyVotes)
-	c.JSON(http.StatusOK, response.Posts)
+	response := make([]dtos.ResponsePostDto, len(posts))
+	for i, post := range posts {
+		response[i] = dtos.ToResponsePostDto(&post, 0)
+	}
+
+	c.JSON(http.StatusOK, response)
 }
