@@ -15,6 +15,8 @@ type User struct {
 	Email          string         `gorm:"unique;size:100" json:"email" example:"john.doe@example.com"`
 	Password       string         `json:"-"`
 	BirthDate      *time.Time     `json:"birth_date" example:"1990-01-15T00:00:00Z"`
+	AvatarURL      string         `gorm:"column:avatar_url;type:text" json:"avatar_url" example:"/uploads/avatars/avatar.jpg"`
+	BannerURL      string         `gorm:"column:banner_url;type:text" json:"banner_url" example:"/uploads/banners/banner.jpg"`
 	ProfilePicture string         `json:"profile_picture" example:"https://example.com/profile.jpg"`
 	GithubURL      string         `json:"github_url" example:"https://github.com/johndoe"`
 	LinkedinURL    string         `json:"linkedin_url" example:"https://linkedin.com/in/johndoe"`

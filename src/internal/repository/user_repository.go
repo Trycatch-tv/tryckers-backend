@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -44,4 +45,34 @@ func (r *UserRepository) FindByUsername(username string) (models.User, error) {
 		return models.User{}, fmt.Errorf("error al buscar usuario por username: %w", result.Error)
 	}
 	return foundUser, nil
+}
+
+func (r *UserRepository) FindByID(id uuid.UUID) (models.User, error) {
+	var foundUser models.User
+	result := r.DB.First(&foundUser, "id = ?", id)
+	if result.Error != nil {
+		return models.User{}, fmt.Errorf("error al buscar usuario por id: %w", result.Error)
+	}
+	return foundUser, nil
+}
+
+func (r *UserRepository) UpdateAvatarURL(id uuid.UUID, avatarURL string) (models.User, error) {
+	updates := map[string]interface{}{
+		"avatar_url":      avatarURL,
+		"profile_picture": avatarURL,
+	}
+
+	if err := r.DB.Model(&models.User{}).Where("id = ?", id).Updates(updates).Error; err != nil {
+		return models.User{}, fmt.Errorf("error al actualizar avatar: %w", err)
+	}
+
+	return r.FindByID(id)
+}
+
+func (r *UserRepository) UpdateBannerURL(id uuid.UUID, bannerURL string) (models.User, error) {
+	if err := r.DB.Model(&models.User{}).Where("id = ?", id).Update("banner_url", bannerURL).Error; err != nil {
+		return models.User{}, fmt.Errorf("error al actualizar banner: %w", err)
+	}
+
+	return r.FindByID(id)
 }

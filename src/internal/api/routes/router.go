@@ -6,13 +6,15 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/services/storage"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func SetupV1(r *gin.Engine, db *gorm.DB) {
 	userRepo := &repository.UserRepository{DB: db}
-	userService := &services.UserService{Repo: userRepo}
+	storageService := storage.NewLocalStorage("uploads", "/uploads")
+	userService := &services.UserService{Repo: userRepo, Storage: storageService}
 	userHandler := &handlers.UserHandler{Service: userService}
 	postRepo := &repository.PostRepository{DB: db}
 	postService := &services.PostService{Repo: postRepo}
@@ -34,6 +36,10 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 			// Users
 			protected.GET("/users", middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
 			protected.GET("/perfil/:username", userHandler.Perfil)
+			protected.POST("/users/me/avatar", userHandler.UploadAvatar)
+			protected.POST("/users/me/banner", userHandler.UploadBanner)
+			protected.DELETE("/users/me/avatar", userHandler.DeleteAvatar)
+			protected.DELETE("/users/me/banner", userHandler.DeleteBanner)
 
 			// Posts
 			protected.POST("/posts", postHandler.CreatePost)

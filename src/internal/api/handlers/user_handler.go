@@ -9,6 +9,7 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -158,4 +159,133 @@ func (h *UserHandler) RefreshToken(c *gin.Context) {
 		Token:        accessToken,
 		RefreshToken: refreshToken,
 	})
+}
+
+// UploadAvatar godoc
+// @Summary      Upload current user avatar
+// @Description  Upload and replace the authenticated user's profile avatar
+// @Tags         Profile
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        file  formData  file  true  "Avatar image"
+// @Success      200   {object}  models.User  "Updated user"
+// @Failure      400   {object}  ErrorResponse  "Invalid file"
+// @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Security     BearerAuth
+// @Router       /users/me/avatar [post]
+func (h *UserHandler) UploadAvatar(c *gin.Context) {
+	h.uploadMedia(c, "avatar")
+}
+
+// UploadBanner godoc
+// @Summary      Upload current user banner
+// @Description  Upload and replace the authenticated user's profile banner
+// @Tags         Profile
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        file  formData  file  true  "Banner image"
+// @Success      200   {object}  models.User  "Updated user"
+// @Failure      400   {object}  ErrorResponse  "Invalid file"
+// @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Security     BearerAuth
+// @Router       /users/me/banner [post]
+func (h *UserHandler) UploadBanner(c *gin.Context) {
+	h.uploadMedia(c, "banner")
+}
+
+// DeleteAvatar godoc
+// @Summary      Remove current user avatar
+// @Description  Remove the authenticated user's profile avatar
+// @Tags         Profile
+// @Produce      json
+// @Success      200  {object}  models.User  "Updated user"
+// @Failure      401  {object}  ErrorResponse  "Unauthorized"
+// @Security     BearerAuth
+// @Router       /users/me/avatar [delete]
+func (h *UserHandler) DeleteAvatar(c *gin.Context) {
+	h.deleteMedia(c, "avatar")
+}
+
+// DeleteBanner godoc
+// @Summary      Remove current user banner
+// @Description  Remove the authenticated user's profile banner
+// @Tags         Profile
+// @Produce      json
+// @Success      200  {object}  models.User  "Updated user"
+// @Failure      401  {object}  ErrorResponse  "Unauthorized"
+// @Security     BearerAuth
+// @Router       /users/me/banner [delete]
+func (h *UserHandler) DeleteBanner(c *gin.Context) {
+	h.deleteMedia(c, "banner")
+}
+
+func (h *UserHandler) uploadMedia(c *gin.Context, mediaType string) {
+	userID, ok := h.currentUserID(c)
+	if !ok {
+		return
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		HandleBadRequest(c, "archivo requerido")
+		return
+	}
+
+	var updatedUser interface{}
+	if mediaType == "avatar" {
+		updatedUser, err = h.Service.UploadAvatar(userID, file)
+	} else {
+		updatedUser, err = h.Service.UploadBanner(userID, file)
+	}
+
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": updatedUser})
+}
+
+func (h *UserHandler) deleteMedia(c *gin.Context, mediaType string) {
+	userID, ok := h.currentUserID(c)
+	if !ok {
+		return
+	}
+
+	var updatedUser interface{}
+	var err error
+	if mediaType == "avatar" {
+		updatedUser, err = h.Service.RemoveAvatar(userID)
+	} else {
+		updatedUser, err = h.Service.RemoveBanner(userID)
+	}
+
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": updatedUser})
+}
+
+func (h *UserHandler) currentUserID(c *gin.Context) (uuid.UUID, bool) {
+	rawUserID, exists := c.Get("userId")
+	if !exists {
+		HandleUnauthorized(c, "usuario no autenticado")
+		return uuid.Nil, false
+	}
+
+	userIDValue, ok := rawUserID.(string)
+	if !ok {
+		HandleBadRequest(c, "usuario invalido")
+		return uuid.Nil, false
+	}
+
+	userID, err := uuid.Parse(userIDValue)
+	if err != nil {
+		HandleBadRequest(c, "usuario invalido")
+		return uuid.Nil, false
+	}
+
+	return userID, true
 }

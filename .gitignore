@@ -37,5 +37,13 @@ tmp/
 # Logs
 *.log
 
+# Uploaded media
+uploads/*
+!uploads/.gitkeep
+!uploads/avatars/
+!uploads/avatars/.gitkeep
+!uploads/banners/
+!uploads/banners/.gitkeep
+
 # Swagger
 docs/

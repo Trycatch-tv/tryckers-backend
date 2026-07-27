@@ -1,6 +1,7 @@
 package services
 
 import (
+	"mime/multipart"
 	"strings"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
@@ -8,12 +9,20 @@ import (
 	apperrors "github.com/Trycatch-tv/tryckers-backend/src/internal/errors"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/services/storage"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
+	"github.com/google/uuid"
 )
 
 type UserService struct {
-	Repo *repository.UserRepository
+	Repo    *repository.UserRepository
+	Storage *storage.LocalStorage
 }
+
+const (
+	maxAvatarBytes = 2 * 1024 * 1024
+	maxBannerBytes = 5 * 1024 * 1024
+)
 
 func (s *UserService) GetAllUsers() ([]models.User, error) {
 	return s.Repo.GetAll()
@@ -83,4 +92,94 @@ func (s *UserService) Perfil(username string) (models.User, error) {
 	}
 
 	return userPerfil, nil
+}
+
+func (s *UserService) UploadAvatar(userID uuid.UUID, fileHeader *multipart.FileHeader) (models.User, error) {
+	user, err := s.Repo.FindByID(userID)
+	if err != nil {
+		return models.User{}, apperrors.ErrUserNotFound
+	}
+
+	avatarURL, err := s.Storage.SaveImage(fileHeader, storage.SaveOptions{
+		Kind:     storage.AvatarKind,
+		UserID:   userID.String(),
+		MaxBytes: maxAvatarBytes,
+	})
+	if err != nil {
+		return models.User{}, apperrors.NewBadRequest(err.Error())
+	}
+
+	updatedUser, err := s.Repo.UpdateAvatarURL(userID, avatarURL)
+	if err != nil {
+		s.Storage.DeleteByPublicURL(avatarURL)
+		return models.User{}, apperrors.NewInternalError("error al actualizar avatar", err)
+	}
+
+	s.Storage.DeleteByPublicURL(user.AvatarURL)
+	if user.ProfilePicture != user.AvatarURL {
+		s.Storage.DeleteByPublicURL(user.ProfilePicture)
+	}
+
+	return updatedUser, nil
+}
+
+func (s *UserService) UploadBanner(userID uuid.UUID, fileHeader *multipart.FileHeader) (models.User, error) {
+	user, err := s.Repo.FindByID(userID)
+	if err != nil {
+		return models.User{}, apperrors.ErrUserNotFound
+	}
+
+	bannerURL, err := s.Storage.SaveImage(fileHeader, storage.SaveOptions{
+		Kind:     storage.BannerKind,
+		UserID:   userID.String(),
+		MaxBytes: maxBannerBytes,
+	})
+	if err != nil {
+		return models.User{}, apperrors.NewBadRequest(err.Error())
+	}
+
+	updatedUser, err := s.Repo.UpdateBannerURL(userID, bannerURL)
+	if err != nil {
+		s.Storage.DeleteByPublicURL(bannerURL)
+		return models.User{}, apperrors.NewInternalError("error al actualizar banner", err)
+	}
+
+	s.Storage.DeleteByPublicURL(user.BannerURL)
+
+	return updatedUser, nil
+}
+
+func (s *UserService) RemoveAvatar(userID uuid.UUID) (models.User, error) {
+	user, err := s.Repo.FindByID(userID)
+	if err != nil {
+		return models.User{}, apperrors.ErrUserNotFound
+	}
+
+	updatedUser, err := s.Repo.UpdateAvatarURL(userID, "")
+	if err != nil {
+		return models.User{}, apperrors.NewInternalError("error al remover avatar", err)
+	}
+
+	s.Storage.DeleteByPublicURL(user.AvatarURL)
+	if user.ProfilePicture != user.AvatarURL {
+		s.Storage.DeleteByPublicURL(user.ProfilePicture)
+	}
+
+	return updatedUser, nil
+}
+
+func (s *UserService) RemoveBanner(userID uuid.UUID) (models.User, error) {
+	user, err := s.Repo.FindByID(userID)
+	if err != nil {
+		return models.User{}, apperrors.ErrUserNotFound
+	}
+
+	updatedUser, err := s.Repo.UpdateBannerURL(userID, "")
+	if err != nil {
+		return models.User{}, apperrors.NewInternalError("error al remover banner", err)
+	}
+
+	s.Storage.DeleteByPublicURL(user.BannerURL)
+
+	return updatedUser, nil
 }

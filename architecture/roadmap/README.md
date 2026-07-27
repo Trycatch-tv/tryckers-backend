@@ -296,7 +296,7 @@ Each vertical slice should deliver real functional value, cross backend + fronte
 
 | VS | Includes | Status |
 | --- | --- | --- |
-| `vertical-slice-profile-avatar-and-banner` | Avatar upload, cover upload, storage integration, profile media rendering. | Pending |
+| `vertical-slice-profile-avatar-and-banner` | Avatar upload, cover upload, storage integration, profile media rendering. | In review |
 | `vertical-slice-profile-tech-identity` | Skills tags, tech stack visualization, availability badges, social badges. | Pending |
 | `vertical-slice-social-profile-preview` | GitHub preview, LinkedIn preview, video pitch embed stabilization. | Pending |
 | `vertical-slice-directory-search-and-filtering` | Search engine, filter by skills/country/seniority, query params persistence, sorting. | Pending |

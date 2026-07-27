@@ -74,6 +74,7 @@ func main() {
 
 	// Servir archivos estáticos de la carpeta docs
 	r.Static("/docs", "./docs")
+	r.Static("/uploads", "./uploads")
 
 	swaggerURL := fmt.Sprintf("http://localhost:%s/docs/swagger.json", cfg.Port)
 
