@@ -3,6 +3,7 @@ package services
 import (
 	"mime/multipart"
 	"strings"
+	"time"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
@@ -183,3 +184,77 @@ func (s *UserService) RemoveBanner(userID uuid.UUID) (models.User, error) {
 
 	return updatedUser, nil
 }
+
+func (s *UserService) UpdateProfile(userID uuid.UUID, req *dtos.UpdateProfileDTO) (models.User, error) {
+	user, err := s.Repo.FindByID(userID)
+	if err != nil {
+		return models.User{}, apperrors.ErrUserNotFound
+	}
+
+	updates := make(map[string]interface{})
+
+	if req.BirthDate != nil {
+		if req.BirthDate.After(time.Now()) {
+			return models.User{}, apperrors.NewBadRequest("la fecha de nacimiento no puede ser futura")
+		}
+		updates["birth_date"] = req.BirthDate
+	}
+
+	if req.Name != nil {
+		trimmed := strings.TrimSpace(*req.Name)
+		if trimmed == "" {
+			return models.User{}, apperrors.NewBadRequest("el nombre no puede estar vacío")
+		}
+		updates["name"] = trimmed
+	}
+
+	if req.Country != nil {
+		if !enums.IsValidCountry(string(*req.Country)) {
+			return models.User{}, apperrors.NewBadRequest("país inválido")
+		}
+		updates["country"] = *req.Country
+	}
+
+	if req.Headline != nil {
+		updates["headline"] = strings.TrimSpace(*req.Headline)
+	}
+	if req.Bio != nil {
+		updates["bio"] = strings.TrimSpace(*req.Bio)
+	}
+	if req.GithubURL != nil {
+		updates["github_url"] = strings.TrimSpace(*req.GithubURL)
+	}
+	if req.LinkedinURL != nil {
+		updates["linkedin_url"] = strings.TrimSpace(*req.LinkedinURL)
+	}
+	if req.PitchVideo != nil {
+		updates["pitch_video"] = strings.TrimSpace(*req.PitchVideo)
+	}
+	if req.Seniority != nil {
+		updates["seniority"] = strings.TrimSpace(*req.Seniority)
+	}
+	if req.EnglishLevel != nil {
+		updates["english_level"] = strings.TrimSpace(*req.EnglishLevel)
+	}
+	if req.EFSetScore != nil {
+		updates["ef_set_score"] = strings.TrimSpace(*req.EFSetScore)
+	}
+	if req.Availability != nil {
+		updates["availability"] = strings.TrimSpace(*req.Availability)
+	}
+	if req.Interests != nil {
+		updates["interests"] = strings.TrimSpace(*req.Interests)
+	}
+
+	if len(updates) == 0 {
+		return user, nil
+	}
+
+	updatedUser, err := s.Repo.UpdateProfile(userID, updates)
+	if err != nil {
+		return models.User{}, apperrors.NewInternalError("error al actualizar perfil", err)
+	}
+
+	return updatedUser, nil
+}
+

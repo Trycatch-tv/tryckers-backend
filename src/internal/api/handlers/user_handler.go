@@ -130,6 +130,41 @@ func (h *UserHandler) Perfil(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": userPerfil})
 }
 
+// UpdateMe godoc
+// @Summary      Update current user profile
+// @Description  Update profile information (including birth date, bio, headline, etc.) for the authenticated user
+// @Tags         Profile
+// @Accept       json
+// @Produce      json
+// @Param        profile  body      dtos.UpdateProfileDTO  true  "Profile update data"
+// @Success      200      {object}  models.User            "Updated user"
+// @Failure      400      {object}  ErrorResponse          "Invalid input"
+// @Failure      401      {object}  ErrorResponse          "Unauthorized"
+// @Failure      500      {object}  ErrorResponse          "Internal server error"
+// @Security     BearerAuth
+// @Router       /users/me [put]
+func (h *UserHandler) UpdateMe(c *gin.Context) {
+	userID, ok := h.currentUserID(c)
+	if !ok {
+		return
+	}
+
+	var req dtos.UpdateProfileDTO
+	if err := c.ShouldBindJSON(&req); err != nil {
+		HandleBindingError(c, err)
+		return
+	}
+
+	updatedUser, err := h.Service.UpdateProfile(userID, &req)
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": updatedUser})
+}
+
+
 // RefreshToken godoc
 // @Summary      Refresh access token
 // @Description  Generate new access and refresh tokens using a valid refresh token

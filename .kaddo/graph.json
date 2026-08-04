@@ -1,0 +1,171 @@
+{
+  "generated_at": "2026-08-04T04:37:00.586Z",
+  "project": {
+    "name": "tryckers-backend",
+    "state": "pre-ai",
+    "structure": "multirepo"
+  },
+  "scope": "all",
+  "scope_reason": "All supported Work Item statuses are included.",
+  "included_statuses": [
+    "draft",
+    "ready",
+    "in-progress",
+    "blocked",
+    "completed"
+  ],
+  "excluded_statuses": [
+    "archived"
+  ],
+  "nodes": [
+    {
+      "id": "business:business",
+      "type": "business",
+      "label": "Business",
+      "path": "knowledge/business/business.md"
+    },
+    {
+      "id": "product:product",
+      "type": "product",
+      "label": "Product",
+      "path": "knowledge/product/product.md"
+    },
+    {
+      "id": "tech:tech",
+      "type": "tech",
+      "label": "Tech",
+      "path": "knowledge/tech/current-state.md"
+    },
+    {
+      "id": "delivery:delivery",
+      "type": "delivery",
+      "label": "Delivery",
+      "path": "knowledge/delivery/roadmap.md"
+    },
+    {
+      "id": "wi:WI-001",
+      "type": "work-item",
+      "label": "WI-001 Registro, Modificación y Visualización de Fecha de Cumpleaños",
+      "path": "knowledge/delivery/work-items/completed/WI-001-agregar-fecha-de-cumplea-os.md",
+      "status": "completed",
+      "knowledge_level": "K2"
+    },
+    {
+      "id": "code:src/internal/models/user.go",
+      "type": "code-glob",
+      "label": "src/internal/models/user.go"
+    },
+    {
+      "id": "code:src/internal/dtos/userUpdate.go",
+      "type": "code-glob",
+      "label": "src/internal/dtos/userUpdate.go"
+    },
+    {
+      "id": "code:src/internal/api/handlers/user_handler.go",
+      "type": "code-glob",
+      "label": "src/internal/api/handlers/user_handler.go"
+    },
+    {
+      "id": "code:src/internal/api/routes/router.go",
+      "type": "code-glob",
+      "label": "src/internal/api/routes/router.go"
+    },
+    {
+      "id": "code:src/internal/repository/user_repository.go",
+      "type": "code-glob",
+      "label": "src/internal/repository/user_repository.go"
+    },
+    {
+      "id": "code:src/internal/services/user_service.go",
+      "type": "code-glob",
+      "label": "src/internal/services/user_service.go"
+    },
+    {
+      "id": "code:tryckers-frontend/src/app/auth/interfaces/auth-response.ts",
+      "type": "code-glob",
+      "label": "tryckers-frontend/src/app/auth/interfaces/auth-response.ts"
+    },
+    {
+      "id": "code:tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts",
+      "type": "code-glob",
+      "label": "tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts"
+    },
+    {
+      "id": "code:tryckers-frontend/src/app/tryckers/pages/profile-page/**",
+      "type": "code-glob",
+      "label": "tryckers-frontend/src/app/tryckers/pages/profile-page/**"
+    },
+    {
+      "id": "initiative:rm-001",
+      "type": "initiative",
+      "label": "RM-001"
+    }
+  ],
+  "edges": [
+    {
+      "from": "business:business",
+      "to": "product:product",
+      "type": "informs"
+    },
+    {
+      "from": "product:product",
+      "to": "tech:tech",
+      "type": "informs"
+    },
+    {
+      "from": "tech:tech",
+      "to": "delivery:delivery",
+      "type": "informs"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/models/user.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/dtos/userUpdate.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/api/handlers/user_handler.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/api/routes/router.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/repository/user_repository.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:src/internal/services/user_service.go",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:tryckers-frontend/src/app/auth/interfaces/auth-response.ts",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "code:tryckers-frontend/src/app/tryckers/pages/profile-page/**",
+      "type": "owns"
+    },
+    {
+      "from": "wi:WI-001",
+      "to": "initiative:rm-001",
+      "type": "belongs_to"
+    }
+  ]
+}

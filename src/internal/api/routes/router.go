@@ -36,6 +36,8 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 			// Users
 			protected.GET("/users", middlewares.RoleMiddleware(enums.Admin, enums.Member), userHandler.GetAll)
 			protected.GET("/perfil/:username", userHandler.Perfil)
+			protected.PUT("/users/me", userHandler.UpdateMe)
+			protected.PUT("/perfil", userHandler.UpdateMe)
 			protected.POST("/users/me/avatar", userHandler.UploadAvatar)
 			protected.POST("/users/me/banner", userHandler.UploadBanner)
 			protected.DELETE("/users/me/avatar", userHandler.DeleteAvatar)

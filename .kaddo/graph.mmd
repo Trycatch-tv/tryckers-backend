@@ -1,0 +1,30 @@
+flowchart LR
+  business_business["Business"]
+  product_product["Product"]
+  tech_tech["Tech"]
+  delivery_delivery["Delivery"]
+  wi_WI_001["WI-001 Registro, Modificación y Visualización de Fecha de Cumpleaños"]
+  code_src_internal_models_user_go["src/internal/models/user.go"]
+  code_src_internal_dtos_userUpdate_go["src/internal/dtos/userUpdate.go"]
+  code_src_internal_api_handlers_user_handler_go["src/internal/api/handlers/user_handler.go"]
+  code_src_internal_api_routes_router_go["src/internal/api/routes/router.go"]
+  code_src_internal_repository_user_repository_go["src/internal/repository/user_repository.go"]
+  code_src_internal_services_user_service_go["src/internal/services/user_service.go"]
+  code_tryckers_frontend_src_app_auth_interfaces_auth_response_ts["tryckers-frontend/src/app/auth/interfaces/auth-response.ts"]
+  code_tryckers_frontend_src_app_pages_settings_page_settings_page_component_ts["tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts"]
+  code_tryckers_frontend_src_app_tryckers_pages_profile_page["tryckers-frontend/src/app/tryckers/pages/profile-page/**"]
+  initiative_rm_001["RM-001"]
+
+  business_business -->|informs| product_product
+  product_product -->|informs| tech_tech
+  tech_tech -->|informs| delivery_delivery
+  wi_WI_001 -->|owns| code_src_internal_models_user_go
+  wi_WI_001 -->|owns| code_src_internal_dtos_userUpdate_go
+  wi_WI_001 -->|owns| code_src_internal_api_handlers_user_handler_go
+  wi_WI_001 -->|owns| code_src_internal_api_routes_router_go
+  wi_WI_001 -->|owns| code_src_internal_repository_user_repository_go
+  wi_WI_001 -->|owns| code_src_internal_services_user_service_go
+  wi_WI_001 -->|owns| code_tryckers_frontend_src_app_auth_interfaces_auth_response_ts
+  wi_WI_001 -->|owns| code_tryckers_frontend_src_app_pages_settings_page_settings_page_component_ts
+  wi_WI_001 -->|owns| code_tryckers_frontend_src_app_tryckers_pages_profile_page
+  wi_WI_001 -->|belongs_to| initiative_rm_001

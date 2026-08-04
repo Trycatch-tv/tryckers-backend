@@ -1,0 +1,156 @@
+{
+  "version": "1",
+  "generatedAt": "2026-08-04T03:41:49.877Z",
+  "project": {
+    "state": "pre-ai",
+    "structure": "multirepo",
+    "teamSize": "small"
+  },
+  "detected": {
+    "languages": [
+      "go"
+    ],
+    "frameworks": [
+      "gin"
+    ],
+    "packageManagers": [
+      "go-modules"
+    ],
+    "sourceDirectories": [
+      "src"
+    ],
+    "migrationDirectories": [
+      "migrations"
+    ],
+    "contractFiles": [],
+    "infrastructureFiles": [
+      "docker-compose.yml",
+      "Dockerfile"
+    ],
+    "testDirectories": []
+  },
+  "signals": {
+    "auth": [
+      {
+        "type": "auth",
+        "label": "Auth-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares/auth_middleware.go",
+          "src/internal/dtos/loginResponse.go",
+          "src/internal/dtos/loginUser.go"
+        ]
+      }
+    ],
+    "payments": [],
+    "webhooks": [],
+    "storage": [
+      {
+        "type": "storage",
+        "label": "Storage-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/services/storage",
+          "src/internal/services/storage/local_storage.go"
+        ]
+      }
+    ],
+    "background_jobs": [],
+    "email": [],
+    "database": [],
+    "migrations": [
+      {
+        "type": "migrations",
+        "label": "migrations (1 file)",
+        "confidence": "high",
+        "evidence": [
+          "migrations"
+        ]
+      }
+    ],
+    "api_routes": [],
+    "tests": [
+      {
+        "type": "tests",
+        "label": "No test directory detected",
+        "confidence": "high",
+        "evidence": [],
+        "recommended_review": "Confirm how this project is validated before production changes."
+      }
+    ],
+    "security": [
+      {
+        "type": "security",
+        "label": "Middleware detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares"
+        ]
+      },
+      {
+        "type": "security",
+        "label": "Secret-bearing environment variables",
+        "confidence": "medium",
+        "evidence": [
+          "JWT_SECRET",
+          "POSTGRES_PASSWORD"
+        ],
+        "recommended_review": "Confirm secret rotation and endpoint protection strategy."
+      }
+    ],
+    "infrastructure": [
+      {
+        "type": "infrastructure",
+        "label": "Docker Compose",
+        "confidence": "high",
+        "evidence": [
+          "docker-compose.yml"
+        ]
+      },
+      {
+        "type": "infrastructure",
+        "label": "Dockerfile",
+        "confidence": "high",
+        "evidence": [
+          "Dockerfile"
+        ]
+      }
+    ],
+    "external_integrations": [],
+    "environment": [
+      {
+        "type": "environment",
+        "label": "9 environment variable(s) detected",
+        "confidence": "high",
+        "evidence": [
+          "DATABASE_URL",
+          "FRONTEND_URL",
+          "JWT_SECRET",
+          "PORT",
+          "POSTGRES_DB",
+          "POSTGRES_HOST",
+          "POSTGRES_PASSWORD",
+          "POSTGRES_PORT",
+          "POSTGRES_USER"
+        ]
+      }
+    ]
+  },
+  "suggestions": {
+    "possibleDomains": [
+      "cmd",
+      "internal",
+      "pkg",
+      "scripts",
+      "tmp"
+    ],
+    "openQuestions": [
+      "Confirm whether the 'cmd' domain reflects a real bounded context.",
+      "Confirm whether the 'internal' domain reflects a real bounded context.",
+      "Confirm whether the 'pkg' domain reflects a real bounded context.",
+      "Confirm whether the 'scripts' domain reflects a real bounded context.",
+      "Confirm whether the 'tmp' domain reflects a real bounded context.",
+      "No test directory detected — confirm how this project is tested."
+    ]
+  }
+}

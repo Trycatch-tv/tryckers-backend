@@ -1,0 +1,168 @@
+{
+  "generated_at": "2026-08-04T04:37:00.647Z",
+  "scope": "all",
+  "scope_reason": "All supported Work Item statuses are included.",
+  "quality": "partial",
+  "summary": {
+    "nodes": 15,
+    "edges": 13,
+    "hints": 12
+  },
+  "metrics": {
+    "nodes_count": 15,
+    "edges_count": 13,
+    "connected_nodes_count": 15,
+    "isolated_nodes_count": 0,
+    "active_work_items_without_code": 0,
+    "active_work_items_without_capabilities": 0,
+    "work_items_without_source": 0,
+    "adrs_without_code": 4,
+    "capsules_without_related_work_items": 0
+  },
+  "hints": [
+    {
+      "artifact_id": "",
+      "artifact_type": "decision",
+      "path": "knowledge/tech/decisions/ADR-001-s3-compatible-storage-driver.md",
+      "severity": "info",
+      "missing": [
+        "code"
+      ],
+      "reason": "This ADR defines technical decisions but does not declare which paths it governs.",
+      "message": " has no governed code paths.",
+      "suggested_front_matter": {
+        "code": [
+          "<path/to/code>"
+        ]
+      }
+    },
+    {
+      "artifact_id": "",
+      "artifact_type": "decision",
+      "path": "knowledge/tech/decisions/ADR-002-relational-skills-and-tags.md",
+      "severity": "info",
+      "missing": [
+        "code"
+      ],
+      "reason": "This ADR defines technical decisions but does not declare which paths it governs.",
+      "message": " has no governed code paths.",
+      "suggested_front_matter": {
+        "code": [
+          "<path/to/code>"
+        ]
+      }
+    },
+    {
+      "artifact_id": "",
+      "artifact_type": "decision",
+      "path": "knowledge/tech/decisions/ADR-003-refresh-token-rotation-and-storage.md",
+      "severity": "info",
+      "missing": [
+        "code"
+      ],
+      "reason": "This ADR defines technical decisions but does not declare which paths it governs.",
+      "message": " has no governed code paths.",
+      "suggested_front_matter": {
+        "code": [
+          "<path/to/code>"
+        ]
+      }
+    },
+    {
+      "artifact_id": "",
+      "artifact_type": "decision",
+      "path": "knowledge/tech/decisions/ADR-004-database-migrations-engine.md",
+      "severity": "info",
+      "missing": [
+        "code"
+      ],
+      "reason": "This ADR defines technical decisions but does not declare which paths it governs.",
+      "message": " has no governed code paths.",
+      "suggested_front_matter": {
+        "code": [
+          "<path/to/code>"
+        ]
+      }
+    },
+    {
+      "artifact_id": "Capability Domains",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Capability Domains\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Domain: Identity and Access Management (IAM)",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Domain: Identity and Access Management (IAM)\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Domain: Professional Identity and Profiles",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Domain: Professional Identity and Profiles\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Domain: Media and Storage",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Domain: Media and Storage\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Domain: Community Discussions and Content (Posts and Comments)",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Domain: Community Discussions and Content (Posts and Comments)\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Domain: Social Signals and Curation (Votes and Billboard)",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Domain: Social Signals and Curation (Votes and Billboard)\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Capability Gaps",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Capability Gaps\" is not linked to any Work Item."
+    },
+    {
+      "artifact_id": "Roadmap Candidate Signals",
+      "artifact_type": "capability",
+      "severity": "info",
+      "missing": [
+        "work-item"
+      ],
+      "reason": "This capability is declared but no Work Item references it yet.",
+      "message": "Capability \"Roadmap Candidate Signals\" is not linked to any Work Item."
+    }
+  ]
+}

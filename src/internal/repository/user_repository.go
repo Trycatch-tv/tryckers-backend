@@ -76,3 +76,16 @@ func (r *UserRepository) UpdateBannerURL(id uuid.UUID, bannerURL string) (models
 
 	return r.FindByID(id)
 }
+
+func (r *UserRepository) UpdateProfile(id uuid.UUID, updates map[string]interface{}) (models.User, error) {
+	if len(updates) == 0 {
+		return r.FindByID(id)
+	}
+
+	if err := r.DB.Model(&models.User{}).Where("id = ?", id).Updates(updates).Error; err != nil {
+		return models.User{}, fmt.Errorf("error al actualizar perfil: %w", err)
+	}
+
+	return r.FindByID(id)
+}
+

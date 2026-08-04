@@ -1,0 +1,10 @@
+version: 1
+system: tryckers
+
+workspace_roots:
+  - ..
+
+modules:
+  - id: frontend
+    path: ../tryckers-frontend
+    role: module

@@ -25,7 +25,7 @@ type User struct {
 	Bio            string         `json:"bio" example:"Passionate developer with 5+ years of experience"`
 	Seniority      string         `json:"seniority" example:"Senior"`
 	EnglishLevel   string         `json:"english_level" example:"Advanced"`
-	EFSetScore     string         `json:"efset_score" example:"75"`
+	EFSetScore     string         `gorm:"column:ef_set_score" json:"efset_score" example:"75"`
 	Points         int            `json:"points" example:"1250"`
 	Role           enums.UserRole `json:"role" example:"developer"`
 	Country        enums.Country  `json:"country" example:"US"`

@@ -1,0 +1,620 @@
+{
+  "version": "1",
+  "generatedAt": "2026-08-04T04:35:04.093Z",
+  "project": {
+    "name": "tryckers-backend",
+    "state": "pre-ai",
+    "teamSize": "small",
+    "structure": "multirepo",
+    "language": "Spanish"
+  },
+  "scan": {
+    "available": true,
+    "languages": [
+      "go"
+    ],
+    "frameworks": [
+      "gin"
+    ],
+    "packageManagers": [
+      "go-modules"
+    ],
+    "sourceDirectories": [
+      "src"
+    ],
+    "migrationDirectories": [
+      "migrations"
+    ],
+    "contractFiles": [],
+    "infrastructureFiles": [
+      "docker-compose.yml",
+      "Dockerfile"
+    ]
+  },
+  "knowledge": {
+    "summary": "> What is true about this product right now.",
+    "roadmapSummary": "> What we intend to build and why.",
+    "inventoryAvailable": true,
+    "workItems": [],
+    "activeWorkItems": [],
+    "completedWorkItems": [
+      {
+        "id": "WI-001",
+        "type": "feature",
+        "title": "Registro, Modificación y Visualización de Fecha de Cumpleaños",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "K2",
+        "domains": [
+          "profiles",
+          "iam"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "frontend",
+          "core"
+        ]
+      }
+    ],
+    "archivedWorkItems": [],
+    "allWorkItems": [
+      {
+        "id": "WI-001",
+        "type": "feature",
+        "title": "Registro, Modificación y Visualización de Fecha de Cumpleaños",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "K2",
+        "domains": [
+          "profiles",
+          "iam"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "frontend",
+          "core"
+        ]
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "WI-001",
+        "type": "feature",
+        "title": "Registro, Modificación y Visualización de Fecha de Cumpleaños",
+        "summary": "Permitir al usuario autenticado registrar, actualizar y visualizar su fecha de cumpleaños tanto en la configuración de su cuenta como en la vista de perfil de usuario para potenciar la fidelización y personalización comunitaria.",
+        "codeGlobs": [
+          "src/internal/models/user.go",
+          "src/internal/dtos/userUpdate.go",
+          "src/internal/api/handlers/user_handler.go",
+          "src/internal/api/routes/router.go",
+          "src/internal/repository/user_repository.go",
+          "src/internal/services/user_service.go",
+          "tryckers-frontend/src/app/auth/interfaces/auth-response.ts",
+          "tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts",
+          "tryckers-frontend/src/app/tryckers/pages/profile-page/**"
+        ]
+      }
+    ]
+  },
+  "layers": [
+    {
+      "layer": "Business",
+      "status": "Consolidated",
+      "detected": [
+        "business.md"
+      ]
+    },
+    {
+      "layer": "Product",
+      "status": "Structured",
+      "detected": [
+        "capabilities.md",
+        "product.md"
+      ]
+    },
+    {
+      "layer": "Tech",
+      "status": "Structured",
+      "detected": [
+        "ADR-001-s3-compatible-storage-driver.md",
+        "ADR-002-relational-skills-and-tags.md",
+        "ADR-003-refresh-token-rotation-and-storage.md",
+        "ADR-004-database-migrations-engine.md",
+        "architecture-notes.md",
+        "codebase.md",
+        "current-state.md",
+        "decision-candidates.md",
+        "knowledge.md",
+        "modules.md",
+        "system-context.md"
+      ]
+    },
+    {
+      "layer": "Delivery",
+      "status": "Traceable",
+      "detected": [
+        "WI-001-agregar-fecha-de-cumplea-os.md",
+        "roadmap.md"
+      ]
+    }
+  ],
+  "knowledgeQuality": {
+    "business": {
+      "status": "Consolidated",
+      "artifacts": {
+        "knowledge/business/business.md": "useful"
+      }
+    },
+    "product": {
+      "status": "Structured",
+      "artifacts": {
+        "knowledge/product/product.md": "useful",
+        "knowledge/product/capabilities.md": "useful"
+      }
+    },
+    "tech": {
+      "status": "Structured",
+      "artifacts": {
+        "knowledge/tech/codebase.md": "useful",
+        "knowledge/tech/current-state.md": "useful"
+      }
+    },
+    "delivery": {
+      "status": "Traceable",
+      "artifacts": {
+        "knowledge/delivery/roadmap.md": "placeholder"
+      }
+    }
+  },
+  "roadmap": {
+    "present": true,
+    "initiatives": 0,
+    "work_item_candidates": 0,
+    "materialized_work_items": 1,
+    "remaining_work_item_candidates": 0,
+    "candidates": 0,
+    "materialized": 1,
+    "remaining": 0
+  },
+  "phase": {
+    "phase": "Maintenance",
+    "reasons": [
+      "Roadmap available",
+      "1 materialized work item(s)",
+      "Ownership coverage 100%"
+    ],
+    "recommendedAgents": [
+      "roadmap-agent"
+    ],
+    "nextStep": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
+    "llmInstructions": [
+      "No active work.",
+      "Use the roadmap-agent to plan the next initiative."
+    ]
+  },
+  "nextStepRecommendation": {
+    "id": "questions",
+    "phase": "Knowledge Refinement",
+    "label": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
+    "command": "kaddo questions",
+    "reason": "1 blocking open question(s) remain."
+  },
+  "deliveryState": {
+    "phase": "Knowledge Refinement",
+    "draft_work_items": 0,
+    "refined_draft_work_items": 0,
+    "refined_draft_ids": [],
+    "ready_work_items": 0,
+    "ready_work_item_ids": [],
+    "ready_multirepo_wi_ids": [],
+    "in_progress_work_items": 0,
+    "blocked_work_items": 0,
+    "total_work_items": 1,
+    "ownership_coverage": "1/1",
+    "remaining_work_item_candidates": 0,
+    "decision_candidates": 4,
+    "accepted_adrs": 4,
+    "adapters_installed": 1
+  },
+  "techDecisions": {
+    "status": "accepted-adrs",
+    "candidates": 4,
+    "adrs": 4,
+    "draft_adrs": 0,
+    "accepted_adrs": 4,
+    "candidate_list": [
+      {
+        "title": "Candidate: S3-Compatible Cloud Storage Provider",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-005-candidate-s3-compatible-cloud-storage-provider.md"
+      },
+      {
+        "title": "Candidate: Normalización de Habilidades y Tags",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-006-candidate-normalizacion-de-habilidades-y-tags.md"
+      },
+      {
+        "title": "Candidate: Estrategia de Refresh Tokens y Manejo de Sesión",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-007-candidate-estrategia-de-refresh-tokens-y-manejo-de-sesion.md"
+      },
+      {
+        "title": "Candidate: Motor de Migraciones en Base de Datos",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-008-candidate-motor-de-migraciones-en-base-de-datos.md"
+      }
+    ],
+    "candidates_source": "knowledge/tech/discovery/decision-candidates.md",
+    "candidates_legacy_location": false,
+    "candidates_both_exist": false
+  },
+  "techKnowledge": {
+    "core": {
+      "current-state.md": true,
+      "codebase.md": true
+    },
+    "decisions": {
+      "adrs": 4,
+      "dir": true
+    },
+    "discovery": {
+      "architecture-notes.md": true,
+      "decision-candidates.md": true,
+      "legacyLocation": false
+    }
+  },
+  "roadmapQuality": {
+    "initiatives": {
+      "total": 0,
+      "grounded": 0,
+      "with_related_domain": 0,
+      "with_related_capability": 0,
+      "with_source_signals": 0,
+      "needs_refinement": false,
+      "items": []
+    },
+    "work_item_candidates": {
+      "total": 0,
+      "with_source_initiative": 0,
+      "with_related_domain": 0,
+      "with_related_capability": 0
+    }
+  },
+  "installedAssets": {
+    "version": "3.68.0",
+    "agents": {
+      "total": 20,
+      "installed": 9,
+      "outdated": 0,
+      "unknown_version": 0,
+      "modified": 0
+    },
+    "skills": {
+      "total": 8,
+      "installed": 7,
+      "outdated": 0,
+      "unknown_version": 0,
+      "modified": 0
+    }
+  },
+  "workItemSummary": {
+    "total": 1,
+    "active": 0,
+    "draft": 0,
+    "ready": 0,
+    "in_progress": 0,
+    "blocked": 0,
+    "completed": 1,
+    "archived": 0,
+    "summary": "completed-only"
+  },
+  "deliveryMix": {},
+  "external": [],
+  "graph": null,
+  "graphHints": null,
+  "skills": [
+    "adr-writing",
+    "graph-metadata-review",
+    "implementation-planning",
+    "learning-capture",
+    "module-context-refinement",
+    "ownership-suggestion",
+    "work-item-refinement"
+  ],
+  "scanSignals": {
+    "auth": [
+      {
+        "type": "auth",
+        "label": "Auth-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares/auth_middleware.go",
+          "src/internal/dtos/loginResponse.go",
+          "src/internal/dtos/loginUser.go"
+        ]
+      }
+    ],
+    "payments": [],
+    "webhooks": [],
+    "storage": [
+      {
+        "type": "storage",
+        "label": "Storage-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/services/storage",
+          "src/internal/services/storage/local_storage.go"
+        ]
+      }
+    ],
+    "background_jobs": [],
+    "email": [],
+    "database": [],
+    "migrations": [
+      {
+        "type": "migrations",
+        "label": "migrations (1 file)",
+        "confidence": "high",
+        "evidence": [
+          "migrations"
+        ]
+      }
+    ],
+    "api_routes": [],
+    "tests": [
+      {
+        "type": "tests",
+        "label": "No test directory detected",
+        "confidence": "high",
+        "evidence": [],
+        "recommended_review": "Confirm how this project is validated before production changes."
+      }
+    ],
+    "security": [
+      {
+        "type": "security",
+        "label": "Middleware detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares"
+        ]
+      },
+      {
+        "type": "security",
+        "label": "Secret-bearing environment variables",
+        "confidence": "medium",
+        "evidence": [
+          "JWT_SECRET",
+          "POSTGRES_PASSWORD"
+        ],
+        "recommended_review": "Confirm secret rotation and endpoint protection strategy."
+      }
+    ],
+    "infrastructure": [
+      {
+        "type": "infrastructure",
+        "label": "Docker Compose",
+        "confidence": "high",
+        "evidence": [
+          "docker-compose.yml"
+        ]
+      },
+      {
+        "type": "infrastructure",
+        "label": "Dockerfile",
+        "confidence": "high",
+        "evidence": [
+          "Dockerfile"
+        ]
+      }
+    ],
+    "external_integrations": [],
+    "environment": [
+      {
+        "type": "environment",
+        "label": "9 environment variable(s) detected",
+        "confidence": "high",
+        "evidence": [
+          "DATABASE_URL",
+          "FRONTEND_URL",
+          "JWT_SECRET",
+          "PORT",
+          "POSTGRES_DB",
+          "POSTGRES_HOST",
+          "POSTGRES_PASSWORD",
+          "POSTGRES_PORT",
+          "POSTGRES_USER"
+        ]
+      }
+    ]
+  },
+  "projectRoute": {
+    "type": "pre-ai",
+    "currentStep": "scan-repository",
+    "completed": 14,
+    "total": 16,
+    "progressPercent": 88,
+    "steps": [
+      {
+        "id": "enable-kaddo",
+        "label": "Enable Kaddo",
+        "status": "done",
+        "evidence": [
+          ".kaddo/config.yml"
+        ]
+      },
+      {
+        "id": "scan-repository",
+        "label": "Scan repository",
+        "status": "warning",
+        "evidence": [
+          ".kaddo/scan.json"
+        ],
+        "reason": "Scan has warnings (e.g. no test directory detected).",
+        "command": "kaddo scan"
+      },
+      {
+        "id": "bootstrap",
+        "label": "Bootstrap knowledge baseline",
+        "status": "done",
+        "evidence": [
+          "knowledge/business/business.md",
+          "knowledge/product/product.md"
+        ]
+      },
+      {
+        "id": "define-business",
+        "label": "Define business context",
+        "status": "done",
+        "evidence": [
+          "knowledge/business/business.md"
+        ]
+      },
+      {
+        "id": "define-product",
+        "label": "Define product context",
+        "status": "done",
+        "evidence": [
+          "knowledge/product/product.md"
+        ]
+      },
+      {
+        "id": "discover-capabilities",
+        "label": "Discover capabilities",
+        "status": "done",
+        "evidence": [
+          "knowledge/product/capabilities.md"
+        ]
+      },
+      {
+        "id": "describe-architecture",
+        "label": "Describe current architecture",
+        "status": "done",
+        "evidence": [
+          "knowledge/tech/current-state.md",
+          "knowledge/tech/codebase.md"
+        ]
+      },
+      {
+        "id": "capture-technical-decisions",
+        "label": "Capture technical decisions",
+        "status": "done",
+        "evidence": [
+          "knowledge/tech/decisions/"
+        ],
+        "reason": "4 ADR(s) exist."
+      },
+      {
+        "id": "create-work-source",
+        "label": "Create or connect work source",
+        "status": "done",
+        "evidence": [
+          "knowledge/delivery/roadmap.md"
+        ]
+      },
+      {
+        "id": "materialize-work-item",
+        "label": "Materialize first Work Item",
+        "status": "done",
+        "evidence": [
+          "knowledge/delivery/work-items/"
+        ]
+      },
+      {
+        "id": "refine-work-item",
+        "label": "Refine Work Item",
+        "status": "done"
+      },
+      {
+        "id": "suggest-ownership",
+        "label": "Suggest ownership",
+        "status": "done"
+      },
+      {
+        "id": "resolve-adrs",
+        "label": "Resolve ADRs if needed",
+        "status": "done"
+      },
+      {
+        "id": "prepare-implementation",
+        "label": "Prepare implementation",
+        "status": "done"
+      },
+      {
+        "id": "run-guard",
+        "label": "Run guard",
+        "status": "pending"
+      },
+      {
+        "id": "capture-learning",
+        "label": "Capture learning",
+        "status": "done"
+      }
+    ]
+  },
+  "metadataHealth": {
+    "findings": [],
+    "healthy": 6,
+    "drifted": 0
+  },
+  "mappedModules": [
+    {
+      "id": "frontend",
+      "repoPath": "../tryckers-frontend",
+      "capabilities": [],
+      "code": [],
+      "artifacts": {
+        "moduleDesign": false,
+        "stack": false,
+        "security": false,
+        "standards": false,
+        "diagrams": false,
+        "adrs": false
+      }
+    }
+  ],
+  "moduleStatuses": {
+    "frontend": {
+      "status": "configured",
+      "configured": true,
+      "role": "module",
+      "moduleContext": true,
+      "currentState": true,
+      "codebase": true
+    }
+  },
+  "affectedModuleContexts": {},
+  "isModuleRepo": false,
+  "missing": [],
+  "handoff": {
+    "recommendedAgents": [
+      "roadmap-agent"
+    ],
+    "nextSteps": [
+      "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions."
+    ],
+    "instructions": [
+      "No active work.",
+      "Use the roadmap-agent to plan the next initiative."
+    ],
+    "operatingRules": [
+      "**Never run `git commit`, `git push` or `git merge` without explicit human confirmation.**",
+      "Never push or merge automatically — ever. Suggest a Conventional Commit message and wait.",
+      "When implementing a Work Item, create a branch FIRST (per the project Git strategy, `.kaddo/git.yml`, default `feature/<id>-<slug>`). Never work directly on `main`.",
+      "After significant changes run `kaddo scan`, `kaddo owners suggest` and `kaddo guard`, and update the affected knowledge (ADR / capabilities / current-state).",
+      "Kaddo itself never calls an LLM and never runs git — every git action is the human’s."
+    ]
+  }
+}

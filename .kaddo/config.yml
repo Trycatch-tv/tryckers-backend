@@ -1,0 +1,35 @@
+version: 1
+project:
+  name: tryckers-backend
+  state: pre-ai
+  structure: multirepo
+  language: es
+  role: core
+  domains:
+    - iam
+    - profiles
+    - posts
+    - storage
+    - curation
+team:
+  size: small
+knowledge:
+  default_level: K2
+guard:
+  silent_without_ownership: true
+system:
+  name: tryckers
+multirepo:
+  role: core
+  modules_file: .kaddo/modules.yml
+  workspace_roots:
+    - ..
+module_agents:
+  installed: true
+  installed_at: 2026-08-04
+modules:
+  - agents
+  - skills
+module_skills:
+  installed: true
+  installed_at: 2026-08-04
