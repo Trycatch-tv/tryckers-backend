@@ -21,9 +21,20 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
+# Data source for latest Amazon Linux 2 AMI
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
 # 2. EC2 Instance for backend
 resource "aws_instance" "backend" {
-  ami                  = "ami-0c55b159cbfafe1f0" # Placeholder Amazon Linux 2 AMI
+  ami                  = data.aws_ami.amazon_linux_2.id
   instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
@@ -49,9 +60,6 @@ resource "aws_db_instance" "database" {
 # 4. Amplify for frontend
 resource "aws_amplify_app" "frontend" {
   name       = "${var.project_name}-frontend"
-  repository = "https://github.com/Trycatch-tv/tryckers-frontend"
-  
-  # Ensure OAuth token is provided in real deployments for private repos
 }
 
 # 5. S3 for media storage
