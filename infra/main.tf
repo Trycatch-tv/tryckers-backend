@@ -32,11 +32,53 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+# Data source for default VPC
+data "aws_vpc" "default" {
+  default = true
+}
+
+# Security Group for EC2 Backend
+resource "aws_security_group" "backend_sg" {
+  name        = "${var.project_name}-backend-sg"
+  description = "Security group for backend EC2 instance"
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP API traffic"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-backend-sg"
+  }
+}
+
 # 2. EC2 Instance for backend
 resource "aws_instance" "backend" {
-  ami                  = data.aws_ami.amazon_linux_2.id
-  instance_type        = "t3.micro"
-  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = "t3.micro"
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  key_name               = "tryckers-key"
+  vpc_security_group_ids = [aws_security_group.backend_sg.id]
 
   tags = {
     Name = "${var.project_name}-backend"
@@ -59,7 +101,11 @@ resource "aws_db_instance" "database" {
 
 # 4. Amplify for frontend
 resource "aws_amplify_app" "frontend" {
-  name       = "${var.project_name}-frontend"
+  name = "${var.project_name}-frontend"
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 5. S3 for media storage
