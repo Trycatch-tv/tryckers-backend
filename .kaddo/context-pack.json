@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-11T03:35:26.939Z",
+  "generatedAt": "2026-11-11T04:03:02.617Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -83,6 +83,28 @@
         "affectedModules": [
           "core"
         ]
+      },
+      {
+        "id": "WI-003",
+        "type": "chore",
+        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "archivedWorkItems": [],
@@ -130,6 +152,28 @@
         "affectedModules": [
           "core"
         ]
+      },
+      {
+        "id": "WI-003",
+        "type": "chore",
+        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "artifacts": [
@@ -157,6 +201,20 @@
         "summary": "Habilitar terraform para hacer iac y desplegar en aws",
         "codeGlobs": [
           "infra/**/*.tf"
+        ]
+      },
+      {
+        "id": "WI-003",
+        "type": "chore",
+        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
+        "summary": "Implementar un pipeline CI/CD completo con GitHub Actions, Terraform (ECR + OIDC + IAM), AWS SSM y Docker Compose para desplegar automáticamente el backend en EC2 tras merge en main.",
+        "codeGlobs": [
+          "infra/**/*.tf",
+          ".github/workflows/*.yml",
+          "scripts/*.sh",
+          "docker-compose.prod.yml",
+          "src/cmd/main.go",
+          "src/internal/api/routes/router.go"
         ]
       }
     ]
@@ -200,6 +258,7 @@
       "detected": [
         "WI-001-agregar-fecha-de-cumplea-os.md",
         "WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md",
+        "WI-003-automated-backend-deployment-with-terraform.md",
         "roadmap.md"
       ]
     }
@@ -236,17 +295,17 @@
     "present": true,
     "initiatives": 0,
     "work_item_candidates": 0,
-    "materialized_work_items": 2,
+    "materialized_work_items": 3,
     "remaining_work_item_candidates": 0,
     "candidates": 0,
-    "materialized": 2,
+    "materialized": 3,
     "remaining": 0
   },
   "phase": {
     "phase": "Maintenance",
     "reasons": [
       "Roadmap available",
-      "2 materialized work item(s)",
+      "3 materialized work item(s)",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
@@ -275,8 +334,8 @@
     "ready_multirepo_wi_ids": [],
     "in_progress_work_items": 0,
     "blocked_work_items": 0,
-    "total_work_items": 2,
-    "ownership_coverage": "2/2",
+    "total_work_items": 3,
+    "ownership_coverage": "3/3",
     "remaining_work_item_candidates": 0,
     "decision_candidates": 4,
     "accepted_adrs": 4,
@@ -353,24 +412,24 @@
       "installed": 21,
       "outdated": 0,
       "unknown_version": 0,
-      "modified": 0
+      "modified": 21
     },
     "skills": {
       "total": 12,
       "installed": 12,
       "outdated": 0,
       "unknown_version": 0,
-      "modified": 0
+      "modified": 12
     }
   },
   "workItemSummary": {
-    "total": 2,
+    "total": 3,
     "active": 0,
     "draft": 0,
     "ready": 0,
     "in_progress": 0,
     "blocked": 0,
-    "completed": 2,
+    "completed": 3,
     "archived": 0,
     "summary": "completed-only"
   },

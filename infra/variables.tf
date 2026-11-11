@@ -15,3 +15,10 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "github_repo" {
+  description = "GitHub repository (owner/repo) for OIDC trust"
+  type        = string
+  default     = "Trycatch-tv/tryckers-backend"
+}
+

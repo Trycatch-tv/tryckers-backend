@@ -24,6 +24,20 @@ func SetupV1(r *gin.Engine, db *gorm.DB) {
 	commentHandler := &handlers.CommentHandler{Service: commentService, PostService: postService}
 	api := r.Group("/api/v1")
 	{
+		// Health check
+		r.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"status":  "healthy",
+				"service": "tryckers-backend",
+			})
+		})
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"status":  "healthy",
+				"service": "tryckers-backend",
+			})
+		})
+
 		// Rutas públicas (no requieren autenticación)
 		api.POST("/register", userHandler.CreateUser)
 		api.POST("/login", userHandler.Login)

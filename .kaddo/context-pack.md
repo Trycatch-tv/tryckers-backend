@@ -26,7 +26,7 @@ Phase: Maintenance
 Reason:
 
 - Roadmap available
-- 2 materialized work item(s)
+- 3 materialized work item(s)
 - Ownership coverage 100%
 
 Recommended next: roadmap-agent
@@ -39,7 +39,7 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 - Draft Work Items: 0
 - Ready Work Items: 0
 - In-progress Work Items: 0
-- Ownership coverage: 2/2
+- Ownership coverage: 3/3
 - Remaining Work Item candidates: 0
 
 ## Next Step Recommendation
@@ -85,6 +85,7 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 ### Delivery — Traceable
 - ✓ WI-001-agregar-fecha-de-cumplea-os.md
 - ✓ WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md
+- ✓ WI-003-automated-backend-deployment-with-terraform.md
 - ✓ roadmap.md
 
 ## Technical Inventory
@@ -119,7 +120,7 @@ No project knowledge summary found yet.
 
 - Initiatives: 0
 - Work Item candidates: 0
-- Materialized Work Items: 2
+- Materialized Work Items: 3
 - Remaining Work Item candidates: 0
 
 No roadmap baseline found.
@@ -132,6 +133,7 @@ No active work items found.
 
 - WI-001 [feature] owns: src/internal/models/user.go, src/internal/dtos/userUpdate.go, src/internal/api/handlers/user_handler.go, src/internal/api/routes/router.go, src/internal/repository/user_repository.go, src/internal/services/user_service.go, tryckers-frontend/src/app/auth/interfaces/auth-response.ts, tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts, tryckers-frontend/src/app/tryckers/pages/profile-page/**
 - WI-002 [chore] owns: infra/**/*.tf
+- WI-003 [chore] owns: infra/**/*.tf, .github/workflows/*.yml, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/api/routes/router.go
 
 ## Mapped Modules
 
