@@ -14,6 +14,7 @@
 
 - Name: tryckers-backend
 - State: pre-ai
+- Mode: standard
 - Team size: small
 - Structure: multirepo
 - Language: Spanish
@@ -25,7 +26,7 @@ Phase: Maintenance
 Reason:
 
 - Roadmap available
-- 1 materialized work item(s)
+- 2 materialized work item(s)
 - Ownership coverage 100%
 
 Recommended next: roadmap-agent
@@ -38,7 +39,7 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 - Draft Work Items: 0
 - Ready Work Items: 0
 - In-progress Work Items: 0
-- Ownership coverage: 1/1
+- Ownership coverage: 2/2
 - Remaining Work Item candidates: 0
 
 ## Next Step Recommendation
@@ -83,6 +84,7 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 
 ### Delivery — Traceable
 - ✓ WI-001-agregar-fecha-de-cumplea-os.md
+- ✓ WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md
 - ✓ roadmap.md
 
 ## Technical Inventory
@@ -97,6 +99,7 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 - Infrastructure:
   - docker-compose.yml
   - Dockerfile
+  - infra/
 
 ## Scan Signals
 
@@ -105,21 +108,21 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 - Migrations: migrations (1 file)
 - Tests: No test directory detected
 - Security: 2
-- Infrastructure: 2
+- Infrastructure: 3
 - Environment: 9 environment variable(s) detected
 
 ## Current Knowledge
 
-> What is true about this product right now.
+No project knowledge summary found yet.
 
 ## Roadmap Status
 
 - Initiatives: 0
 - Work Item candidates: 0
-- Materialized Work Items: 1
+- Materialized Work Items: 2
 - Remaining Work Item candidates: 0
 
-> What we intend to build and why.
+No roadmap baseline found.
 
 ## Active Work Items
 
@@ -128,6 +131,7 @@ No active work items found.
 ## Artifacts and Ownership
 
 - WI-001 [feature] owns: src/internal/models/user.go, src/internal/dtos/userUpdate.go, src/internal/api/handlers/user_handler.go, src/internal/api/routes/router.go, src/internal/repository/user_repository.go, src/internal/services/user_service.go, tryckers-frontend/src/app/auth/interfaces/auth-response.ts, tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts, tryckers-frontend/src/app/tryckers/pages/profile-page/**
+- WI-002 [chore] owns: infra/**/*.tf
 
 ## Mapped Modules
 
@@ -139,23 +143,53 @@ This project has mapped modules registered in `.kaddo/modules.yml`.
 
 Note: Kaddo does not scan secondary repositories during `context`. Mapped modules come from `.kaddo/modules.yml` and module artifacts only.
 
+## Knowledge Graph
+
+- Available: yes
+- Scope: all
+- Nodes: 15
+- Edges: 13
+- Quality: partial
+- Active Work Items connected to code: 0
+- Reason: All supported Work Item statuses are included.
+
+Full graph: `.kaddo/graph.json` / `.kaddo/graph.mmd` (run `kaddo graph export` to refresh).
+
+## Graph Hints
+
+Graph relationship quality: partial
+Active hints: 0
+Suggested agent: graph-agent
+
+-  has no governed code paths.
+-  has no governed code paths.
+-  has no governed code paths.
+
+(+9 more in `.kaddo/graph-hints.md`)
+
 ## Skills
 
 Available reusable skills (agents apply these; content is not inlined):
 
 - adr-writing
+- capsule-writing
+- evidence-verification
 - graph-metadata-review
 - implementation-planning
+- knowledge-consolidation
 - learning-capture
+- legacy-risk-assessment
 - module-context-refinement
 - ownership-suggestion
+- poc-report-writing
 - work-item-refinement
 
 Read full skill definitions in `knowledge/skills/` or via the Kaddo MCP server (`kaddo://skills`).
 
 ## Missing Context
 
-_None — all expected context is present._
+- No project knowledge summary found yet.
+- No roadmap baseline found.
 
 ## Recommended Agent Handoff
 

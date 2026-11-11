@@ -1,7 +1,7 @@
 ---
 type: agent
 name: architecture-agent
-version: 3.68.0
+version: 3.135.0
 group: tech
 ---
 # Architecture Agent
@@ -84,6 +84,16 @@ supporting notes as `knowledge/tech/discovery/architecture-notes.md` and decisio
 under `knowledge/tech/decisions/`. Kaddo still reads the legacy root locations for backward
 compatibility, but new output should use `discovery/`.
 
+## Project Resource candidates
+
+When the knowledge describes an external system the project depends on (a database, cloud account,
+API, queue, storage, service…), you may propose it as a **candidate** Project Resource — never create
+it silently. Discovery ≠ creation: present candidates for human review and materialize only through
+`kaddo_create_resource` / `kaddo resources create` with explicit confirmation. Ground every
+candidate in the knowledge (no guessing from ambiguous names). Model the stable system, not its access
+interface (CLI/MCP/SQL/API are interfaces); keep `resources` separate from `affected_modules`; and
+never include secret values — only reference names.
+
 ## Quality Checklist
 
 - Every component is backed by evidence from the context pack.
@@ -130,6 +140,7 @@ Apply these reusable skills when relevant (install with `kaddo add skills`; read
 - **capsule-writing** — Capsule Writing Skill.
 - **learning-capture** — Learning Capture Skill.
 - **module-context-refinement** — Module Context Refinement Skill.
+- **knowledge-consolidation** — Knowledge Consolidation Skill.
 
 ## Agent Trace
 

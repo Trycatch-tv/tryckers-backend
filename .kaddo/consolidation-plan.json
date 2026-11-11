@@ -1,0 +1,261 @@
+{
+  "generated_at": "2026-11-10T03:32:08.798Z",
+  "scope": "all",
+  "project_context": {
+    "state": "pre-ai",
+    "mode": "standard",
+    "repository_structure": "multirepo"
+  },
+  "coverage": {
+    "scope": "all",
+    "layers_evaluated": [
+      "Business",
+      "Product",
+      "Tech",
+      "Delivery"
+    ],
+    "artifacts_evaluated": 36,
+    "work_items_evaluated": 2,
+    "excluded_sources": []
+  },
+  "source_files": [
+    {
+      "path": "knowledge/agents/README.md",
+      "hash": "b95e99887bf530c6da16b1d4fb3512b51212ad822e75fd9acc29873e1bb5bf25"
+    },
+    {
+      "path": "knowledge/agents/business/business-agent.md",
+      "hash": "09971947aebd7c7798a7560fc118907d15cc389d4668bb7e8649ff7d5b3194b1"
+    },
+    {
+      "path": "knowledge/agents/delivery/backlog-agent.md",
+      "hash": "aceebe0ffee41dee7ad10961bca1f6c557b96ff70db1a3f7a47dca68e5474d12"
+    },
+    {
+      "path": "knowledge/agents/delivery/implementation-agent.md",
+      "hash": "620e077369847b75ae4071bbd88c2ddfeae9fb9b59f7a0e6b15f143755fe0859"
+    },
+    {
+      "path": "knowledge/agents/delivery/ownership-agent.md",
+      "hash": "d1fdc1a6f8d5a01ef4a019d0c25ee72bedc5abf8dfa329202e7852a5a472c52a"
+    },
+    {
+      "path": "knowledge/agents/delivery/roadmap-agent.md",
+      "hash": "95a4896dd5b9e388304b09e21e5b3d28de7db3fa3adf6370aa69700fcfd4b181"
+    },
+    {
+      "path": "knowledge/agents/delivery/work-item-agent.md",
+      "hash": "f8a3849a7da1219c5f93c36b2e4d95048ed5bfc892a3a3453a855a303ab5a9ae"
+    },
+    {
+      "path": "knowledge/agents/product/capability-agent.md",
+      "hash": "c691cedaed2ca5a1a09ed827505e9330ca4ad5453b2001c5bddef5ec104249d7"
+    },
+    {
+      "path": "knowledge/agents/tech/architecture-agent.md",
+      "hash": "72409b6d1b254aee29467e3d72870a83efeb0f4a434427ec2d3b8e2f043c9519"
+    },
+    {
+      "path": "knowledge/agents/tech/module-context-agent.md",
+      "hash": "f881d5dcb3d0b80237c844cffc8470b5389d55a3422d1d5f8cebb7d63b2c340b"
+    },
+    {
+      "path": "knowledge/business/business.md",
+      "hash": "d9f8713b9e1572398000c742ec4531ec1beb4dd51449eba4b5044a723a4c3f10"
+    },
+    {
+      "path": "knowledge/delivery/roadmap.md",
+      "hash": "4178dabd0061d67f9690f1f9185b75cce557bf6e6b27e5bc202cfc82bda1c30f"
+    },
+    {
+      "path": "knowledge/delivery/work-items/completed/WI-001-agregar-fecha-de-cumplea-os.md",
+      "hash": "a2c544d4525f44b60a7ab6aff994192b6896a56ef196e39b176b15d2f2f88eff"
+    },
+    {
+      "path": "knowledge/delivery/work-items/completed/WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md",
+      "hash": "fc64534afe8a3cf4029ffb37f1571ba741e98c7d03596c8d549ef499032faf36"
+    },
+    {
+      "path": "knowledge/inventory.md",
+      "hash": "55a72ae0700d1b23254953886316cda9ecd4cec38e80ed877a82e6d12472b1ef"
+    },
+    {
+      "path": "knowledge/knowledge.md",
+      "hash": "250af1e6191056cf105e4c195d44cf17063a7661ef4c9ffb0c053e6b4af6317c"
+    },
+    {
+      "path": "knowledge/product/capabilities.md",
+      "hash": "141a5ff4d1c38b4b5f8a520aa1e98044e8b828e29c72ac20ace26073c5a2f614"
+    },
+    {
+      "path": "knowledge/product/product.md",
+      "hash": "fc8de5e1ed7782a7564ddd9de783a8fd7bceda9579044534340e13c021a86360"
+    },
+    {
+      "path": "knowledge/skills/README.md",
+      "hash": "b9673178a84bab6dffcfa4973a93e75ad96d634b264a056cc886162b3615ac2b"
+    },
+    {
+      "path": "knowledge/skills/adr-writing/skill.md",
+      "hash": "0e9727419148c9d390955ca795116a32f1b6fe2a4fc4ff5767f5c76d7fe63c44"
+    },
+    {
+      "path": "knowledge/skills/graph-metadata-review/skill.md",
+      "hash": "59e0720c0c2961922f8fdc397493b61355f7da20ee9fccc4d115c6aae5c87fae"
+    },
+    {
+      "path": "knowledge/skills/implementation-planning/skill.md",
+      "hash": "11f6db9fc766a32ea80c79a90f90e64a354fba98e8050aa5ffdece3145761308"
+    },
+    {
+      "path": "knowledge/skills/learning-capture/skill.md",
+      "hash": "cd0ef7c82e11737dedc1e84dc6b89f020cbcda5be00e3d26ac0b65ad89f8ffe2"
+    },
+    {
+      "path": "knowledge/skills/module-context-refinement/skill.md",
+      "hash": "919cd301e75d05eda7abb3fb00a65706fe75b5f80465d1b9f2db304bc556ab25"
+    },
+    {
+      "path": "knowledge/skills/ownership-suggestion/skill.md",
+      "hash": "ab3d4fb942655c296e75751acf7514788823a3a4e5829f8c8e6613d4e36680a2"
+    },
+    {
+      "path": "knowledge/skills/work-item-refinement/skill.md",
+      "hash": "eae622d1fa34e95725c0804dd5d8cda32a34a869ceed77f2a12cd980b99b296a"
+    },
+    {
+      "path": "knowledge/tech/codebase.md",
+      "hash": "e96a7abd390463cdb24397a7a2390e3ac89580dc5362ef6bfdb488b5298435cc"
+    },
+    {
+      "path": "knowledge/tech/current-state.md",
+      "hash": "47929b364c0269b7562059f7492991fdc76d24fa180d29327f7a23ac3fbafea0"
+    },
+    {
+      "path": "knowledge/tech/decisions/ADR-001-s3-compatible-storage-driver.md",
+      "hash": "ee9ab0c19e84127b67bdec7b40ea0c368e5e6e26e629c55a25170d67178da5e4"
+    },
+    {
+      "path": "knowledge/tech/decisions/ADR-002-relational-skills-and-tags.md",
+      "hash": "42d8db2af538d329ad7d5eaaa464f4de3eb16d64a8d757e52d834c85f54fe672"
+    },
+    {
+      "path": "knowledge/tech/decisions/ADR-003-refresh-token-rotation-and-storage.md",
+      "hash": "0fed5cb1afbd2fc472e59f945071792cbbed2271f55d5fb4f6168ef40787199e"
+    },
+    {
+      "path": "knowledge/tech/decisions/ADR-004-database-migrations-engine.md",
+      "hash": "9dce163d681855de76f5a939c696bf1aa70aad2233c6311f8a4fdb6d1cd274f7"
+    },
+    {
+      "path": "knowledge/tech/discovery/architecture-notes.md",
+      "hash": "b807e32291be5ff03b058e3efb4817e4d35a155f49cb15e010ec1f04037c5022"
+    },
+    {
+      "path": "knowledge/tech/discovery/decision-candidates.md",
+      "hash": "f09675a15e0625fdaf5ffa12b92f860b453b6b4d62c49047a14bd8c05fcb4bcb"
+    },
+    {
+      "path": "knowledge/tech/modules/modules.md",
+      "hash": "4bed977fd68beec107a5a24183d05deebcf0f32e8c2152dff7b9c2954d3b5bae"
+    },
+    {
+      "path": "knowledge/tech/system/system-context.md",
+      "hash": "359942c2cf3e8db16805d9632cb8c9a70328c17af2281179d7d255df69a159ce"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "relationship_opportunity:ff8b138f56cf",
+      "category": "relationship_opportunity",
+      "classification": "observed",
+      "confidence": "requires-review",
+      "title": " has no governed code paths.",
+      "source_artifacts": [
+        ""
+      ],
+      "target_artifacts": [
+        ""
+      ],
+      "evidence": [
+        "This ADR defines technical decisions but does not declare which paths it governs."
+      ],
+      "rationale": "A missing OPTIONAL relationship is an opportunity to review, not an error or a verified inconsistency. Kaddo never invents the relationship.",
+      "possible_impact": "Weaker traceability in the knowledge graph.",
+      "suggested_action": "Review whether this decision should declare governed code paths.",
+      "requires_semantic_review": false
+    },
+    {
+      "id": "knowledge_organization:405eb5fad444",
+      "category": "knowledge_organization",
+      "classification": "observed",
+      "confidence": "requires-review",
+      "title": "knowledge/tech/modules/modules.md is weak and may need consolidation or expansion",
+      "source_artifacts": [
+        "knowledge/tech/modules/modules.md"
+      ],
+      "target_artifacts": [
+        "knowledge/tech/modules/modules.md"
+      ],
+      "evidence": [
+        "Artifact quality analysis classifies this canonical knowledge artifact as \"weak\"."
+      ],
+      "rationale": "Observed: the quality heuristic rates this artifact low-signal. Whether it should be expanded, merged or cross-referenced is a judgement that needs semantic review — the quality signal alone does not decide it.",
+      "possible_impact": "Readers must open more files to assemble a complete picture.",
+      "suggested_action": "Semantic review: decide whether to expand, merge into a stronger artifact, or cross-reference it.",
+      "requires_semantic_review": true
+    },
+    {
+      "id": "knowledge_organization:cf1f540ca1f0",
+      "category": "knowledge_organization",
+      "classification": "observed",
+      "confidence": "requires-review",
+      "title": "knowledge/knowledge.md is placeholder and may need consolidation or expansion",
+      "source_artifacts": [
+        "knowledge/knowledge.md"
+      ],
+      "target_artifacts": [
+        "knowledge/knowledge.md"
+      ],
+      "evidence": [
+        "Artifact quality analysis classifies this canonical knowledge artifact as \"placeholder\"."
+      ],
+      "rationale": "Observed: the quality heuristic rates this artifact low-signal. Whether it should be expanded, merged or cross-referenced is a judgement that needs semantic review — the quality signal alone does not decide it.",
+      "possible_impact": "Readers must open more files to assemble a complete picture.",
+      "suggested_action": "Semantic review: decide whether to expand, merge into a stronger artifact, or cross-reference it.",
+      "requires_semantic_review": true
+    },
+    {
+      "id": "knowledge_organization:dbb5817f6206",
+      "category": "knowledge_organization",
+      "classification": "observed",
+      "confidence": "requires-review",
+      "title": "knowledge/tech/discovery/architecture-notes.md is weak and may need consolidation or expansion",
+      "source_artifacts": [
+        "knowledge/tech/discovery/architecture-notes.md"
+      ],
+      "target_artifacts": [
+        "knowledge/tech/discovery/architecture-notes.md"
+      ],
+      "evidence": [
+        "Artifact quality analysis classifies this canonical knowledge artifact as \"weak\"."
+      ],
+      "rationale": "Observed: the quality heuristic rates this artifact low-signal. Whether it should be expanded, merged or cross-referenced is a judgement that needs semantic review — the quality signal alone does not decide it.",
+      "possible_impact": "Readers must open more files to assemble a complete picture.",
+      "suggested_action": "Semantic review: decide whether to expand, merge into a stronger artifact, or cross-reference it.",
+      "requires_semantic_review": true
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "by_category": {
+      "knowledge_redundancy": 0,
+      "unincorporated_learning": 0,
+      "knowledge_fragmentation": 0,
+      "relationship_opportunity": 1,
+      "potentially_outdated": 0,
+      "knowledge_organization": 3
+    },
+    "requires_semantic_review": 3
+  }
+}

@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-08-04T03:41:49.877Z",
+  "generatedAt": "2026-09-24T03:47:47.176Z",
   "project": {
     "state": "pre-ai",
     "structure": "multirepo",
@@ -25,7 +25,8 @@
     "contractFiles": [],
     "infrastructureFiles": [
       "docker-compose.yml",
-      "Dockerfile"
+      "Dockerfile",
+      "infra/"
     ],
     "testDirectories": []
   },
@@ -113,6 +114,14 @@
         "confidence": "high",
         "evidence": [
           "Dockerfile"
+        ]
+      },
+      {
+        "type": "infrastructure",
+        "label": "infra/",
+        "confidence": "high",
+        "evidence": [
+          "infra/"
         ]
       }
     ],

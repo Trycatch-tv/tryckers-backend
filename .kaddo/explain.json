@@ -1,0 +1,800 @@
+{
+  "project": {
+    "name": "tryckers-backend",
+    "state": "pre-ai",
+    "teamSize": "small",
+    "structure": "multirepo",
+    "language": "Spanish"
+  },
+  "stack": {
+    "language": "go",
+    "framework": "gin",
+    "packageManager": "go-modules",
+    "sourceDirectories": [
+      "src"
+    ],
+    "migrationDirectories": [
+      "migrations"
+    ],
+    "contractFiles": [],
+    "infrastructureFiles": [
+      "docker-compose.yml",
+      "Dockerfile"
+    ]
+  },
+  "knowledge": {
+    "hasScan": true,
+    "hasInventory": true,
+    "hasContextPack": true,
+    "hasUnderstand": true,
+    "hasBusiness": true,
+    "hasProduct": true,
+    "hasCapabilities": true,
+    "hasArchitecture": true,
+    "hasRoadmap": true,
+    "hasAgents": true,
+    "hasSkills": true
+  },
+  "workItems": {
+    "total": 1,
+    "inProgress": 0,
+    "done": 0,
+    "cancelled": 0,
+    "byState": {
+      "draft": 0,
+      "ready": 0,
+      "in-progress": 0,
+      "blocked": 0,
+      "completed": 1,
+      "archived": 0
+    },
+    "byType": {
+      "feature": 1
+    },
+    "initiatives": [
+      {
+        "name": "RM-001",
+        "states": {
+          "draft": 0,
+          "ready": 0,
+          "in-progress": 0,
+          "blocked": 0,
+          "completed": 1,
+          "archived": 0
+        }
+      }
+    ],
+    "items": [
+      {
+        "id": "WI-001",
+        "title": "Registro, Modificación y Visualización de Fecha de Cumpleaños",
+        "type": "feature",
+        "status": "completed",
+        "lifecycle": "completed",
+        "initiative": "RM-001",
+        "knowledgeLevel": "K2",
+        "hasOwnership": true,
+        "domains": [
+          "profiles",
+          "iam"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        }
+      }
+    ]
+  },
+  "ownership": {
+    "workItemsTotal": 1,
+    "workItemsWithOwnership": 1,
+    "workItemsMissingOwnership": 0
+  },
+  "domains": [
+    "profiles",
+    "iam"
+  ],
+  "duplicateWorkItems": [],
+  "externalCapsules": [],
+  "graph": {
+    "generatedAt": "2026-08-04T04:37:00.586Z",
+    "scope": "all",
+    "scopeReason": "All supported Work Item statuses are included.",
+    "includedStatuses": [
+      "draft",
+      "ready",
+      "in-progress",
+      "blocked",
+      "completed"
+    ],
+    "excludedStatuses": [
+      "archived"
+    ],
+    "nodes": 15,
+    "edges": 13,
+    "activeWorkItemsConnectedToCode": 0
+  },
+  "graphHints": {
+    "scope": "all",
+    "scopeReason": "All supported Work Item statuses are included.",
+    "quality": "partial",
+    "totalHints": 12,
+    "activeWorkItemHints": 0,
+    "messages": [
+      " has no governed code paths.",
+      " has no governed code paths.",
+      " has no governed code paths.",
+      " has no governed code paths.",
+      "Capability \"Capability Domains\" is not linked to any Work Item.",
+      "Capability \"Domain: Identity and Access Management (IAM)\" is not linked to any Work Item.",
+      "Capability \"Domain: Professional Identity and Profiles\" is not linked to any Work Item.",
+      "Capability \"Domain: Media and Storage\" is not linked to any Work Item.",
+      "Capability \"Domain: Community Discussions and Content (Posts and Comments)\" is not linked to any Work Item.",
+      "Capability \"Domain: Social Signals and Curation (Votes and Billboard)\" is not linked to any Work Item.",
+      "Capability \"Capability Gaps\" is not linked to any Work Item.",
+      "Capability \"Roadmap Candidate Signals\" is not linked to any Work Item."
+    ]
+  },
+  "skills": {
+    "total": 7,
+    "byGroup": {
+      "tech": 4,
+      "delivery": 3
+    }
+  },
+  "layers": [
+    {
+      "layer": "Business",
+      "status": "Consolidated",
+      "detected": [
+        "business.md"
+      ]
+    },
+    {
+      "layer": "Product",
+      "status": "Structured",
+      "detected": [
+        "capabilities.md",
+        "product.md"
+      ]
+    },
+    {
+      "layer": "Tech",
+      "status": "Structured",
+      "detected": [
+        "ADR-001-s3-compatible-storage-driver.md",
+        "ADR-002-relational-skills-and-tags.md",
+        "ADR-003-refresh-token-rotation-and-storage.md",
+        "ADR-004-database-migrations-engine.md",
+        "architecture-notes.md",
+        "codebase.md",
+        "current-state.md",
+        "decision-candidates.md",
+        "knowledge.md",
+        "modules.md",
+        "system-context.md"
+      ]
+    },
+    {
+      "layer": "Delivery",
+      "status": "Traceable",
+      "detected": [
+        "WI-001-agregar-fecha-de-cumplea-os.md",
+        "roadmap.md"
+      ]
+    }
+  ],
+  "roadmap": {
+    "present": true,
+    "initiatives": 0,
+    "work_item_candidates": 0,
+    "materialized_work_items": 1,
+    "remaining_work_item_candidates": 0,
+    "candidates": 0,
+    "materialized": 1,
+    "remaining": 0
+  },
+  "missingKnowledge": [],
+  "suggestedNextSteps": [],
+  "readiness": {
+    "project_name": "tryckers-backend",
+    "project_type": "pre-ai",
+    "overall": "needs-decisions",
+    "signals": {
+      "scan": "available",
+      "understand": "available",
+      "bootstrap_baseline": "complete",
+      "agents": "present",
+      "skills": "present",
+      "current_state": "useful",
+      "codebase": "useful",
+      "capabilities": "useful",
+      "product": "useful",
+      "business": "useful",
+      "roadmap": "empty",
+      "work_items": "completed-only",
+      "adapters": [
+        "antigravity"
+      ],
+      "blocking_open_questions": 1,
+      "assumed_questions": 0,
+      "resolved_questions": 0,
+      "deferred_questions": 0
+    },
+    "recommended_next_step": {
+      "label": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
+      "command": "kaddo questions"
+    },
+    "nextStepRecommendation": {
+      "id": "questions",
+      "phase": "Knowledge Refinement",
+      "label": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
+      "command": "kaddo questions",
+      "reason": "1 blocking open question(s) remain."
+    }
+  },
+  "nextStepRecommendation": {
+    "id": "questions",
+    "phase": "Knowledge Refinement",
+    "label": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
+    "command": "kaddo questions",
+    "reason": "1 blocking open question(s) remain."
+  },
+  "techDecisions": {
+    "status": "accepted-adrs",
+    "candidates": 4,
+    "adrs": 4,
+    "draft_adrs": 0,
+    "accepted_adrs": 4,
+    "candidate_list": [
+      {
+        "title": "Candidate: S3-Compatible Cloud Storage Provider",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-005-candidate-s3-compatible-cloud-storage-provider.md"
+      },
+      {
+        "title": "Candidate: Normalización de Habilidades y Tags",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-006-candidate-normalizacion-de-habilidades-y-tags.md"
+      },
+      {
+        "title": "Candidate: Estrategia de Refresh Tokens y Manejo de Sesión",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-007-candidate-estrategia-de-refresh-tokens-y-manejo-de-sesion.md"
+      },
+      {
+        "title": "Candidate: Motor de Migraciones en Base de Datos",
+        "source": "knowledge/tech/discovery/decision-candidates.md",
+        "suggestedAdrFile": "knowledge/tech/decisions/ADR-008-candidate-motor-de-migraciones-en-base-de-datos.md"
+      }
+    ],
+    "candidates_source": "knowledge/tech/discovery/decision-candidates.md",
+    "candidates_legacy_location": false,
+    "candidates_both_exist": false
+  },
+  "techKnowledge": {
+    "core": {
+      "currentState": true,
+      "codebase": true
+    },
+    "discovery": {
+      "architectureNotes": true,
+      "decisionCandidates": true,
+      "legacyLocation": false
+    }
+  },
+  "installedAssets": {
+    "version": "3.83.0",
+    "agents": {
+      "total": 20,
+      "up_to_date": 0,
+      "outdated": 9,
+      "missing": 11,
+      "unknown_version": 0,
+      "modified": 0,
+      "items": [
+        {
+          "name": "capability-agent",
+          "path": "knowledge/agents/product/capability-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "architecture-agent",
+          "path": "knowledge/agents/tech/architecture-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "roadmap-agent",
+          "path": "knowledge/agents/delivery/roadmap-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "legacy-agent",
+          "path": "knowledge/agents/utilities/legacy-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "adr-agent",
+          "path": "knowledge/agents/tech/adr-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "work-item-agent",
+          "path": "knowledge/agents/delivery/work-item-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "git-strategy-agent",
+          "path": "knowledge/agents/delivery/git-strategy-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "security-agent",
+          "path": "knowledge/agents/tech/security-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "standards-agent",
+          "path": "knowledge/agents/tech/standards-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "stack-agent",
+          "path": "knowledge/agents/tech/stack-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "module-design-agent",
+          "path": "knowledge/agents/tech/module-design-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "module-context-agent",
+          "path": "knowledge/agents/tech/module-context-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "business-agent",
+          "path": "knowledge/agents/business/business-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "bootstrap-agent",
+          "path": "knowledge/agents/product/bootstrap-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "codebase-agent",
+          "path": "knowledge/agents/tech/codebase-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "implementation-agent",
+          "path": "knowledge/agents/delivery/implementation-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "backlog-agent",
+          "path": "knowledge/agents/delivery/backlog-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "ownership-agent",
+          "path": "knowledge/agents/delivery/ownership-agent.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "capsule-agent",
+          "path": "knowledge/agents/tech/capsule-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "graph-agent",
+          "path": "knowledge/agents/tech/graph-agent.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        }
+      ]
+    },
+    "skills": {
+      "total": 8,
+      "up_to_date": 0,
+      "outdated": 7,
+      "missing": 1,
+      "unknown_version": 0,
+      "modified": 0,
+      "items": [
+        {
+          "name": "adr-writing",
+          "path": "knowledge/skills/adr-writing/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "work-item-refinement",
+          "path": "knowledge/skills/work-item-refinement/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "ownership-suggestion",
+          "path": "knowledge/skills/ownership-suggestion/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "graph-metadata-review",
+          "path": "knowledge/skills/graph-metadata-review/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "capsule-writing",
+          "path": "knowledge/skills/capsule-writing/skill.md",
+          "available": "3.83.0",
+          "installed": null,
+          "state": "missing"
+        },
+        {
+          "name": "learning-capture",
+          "path": "knowledge/skills/learning-capture/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "implementation-planning",
+          "path": "knowledge/skills/implementation-planning/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        },
+        {
+          "name": "module-context-refinement",
+          "path": "knowledge/skills/module-context-refinement/skill.md",
+          "available": "3.83.0",
+          "installed": "3.68.0",
+          "state": "outdated"
+        }
+      ]
+    }
+  },
+  "roadmapQuality": {
+    "initiatives": {
+      "total": 0,
+      "grounded": 0,
+      "with_related_domain": 0,
+      "with_related_capability": 0,
+      "with_source_signals": 0,
+      "needs_refinement": false,
+      "items": []
+    },
+    "work_item_candidates": {
+      "total": 0,
+      "with_source_initiative": 0,
+      "with_related_domain": 0,
+      "with_related_capability": 0
+    }
+  },
+  "projectRoute": {
+    "type": "pre-ai",
+    "currentStep": "scan-repository",
+    "completed": 14,
+    "total": 16,
+    "progressPercent": 88,
+    "steps": [
+      {
+        "id": "enable-kaddo",
+        "label": "Enable Kaddo",
+        "status": "done",
+        "evidence": [
+          ".kaddo/config.yml"
+        ]
+      },
+      {
+        "id": "scan-repository",
+        "label": "Scan repository",
+        "status": "warning",
+        "evidence": [
+          ".kaddo/scan.json"
+        ],
+        "reason": "Scan has warnings (e.g. no test directory detected).",
+        "command": "kaddo scan"
+      },
+      {
+        "id": "bootstrap",
+        "label": "Bootstrap knowledge baseline",
+        "status": "done",
+        "evidence": [
+          "knowledge/business/business.md",
+          "knowledge/product/product.md"
+        ]
+      },
+      {
+        "id": "define-business",
+        "label": "Define business context",
+        "status": "done",
+        "evidence": [
+          "knowledge/business/business.md"
+        ]
+      },
+      {
+        "id": "define-product",
+        "label": "Define product context",
+        "status": "done",
+        "evidence": [
+          "knowledge/product/product.md"
+        ]
+      },
+      {
+        "id": "discover-capabilities",
+        "label": "Discover capabilities",
+        "status": "done",
+        "evidence": [
+          "knowledge/product/capabilities.md"
+        ]
+      },
+      {
+        "id": "describe-architecture",
+        "label": "Describe current architecture",
+        "status": "done",
+        "evidence": [
+          "knowledge/tech/current-state.md",
+          "knowledge/tech/codebase.md"
+        ]
+      },
+      {
+        "id": "capture-technical-decisions",
+        "label": "Capture technical decisions",
+        "status": "done",
+        "evidence": [
+          "knowledge/tech/decisions/"
+        ],
+        "reason": "4 ADR(s) exist."
+      },
+      {
+        "id": "create-work-source",
+        "label": "Create or connect work source",
+        "status": "done",
+        "evidence": [
+          "knowledge/delivery/roadmap.md"
+        ]
+      },
+      {
+        "id": "materialize-work-item",
+        "label": "Materialize first Work Item",
+        "status": "done",
+        "evidence": [
+          "knowledge/delivery/work-items/"
+        ]
+      },
+      {
+        "id": "refine-work-item",
+        "label": "Refine Work Item",
+        "status": "done"
+      },
+      {
+        "id": "suggest-ownership",
+        "label": "Suggest ownership",
+        "status": "done"
+      },
+      {
+        "id": "resolve-adrs",
+        "label": "Resolve ADRs if needed",
+        "status": "done"
+      },
+      {
+        "id": "prepare-implementation",
+        "label": "Prepare implementation",
+        "status": "done"
+      },
+      {
+        "id": "run-guard",
+        "label": "Run guard",
+        "status": "pending"
+      },
+      {
+        "id": "capture-learning",
+        "label": "Capture learning",
+        "status": "done"
+      }
+    ]
+  },
+  "scanSignals": {
+    "auth": [
+      {
+        "type": "auth",
+        "label": "Auth-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares/auth_middleware.go",
+          "src/internal/dtos/loginResponse.go",
+          "src/internal/dtos/loginUser.go"
+        ]
+      }
+    ],
+    "payments": [],
+    "webhooks": [],
+    "storage": [
+      {
+        "type": "storage",
+        "label": "Storage-related paths detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/services/storage",
+          "src/internal/services/storage/local_storage.go"
+        ]
+      }
+    ],
+    "background_jobs": [],
+    "email": [],
+    "database": [],
+    "migrations": [
+      {
+        "type": "migrations",
+        "label": "migrations (1 file)",
+        "confidence": "high",
+        "evidence": [
+          "migrations"
+        ]
+      }
+    ],
+    "api_routes": [],
+    "tests": [
+      {
+        "type": "tests",
+        "label": "No test directory detected",
+        "confidence": "high",
+        "evidence": [],
+        "recommended_review": "Confirm how this project is validated before production changes."
+      }
+    ],
+    "security": [
+      {
+        "type": "security",
+        "label": "Middleware detected",
+        "confidence": "medium",
+        "evidence": [
+          "src/internal/api/middlewares"
+        ]
+      },
+      {
+        "type": "security",
+        "label": "Secret-bearing environment variables",
+        "confidence": "medium",
+        "evidence": [
+          "JWT_SECRET",
+          "POSTGRES_PASSWORD"
+        ],
+        "recommended_review": "Confirm secret rotation and endpoint protection strategy."
+      }
+    ],
+    "infrastructure": [
+      {
+        "type": "infrastructure",
+        "label": "Docker Compose",
+        "confidence": "high",
+        "evidence": [
+          "docker-compose.yml"
+        ]
+      },
+      {
+        "type": "infrastructure",
+        "label": "Dockerfile",
+        "confidence": "high",
+        "evidence": [
+          "Dockerfile"
+        ]
+      }
+    ],
+    "external_integrations": [],
+    "environment": [
+      {
+        "type": "environment",
+        "label": "9 environment variable(s) detected",
+        "confidence": "high",
+        "evidence": [
+          "DATABASE_URL",
+          "FRONTEND_URL",
+          "JWT_SECRET",
+          "PORT",
+          "POSTGRES_DB",
+          "POSTGRES_HOST",
+          "POSTGRES_PASSWORD",
+          "POSTGRES_PORT",
+          "POSTGRES_USER"
+        ]
+      }
+    ]
+  },
+  "metadataHealth": {
+    "findings": [],
+    "healthy": 6,
+    "drifted": 0
+  },
+  "isModuleRepo": false,
+  "deliverySummary": {
+    "completedWorkItems": 1,
+    "archivedWorkItems": 0,
+    "activeWorkItems": 0,
+    "implementationCompleted": 0,
+    "releaseBlocked": 0,
+    "releaseReady": 0
+  },
+  "scopeCoverage": [],
+  "implementationEvidence": [
+    {
+      "id": "WI-001",
+      "lifecycle": "completed",
+      "implementationStatus": "not-assessed",
+      "validationStatus": "not-assessed",
+      "releaseStatus": "not-assessed",
+      "affectedModules": [
+        "frontend",
+        "core"
+      ],
+      "releaseGates": [],
+      "completionExceptions": [],
+      "repoEvidence": {}
+    }
+  ],
+  "mapped_modules": [
+    {
+      "id": "frontend",
+      "repoPath": "../tryckers-frontend",
+      "capabilities": [],
+      "code": [],
+      "artifacts": {
+        "moduleDesign": false,
+        "stack": false,
+        "security": false,
+        "standards": false,
+        "diagrams": false,
+        "adrs": false
+      }
+    }
+  ]
+}

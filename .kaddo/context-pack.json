@@ -1,9 +1,10 @@
 {
   "version": "1",
-  "generatedAt": "2026-08-04T04:35:04.093Z",
+  "generatedAt": "2026-11-11T03:35:26.939Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
+    "mode": "standard",
     "teamSize": "small",
     "structure": "multirepo",
     "language": "Spanish"
@@ -28,12 +29,13 @@
     "contractFiles": [],
     "infrastructureFiles": [
       "docker-compose.yml",
-      "Dockerfile"
+      "Dockerfile",
+      "infra/"
     ]
   },
   "knowledge": {
-    "summary": "> What is true about this product right now.",
-    "roadmapSummary": "> What we intend to build and why.",
+    "summary": "",
+    "roadmapSummary": "",
     "inventoryAvailable": true,
     "workItems": [],
     "activeWorkItems": [],
@@ -58,6 +60,27 @@
         "releaseStatus": "not-assessed",
         "affectedModules": [
           "frontend",
+          "core"
+        ]
+      },
+      {
+        "id": "WI-002",
+        "type": "chore",
+        "title": "Habilitar terraform para hacer iac y desplegar en aws",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
           "core"
         ]
       }
@@ -86,6 +109,27 @@
           "frontend",
           "core"
         ]
+      },
+      {
+        "id": "WI-002",
+        "type": "chore",
+        "title": "Habilitar terraform para hacer iac y desplegar en aws",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "artifacts": [
@@ -104,6 +148,15 @@
           "tryckers-frontend/src/app/auth/interfaces/auth-response.ts",
           "tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts",
           "tryckers-frontend/src/app/tryckers/pages/profile-page/**"
+        ]
+      },
+      {
+        "id": "WI-002",
+        "type": "chore",
+        "title": "Habilitar terraform para hacer iac y desplegar en aws",
+        "summary": "Habilitar terraform para hacer iac y desplegar en aws",
+        "codeGlobs": [
+          "infra/**/*.tf"
         ]
       }
     ]
@@ -146,6 +199,7 @@
       "status": "Traceable",
       "detected": [
         "WI-001-agregar-fecha-de-cumplea-os.md",
+        "WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md",
         "roadmap.md"
       ]
     }
@@ -182,17 +236,17 @@
     "present": true,
     "initiatives": 0,
     "work_item_candidates": 0,
-    "materialized_work_items": 1,
+    "materialized_work_items": 2,
     "remaining_work_item_candidates": 0,
     "candidates": 0,
-    "materialized": 1,
+    "materialized": 2,
     "remaining": 0
   },
   "phase": {
     "phase": "Maintenance",
     "reasons": [
       "Roadmap available",
-      "1 materialized work item(s)",
+      "2 materialized work item(s)",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
@@ -221,8 +275,8 @@
     "ready_multirepo_wi_ids": [],
     "in_progress_work_items": 0,
     "blocked_work_items": 0,
-    "total_work_items": 1,
-    "ownership_coverage": "1/1",
+    "total_work_items": 2,
+    "ownership_coverage": "2/2",
     "remaining_work_item_candidates": 0,
     "decision_candidates": 4,
     "accepted_adrs": 4,
@@ -293,44 +347,86 @@
     }
   },
   "installedAssets": {
-    "version": "3.68.0",
+    "version": "3.135.0",
     "agents": {
-      "total": 20,
-      "installed": 9,
+      "total": 21,
+      "installed": 21,
       "outdated": 0,
       "unknown_version": 0,
       "modified": 0
     },
     "skills": {
-      "total": 8,
-      "installed": 7,
+      "total": 12,
+      "installed": 12,
       "outdated": 0,
       "unknown_version": 0,
       "modified": 0
     }
   },
   "workItemSummary": {
-    "total": 1,
+    "total": 2,
     "active": 0,
     "draft": 0,
     "ready": 0,
     "in_progress": 0,
     "blocked": 0,
-    "completed": 1,
+    "completed": 2,
     "archived": 0,
     "summary": "completed-only"
   },
   "deliveryMix": {},
   "external": [],
-  "graph": null,
-  "graphHints": null,
+  "graph": {
+    "generatedAt": "2026-08-04T04:37:00.586Z",
+    "scope": "all",
+    "scopeReason": "All supported Work Item statuses are included.",
+    "includedStatuses": [
+      "draft",
+      "ready",
+      "in-progress",
+      "blocked",
+      "completed"
+    ],
+    "excludedStatuses": [
+      "archived"
+    ],
+    "nodes": 15,
+    "edges": 13,
+    "activeWorkItemsConnectedToCode": 0
+  },
+  "graphHints": {
+    "scope": "all",
+    "scopeReason": "All supported Work Item statuses are included.",
+    "quality": "partial",
+    "totalHints": 12,
+    "activeWorkItemHints": 0,
+    "messages": [
+      " has no governed code paths.",
+      " has no governed code paths.",
+      " has no governed code paths.",
+      " has no governed code paths.",
+      "Capability \"Capability Domains\" is not linked to any Work Item.",
+      "Capability \"Domain: Identity and Access Management (IAM)\" is not linked to any Work Item.",
+      "Capability \"Domain: Professional Identity and Profiles\" is not linked to any Work Item.",
+      "Capability \"Domain: Media and Storage\" is not linked to any Work Item.",
+      "Capability \"Domain: Community Discussions and Content (Posts and Comments)\" is not linked to any Work Item.",
+      "Capability \"Domain: Social Signals and Curation (Votes and Billboard)\" is not linked to any Work Item.",
+      "Capability \"Capability Gaps\" is not linked to any Work Item.",
+      "Capability \"Roadmap Candidate Signals\" is not linked to any Work Item."
+    ]
+  },
   "skills": [
     "adr-writing",
+    "capsule-writing",
+    "evidence-verification",
     "graph-metadata-review",
     "implementation-planning",
+    "knowledge-consolidation",
     "learning-capture",
+    "legacy-risk-assessment",
     "module-context-refinement",
     "ownership-suggestion",
+    "poc-report-writing",
     "work-item-refinement"
   ],
   "scanSignals": {
@@ -417,6 +513,14 @@
         "confidence": "high",
         "evidence": [
           "Dockerfile"
+        ]
+      },
+      {
+        "type": "infrastructure",
+        "label": "infra/",
+        "confidence": "high",
+        "evidence": [
+          "infra/"
         ]
       }
     ],
@@ -597,7 +701,10 @@
   },
   "affectedModuleContexts": {},
   "isModuleRepo": false,
-  "missing": [],
+  "missing": [
+    "No project knowledge summary found yet.",
+    "No roadmap baseline found."
+  ],
   "handoff": {
     "recommendedAgents": [
       "roadmap-agent"

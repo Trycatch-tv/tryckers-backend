@@ -26,10 +26,13 @@ multirepo:
     - ..
 module_agents:
   installed: true
-  installed_at: 2026-08-04
+  installed_at: 2026-11-11
 modules:
   - agents
   - skills
 module_skills:
   installed: true
-  installed_at: 2026-08-04
+  installed_at: 2026-11-11
+telemetry:
+  consent: disabled
+  consentVersion: 1

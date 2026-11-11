@@ -75,14 +75,26 @@ automatically.
 
 Installed under `knowledge/agents/`. Use them as role-specific guidance when relevant:
 
+- `adr-agent`
 - `architecture-agent`
 - `backlog-agent`
+- `bootstrap-agent`: use when refining initial knowledge.
 - `business-agent`
 - `capability-agent`
+- `capsule-agent`: use to refine a Knowledge Capsule for sharing.
+- `codebase-agent`
+- `git-strategy-agent`
+- `graph-agent`: use to turn graph hints into front matter.
 - `implementation-agent`: use before implementing Work Items.
+- `knowledge-consolidation-agent`
+- `legacy-agent`
 - `module-context-agent`
+- `module-design-agent`
 - `ownership-agent`: use to propose precise `code:` ownership globs.
 - `roadmap-agent`: use before creating or refining the roadmap.
+- `security-agent`
+- `stack-agent`
+- `standards-agent`
 - `work-item-agent`: use before refining Work Items.
 
 ## Available Kaddo skills
@@ -91,11 +103,16 @@ Reusable skills under `knowledge/skills/`. Read only the skills relevant to the 
 task — do not load every skill by default.
 
 - `adr-writing`
+- `capsule-writing`
+- `evidence-verification`
 - `graph-metadata-review`
 - `implementation-planning`
+- `knowledge-consolidation`
 - `learning-capture`
+- `legacy-risk-assessment`
 - `module-context-refinement`
 - `ownership-suggestion`
+- `poc-report-writing`
 - `work-item-refinement`
 
 ## Command fallback
