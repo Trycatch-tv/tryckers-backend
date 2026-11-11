@@ -1,0 +1,42 @@
+entities:
+  - id: tryckers-frontend
+    kind: application
+    label: tryckers-frontend
+    purpose: Interfaz de usuario web para la plataforma Tryckers (Directorio,
+      Perfiles, Cartelera)
+  - id: tryckers-backend
+    kind: service
+    label: tryckers-backend
+    purpose: API REST para gestión de usuarios, perfiles, publicaciones e interacciones
+  - id: postgres-db
+    kind: datastore
+    label: postgres-db
+    purpose: Almacenamiento relacional principal (usuarios, credenciales, posts,
+      comentarios)
+  - id: local-storage
+    kind: datastore
+    label: local-storage
+    purpose: Almacenamiento local de medios (avatares, banners) en disco
+    knowledge:
+      - ADR-001-s3-compatible-storage-driver
+  - id: external-services
+    kind: external-system
+    label: external-services
+    purpose: Visualización de información externa (URLs referenciadas en el perfil
+      de usuario)
+relationships:
+  - from: tryckers-frontend
+    to: tryckers-backend
+    type: calls
+  - from: tryckers-backend
+    to: postgres-db
+    type: reads-from
+  - from: tryckers-backend
+    to: postgres-db
+    type: writes-to
+  - from: tryckers-backend
+    to: local-storage
+    type: writes-to
+  - from: tryckers-frontend
+    to: external-services
+    type: integrates-with

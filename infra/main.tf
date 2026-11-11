@@ -49,6 +49,22 @@ data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_security_group" "default" {
+  vpc_id = data.aws_vpc.default.id
+  name   = "default"
+}
+
+# Allow PostgreSQL access from backend EC2 to RDS in default SG
+resource "aws_security_group_rule" "rds_ingress_from_backend" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.default.id
+  source_security_group_id = aws_security_group.backend_sg.id
+  description              = "Allow PostgreSQL access from backend EC2"
+}
+
 # Security Group for EC2 Backend
 resource "aws_security_group" "backend_sg" {
   name        = "${var.project_name}-backend-sg"

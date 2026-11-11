@@ -71,39 +71,41 @@ jobs:
           tags: ${{ env.ECR_REPOSITORY_URL }}:${{ github.sha }}
 
       - name: Deploy to Amazon EC2 via AWS Systems Manager
+        env:
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          set -e
+          set -euo pipefail
           echo "Sending deployment command to EC2 (${{ env.EC2_INSTANCE_ID }})..."
           
-          COMMANDS=$(cat << 'EOF'
-          mkdir -p /opt/tryckers/scripts
-          cat << 'SCRIPT' > /opt/tryckers/scripts/deploy.sh
-          EOF
-          )
-          
-          # Read local deploy script and wrap it
-          SCRIPT_CONTENT=$(cat scripts/deploy.sh)
-          COMPOSE_CONTENT=$(cat docker-compose.prod.yml)
-          
-          FULL_COMMAND=$(cat << EOF
-          mkdir -p /opt/tryckers/scripts
-          cat << 'DEPLOY_SCRIPT' > /opt/tryckers/scripts/deploy.sh
-          $SCRIPT_CONTENT
-          DEPLOY_SCRIPT
-          chmod +x /opt/tryckers/scripts/deploy.sh
+          python3 -c '
+          import base64, json, os
 
-          cat << 'COMPOSE_FILE' > /opt/tryckers/docker-compose.prod.yml
-          $COMPOSE_CONTENT
-          COMPOSE_FILE
+          with open("scripts/deploy.sh", "rb") as f:
+              deploy_b64 = base64.b64encode(f.read().replace(b"\r\n", b"\n")).decode("utf-8")
 
-          /opt/tryckers/scripts/deploy.sh "${{ github.sha }}" "${{ env.ECR_REPOSITORY_URL }}" "${{ env.AWS_REGION }}"
-          EOF
-          )
+          with open("docker-compose.prod.yml", "rb") as f:
+              compose_b64 = base64.b64encode(f.read().replace(b"\r\n", b"\n")).decode("utf-8")
+
+          sha = os.environ["COMMIT_SHA"]
+          ecr = os.environ["ECR_REPOSITORY_URL"]
+          region = os.environ["AWS_REGION"]
+
+          commands = [
+              "mkdir -p /opt/tryckers/scripts",
+              f"echo {deploy_b64} | base64 -d > /opt/tryckers/scripts/deploy.sh",
+              "chmod +x /opt/tryckers/scripts/deploy.sh",
+              f"echo {compose_b64} | base64 -d > /opt/tryckers/docker-compose.prod.yml",
+              f"/opt/tryckers/scripts/deploy.sh \"{sha}\" \"{ecr}\" \"{region}\""
+          ]
+
+          with open("ssm_deploy_params.json", "w") as f:
+              json.dump({"commands": commands}, f)
+          '
 
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${{ vars.EC2_INSTANCE_ID || env.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters "commands=[\"$(echo "$FULL_COMMAND" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g' -e 's/"/\\"/g')\"]" \
+            --parameters "file://ssm_deploy_params.json" \
             --comment "Deploy commit ${{ github.sha }} via GitHub Actions" \
             --output text \
             --query "Command.CommandId")
