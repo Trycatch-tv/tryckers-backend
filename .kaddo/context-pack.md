@@ -141,7 +141,7 @@ Active Work Items by type:
 
 - WI-001 [feature] owns: src/internal/models/user.go, src/internal/dtos/userUpdate.go, src/internal/api/handlers/user_handler.go, src/internal/api/routes/router.go, src/internal/repository/user_repository.go, src/internal/services/user_service.go, tryckers-frontend/src/app/auth/interfaces/auth-response.ts, tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts, tryckers-frontend/src/app/tryckers/pages/profile-page/**
 - WI-002 [chore] owns: infra/**/*.tf
-- WI-003 [chore] owns: infra/**/*.tf, .github/workflows/*.yml, scripts/*.sh
+- WI-003 [chore] owns: infra/**/*.tf, .github/workflows/*.yml, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/api/routes/router.go
 
 ## Mapped Modules
 

@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-11T03:42:27.383Z",
+  "generatedAt": "2026-11-11T03:47:47.856Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -222,11 +222,14 @@
         "id": "WI-003",
         "type": "chore",
         "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "summary": "Implementar un pipeline CI/CD con GitHub Actions, Terraform, ECR y AWS SSM para desplegar automáticamente el backend en EC2.",
+        "summary": "Implementar un pipeline CI/CD completo con GitHub Actions, Terraform (ECR + OIDC + IAM), AWS SSM y Docker Compose para desplegar automáticamente el backend en EC2 tras merge en main.",
         "codeGlobs": [
           "infra/**/*.tf",
           ".github/workflows/*.yml",
-          "scripts/*.sh"
+          "scripts/*.sh",
+          "docker-compose.prod.yml",
+          "src/cmd/main.go",
+          "src/internal/api/routes/router.go"
         ]
       }
     ]
@@ -341,8 +344,10 @@
   "deliveryState": {
     "phase": "Knowledge Refinement",
     "draft_work_items": 1,
-    "refined_draft_work_items": 0,
-    "refined_draft_ids": [],
+    "refined_draft_work_items": 1,
+    "refined_draft_ids": [
+      "WI-003"
+    ],
     "ready_work_items": 0,
     "ready_work_item_ids": [],
     "ready_multirepo_wi_ids": [],
