@@ -1,0 +1,127 @@
+name: Backend CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Dockerfile'
+      - 'docker-compose.prod.yml'
+      - 'scripts/**'
+      - '.github/workflows/backend-cd.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-west-2
+  DEPLOY_ROLE_ARN: arn:aws:iam::570743710918:role/tryckers-github-deploy-role
+  ECR_REPOSITORY_URL: 570743710918.dkr.ecr.us-west-2.amazonaws.com/tryckers-backend
+  EC2_INSTANCE_ID: i-007cfaf0508858c13
+
+jobs:
+  build-and-deploy:
+    name: Build, Publish and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN || env.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build, tag, and push Docker image to Amazon ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.ECR_REPOSITORY_URL }}:${{ github.sha }}
+            ${{ env.ECR_REPOSITORY_URL }}:latest
+
+      - name: Deploy to Amazon EC2 via AWS Systems Manager
+        run: |
+          set -e
+          echo "Sending deployment command to EC2 (${{ env.EC2_INSTANCE_ID }})..."
+          
+          COMMANDS=$(cat << 'EOF'
+          mkdir -p /opt/tryckers/scripts
+          cat << 'SCRIPT' > /opt/tryckers/scripts/deploy.sh
+          EOF
+          )
+          
+          # Read local deploy script and wrap it
+          SCRIPT_CONTENT=$(cat scripts/deploy.sh)
+          COMPOSE_CONTENT=$(cat docker-compose.prod.yml)
+          
+          FULL_COMMAND=$(cat << EOF
+          mkdir -p /opt/tryckers/scripts
+          cat << 'DEPLOY_SCRIPT' > /opt/tryckers/scripts/deploy.sh
+          $SCRIPT_CONTENT
+          DEPLOY_SCRIPT
+          chmod +x /opt/tryckers/scripts/deploy.sh
+
+          cat << 'COMPOSE_FILE' > /opt/tryckers/docker-compose.prod.yml
+          $COMPOSE_CONTENT
+          COMPOSE_FILE
+
+          /opt/tryckers/scripts/deploy.sh "${{ github.sha }}" "${{ env.ECR_REPOSITORY_URL }}" "${{ env.AWS_REGION }}"
+          EOF
+          )
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${{ vars.EC2_INSTANCE_ID || env.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters "commands=[\"$(echo "$FULL_COMMAND" | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g' -e 's/"/\\"/g')\"]" \
+            --comment "Deploy commit ${{ github.sha }} via GitHub Actions" \
+            --output text \
+            --query "Command.CommandId")
+
+          echo "SSM Command sent with ID: $COMMAND_ID"
+          echo "Waiting for command execution to complete..."
+
+          # Wait for execution and report status
+          while true; do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "${{ vars.EC2_INSTANCE_ID || env.EC2_INSTANCE_ID }}" \
+              --query "Status" \
+              --output text 2>/dev/null || echo "Pending")
+            
+            echo "Current Status: $STATUS"
+
+            if [[ "$STATUS" == "Success" ]]; then
+              echo "Deployment succeeded!"
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id "${{ vars.EC2_INSTANCE_ID || env.EC2_INSTANCE_ID }}" \
+                --query "StandardOutputContent" \
+                --output text
+              break
+            elif [[ "$STATUS" == "Failed" || "$STATUS" == "Cancelled" || "$STATUS" == "TimedOut" ]]; then
+              echo "Deployment failed with status: $STATUS"
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id "${{ vars.EC2_INSTANCE_ID || env.EC2_INSTANCE_ID }}" \
+                --query "StandardErrorContent" \
+                --output text
+              exit 1
+            fi
+
+            sleep 5
+          done

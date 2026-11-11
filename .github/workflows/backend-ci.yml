@@ -1,0 +1,46 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Dockerfile'
+      - '.github/workflows/backend-ci.yml'
+
+jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - name: Download Go dependencies
+        run: go mod download
+
+      - name: Run unit tests
+        run: go test -v -race ./src/...
+
+      - name: Build Go application
+        run: go build -v -o /dev/null ./src/cmd
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (dry run validation)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: tryckers-backend:ci-test
