@@ -27,18 +27,18 @@ Reason:
 
 - Roadmap available
 - 3 materialized work item(s)
-- draft: 1
+- ready: 1
 - Ownership coverage 100%
 
-Recommended next: work-item-agent
+Recommended next: implementation-agent
 
 Next step: Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.
 
 ## Delivery State
 
 - Phase: Knowledge Refinement
-- Draft Work Items: 1
-- Ready Work Items: 0
+- Draft Work Items: 0
+- Ready Work Items: 1
 - In-progress Work Items: 0
 - Ownership coverage: 3/3
 - Remaining Work Item candidates: 0
@@ -128,7 +128,7 @@ No roadmap baseline found.
 
 ## Active Work Items
 
-- WI-003 [chore] (draft) — Automated Backend Deployment with Terraform, ECR & GitHub Actions · domains: infrastructure, delivery
+- WI-003 [chore] (ready) — Automated Backend Deployment with Terraform, ECR & GitHub Actions · domains: infrastructure, delivery
   - Source: manual
 
 ## Delivery Mix
@@ -205,7 +205,7 @@ Read full skill definitions in `knowledge/skills/` or via the Kaddo MCP server (
 
 Recommended next for the **Active Delivery** phase:
 
-1. work-item-agent
+1. implementation-agent
 
 Next step:
 
@@ -213,6 +213,6 @@ Next step:
 
 ## Instructions for the LLM
 
-- Refine draft Work Items to ready.
-- Use the work-item-agent.
-- Do not implement unless the user explicitly asks.
+- Use the implementation-agent.
+- Suggest a branch name only.
+- Do not run git commands.

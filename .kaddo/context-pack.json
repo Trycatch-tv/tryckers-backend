@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-11T03:47:47.856Z",
+  "generatedAt": "2026-11-11T03:54:05.609Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -42,8 +42,8 @@
         "id": "WI-003",
         "type": "chore",
         "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "draft",
-        "lifecycle": "draft",
+        "status": "ready",
+        "lifecycle": "ready",
         "knowledgeLevel": "",
         "domains": [
           "infrastructure",
@@ -63,8 +63,8 @@
         "id": "WI-003",
         "type": "chore",
         "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "draft",
-        "lifecycle": "draft",
+        "status": "ready",
+        "lifecycle": "ready",
         "knowledgeLevel": "",
         "domains": [
           "infrastructure",
@@ -175,8 +175,8 @@
         "id": "WI-003",
         "type": "chore",
         "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "draft",
-        "lifecycle": "draft",
+        "status": "ready",
+        "lifecycle": "ready",
         "knowledgeLevel": "",
         "domains": [
           "infrastructure",
@@ -321,17 +321,17 @@
     "reasons": [
       "Roadmap available",
       "3 materialized work item(s)",
-      "draft: 1",
+      "ready: 1",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
-      "work-item-agent"
+      "implementation-agent"
     ],
     "nextStep": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
     "llmInstructions": [
-      "Refine draft Work Items to ready.",
-      "Use the work-item-agent.",
-      "Do not implement unless the user explicitly asks."
+      "Use the implementation-agent.",
+      "Suggest a branch name only.",
+      "Do not run git commands."
     ]
   },
   "nextStepRecommendation": {
@@ -343,14 +343,16 @@
   },
   "deliveryState": {
     "phase": "Knowledge Refinement",
-    "draft_work_items": 1,
-    "refined_draft_work_items": 1,
-    "refined_draft_ids": [
+    "draft_work_items": 0,
+    "refined_draft_work_items": 0,
+    "refined_draft_ids": [],
+    "ready_work_items": 1,
+    "ready_work_item_ids": [
       "WI-003"
     ],
-    "ready_work_items": 0,
-    "ready_work_item_ids": [],
-    "ready_multirepo_wi_ids": [],
+    "ready_multirepo_wi_ids": [
+      "WI-003"
+    ],
     "in_progress_work_items": 0,
     "blocked_work_items": 0,
     "total_work_items": 3,
@@ -444,13 +446,13 @@
   "workItemSummary": {
     "total": 3,
     "active": 1,
-    "draft": 1,
-    "ready": 0,
+    "draft": 0,
+    "ready": 1,
     "in_progress": 0,
     "blocked": 0,
     "completed": 2,
     "archived": 0,
-    "summary": "draft-only"
+    "summary": "ready"
   },
   "deliveryMix": {
     "chore": 1
@@ -787,15 +789,15 @@
   ],
   "handoff": {
     "recommendedAgents": [
-      "work-item-agent"
+      "implementation-agent"
     ],
     "nextSteps": [
       "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions."
     ],
     "instructions": [
-      "Refine draft Work Items to ready.",
-      "Use the work-item-agent.",
-      "Do not implement unless the user explicitly asks."
+      "Use the implementation-agent.",
+      "Suggest a branch name only.",
+      "Do not run git commands."
     ],
     "operatingRules": [
       "**Never run `git commit`, `git push` or `git merge` without explicit human confirmation.**",

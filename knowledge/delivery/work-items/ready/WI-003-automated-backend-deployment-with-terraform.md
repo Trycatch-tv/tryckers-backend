@@ -2,9 +2,10 @@
 type: chore
 id: WI-003
 title: Automated Backend Deployment with Terraform, ECR & GitHub Actions
-status: draft
+status: ready
 work_type: chore
 created_at: '2026-11-11'
+ready_at: '2026-11-11'
 source:
   type: manual
   inferred: false
