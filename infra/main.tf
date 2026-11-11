@@ -229,18 +229,25 @@ resource "aws_iam_policy" "github_deploy_policy" {
         Resource = aws_ecr_repository.backend_repo.arn
       },
       {
-        Sid    = "SSMDeploy"
+        Sid    = "SSMDeployCommand"
         Effect = "Allow"
         Action = [
-          "ssm:SendCommand",
-          "ssm:GetCommandInvocation",
-          "ssm:ListCommandInvocations",
-          "ssm:DescribeInstanceInformation"
+          "ssm:SendCommand"
         ]
         Resource = [
           aws_instance.backend.arn,
           "arn:aws:ssm:${var.aws_region}:*:document/AWS-RunShellScript"
         ]
+      },
+      {
+        Sid    = "SSMDeployInvocation"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetCommandInvocation",
+          "ssm:ListCommandInvocations",
+          "ssm:DescribeInstanceInformation"
+        ]
+        Resource = "*"
       }
     ]
   })
