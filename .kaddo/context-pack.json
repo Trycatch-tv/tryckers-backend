@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-11T04:34:18.949Z",
+  "generatedAt": "2026-11-11T05:04:31.427Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -37,48 +37,8 @@
     "summary": "",
     "roadmapSummary": "",
     "inventoryAvailable": true,
-    "workItems": [
-      {
-        "id": "WI-003",
-        "type": "chore",
-        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "in-progress",
-        "lifecycle": "in-progress",
-        "knowledgeLevel": "",
-        "domains": [
-          "infrastructure",
-          "delivery"
-        ],
-        "source": {
-          "type": "manual",
-          "inferred": false
-        },
-        "affectedModules": [
-          "core"
-        ]
-      }
-    ],
-    "activeWorkItems": [
-      {
-        "id": "WI-003",
-        "type": "chore",
-        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "in-progress",
-        "lifecycle": "in-progress",
-        "knowledgeLevel": "",
-        "domains": [
-          "infrastructure",
-          "delivery"
-        ],
-        "source": {
-          "type": "manual",
-          "inferred": false
-        },
-        "affectedModules": [
-          "core"
-        ]
-      }
-    ],
+    "workItems": [],
+    "activeWorkItems": [],
     "completedWorkItems": [
       {
         "id": "WI-001",
@@ -112,6 +72,28 @@
         "knowledgeLevel": "",
         "domains": [
           "infrastructure"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
+      },
+      {
+        "id": "WI-003",
+        "type": "chore",
+        "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure",
+          "delivery"
         ],
         "source": {
           "type": "manual",
@@ -175,8 +157,8 @@
         "id": "WI-003",
         "type": "chore",
         "title": "Automated Backend Deployment with Terraform, ECR & GitHub Actions",
-        "status": "in-progress",
-        "lifecycle": "in-progress",
+        "status": "completed",
+        "lifecycle": "completed",
         "knowledgeLevel": "",
         "domains": [
           "infrastructure",
@@ -186,6 +168,9 @@
           "type": "manual",
           "inferred": false
         },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
         "affectedModules": [
           "core"
         ]
@@ -317,24 +302,19 @@
     "remaining": 0
   },
   "phase": {
-    "phase": "Active Delivery",
+    "phase": "Maintenance",
     "reasons": [
       "Roadmap available",
       "3 materialized work item(s)",
-      "in-progress: 1",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
-      "implementation-agent",
-      "kaddo scan",
-      "kaddo owners suggest",
-      "kaddo guard"
+      "roadmap-agent"
     ],
     "nextStep": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
     "llmInstructions": [
-      "Continue the in-progress Work Item with the implementation-agent.",
-      "After changes, run `kaddo scan`, `kaddo owners suggest` and `kaddo guard`.",
-      "Do not commit, push or merge without explicit human confirmation."
+      "No active work.",
+      "Use the roadmap-agent to plan the next initiative."
     ]
   },
   "nextStepRecommendation": {
@@ -352,7 +332,7 @@
     "ready_work_items": 0,
     "ready_work_item_ids": [],
     "ready_multirepo_wi_ids": [],
-    "in_progress_work_items": 1,
+    "in_progress_work_items": 0,
     "blocked_work_items": 0,
     "total_work_items": 3,
     "ownership_coverage": "3/3",
@@ -444,18 +424,16 @@
   },
   "workItemSummary": {
     "total": 3,
-    "active": 1,
+    "active": 0,
     "draft": 0,
     "ready": 0,
-    "in_progress": 1,
+    "in_progress": 0,
     "blocked": 0,
-    "completed": 2,
+    "completed": 3,
     "archived": 0,
-    "summary": "active"
+    "summary": "completed-only"
   },
-  "deliveryMix": {
-    "chore": 1
-  },
+  "deliveryMix": {},
   "external": [],
   "graph": {
     "generatedAt": "2026-08-04T04:37:00.586Z",
@@ -627,7 +605,7 @@
   },
   "projectRoute": {
     "type": "pre-ai",
-    "currentStep": "run-guard",
+    "currentStep": "scan-repository",
     "completed": 14,
     "total": 16,
     "progressPercent": 88,
@@ -740,8 +718,7 @@
       {
         "id": "run-guard",
         "label": "Run guard",
-        "status": "current",
-        "command": "kaddo guard"
+        "status": "pending"
       },
       {
         "id": "capture-learning",
@@ -789,18 +766,14 @@
   ],
   "handoff": {
     "recommendedAgents": [
-      "implementation-agent",
-      "kaddo scan",
-      "kaddo owners suggest",
-      "kaddo guard"
+      "roadmap-agent"
     ],
     "nextSteps": [
       "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions."
     ],
     "instructions": [
-      "Continue the in-progress Work Item with the implementation-agent.",
-      "After changes, run `kaddo scan`, `kaddo owners suggest` and `kaddo guard`.",
-      "Do not commit, push or merge without explicit human confirmation."
+      "No active work.",
+      "Use the roadmap-agent to plan the next initiative."
     ],
     "operatingRules": [
       "**Never run `git commit`, `git push` or `git merge` without explicit human confirmation.**",

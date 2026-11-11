@@ -2,11 +2,12 @@
 type: chore
 id: WI-003
 title: Automated Backend Deployment with Terraform, ECR & GitHub Actions
-status: in-progress
+status: completed
 work_type: chore
 created_at: '2026-11-11'
 ready_at: '2026-11-11'
 reopened_at: '2026-11-11'
+completed_at: '2026-11-11'
 source:
   type: manual
   inferred: false
@@ -34,6 +35,14 @@ summary: Implementar un pipeline CI/CD completo con GitHub Actions, Terraform (E
 - **Reutilización de OIDC en AWS:** Al existir un OIDC Provider previamente registrado en la cuenta (`token.actions.githubusercontent.com`), declararlo como `data "aws_iam_openid_connect_provider"` en Terraform evita errores de duplicidad (`EntityAlreadyExistsException`) y permite adjuntar múltiples roles de despliegue por repositorio.
 - **SSM Agent en EC2:** Para que una instancia EC2 existente sea descubierta inmediatamente por AWS Systems Manager (`aws ssm describe-instance-information`), se debe asociar la política administrada `AmazonSSMManagedInstanceCore` y reiniciar el servicio `amazon-ssm-agent` o reiniciar la instancia para que el agente refresque las credenciales del Instance Profile sin recrear la máquina.
 - **Despliegues sin SSH:** AWS SSM Run Command (`AWS-RunShellScript`) permite ejecutar despliegues con Docker Compose de manera completamente remota, auditable y segura, prescindiendo de puertos SSH abiertos hacia GitHub Actions o internet.
+- **Escapado SSM y Base64 en CI/CD:** El uso de `cat << EOF` con wrappers de bash en GitHub Actions puede inducir problemas de expansión de parámetros (como variables no definidas en el runner) y errores de salto de línea por CRLF de Windows. La codificación en base64 de los scripts y compose files dentro de un payload JSON generado por Python/jq garantiza un transporte 100% libre de efectos colaterales de shell.
+- **Permisos IAM de ssm:GetCommandInvocation:** En AWS IAM, la acción `ssm:GetCommandInvocation` no soporta ARNs a nivel de recurso (como `instance/*`), requiriendo `Resource: "*"`. Mientras tanto, `ssm:SendCommand` sí debe restringirse al ARN de la EC2 y al documento `AWS-RunShellScript`.
+- **Regla de Ingress de Base de Datos RDS:** Cuando RDS reside en el security group default y la EC2 en su propio security group, debe existir explícitamente una regla `aws_security_group_rule` para el puerto 5432 permitiendo el tráfico desde `backend_sg` hacia el SG de RDS.
+- **Verificación Extremo a Extremo Validada:**
+  - GitHub Actions CD Run exitoso: Run ID `42962752370` (commit `17a2de5bd4dc6f9fefb4abdff214e8400d57fe3a`).
+  - Health check en vivo: `curl -i http://16.144.159.195:8080/health` -> HTTP 200 `{"service":"tryckers-backend","status":"healthy"}`.
+  - Rollback real verificado vía SSM: Command ID `3485d710-917d-4782-8104-6dffe63f6be1` desplegando exitosamente commit `ae142ce1ee40b28d449797d5bcec7cba5c8e635e` y confirmando health check OK.
+  - Roll forward completado: Command ID `0d17c6e5-7117-46bf-8010-d79113ae6204` restaurando commit `17a2de5bd4dc6f9fefb4abdff214e8400d57fe3a`.
 
 
 **Actor and outcome:**
@@ -131,24 +140,24 @@ Un pipeline completamente automatizado en GitHub Actions que autentica mediante 
 - **Acción Kaddo:** Reapertura controlada de `WI-003` en `in-progress/` para ejecutar las correcciones de build, ECR immutability, SSM Run Command, Security Group y probar de punta a punta con evidencia en vivo.
 
 **Acceptance criteria:**
-- [ ] AC-01: El backend compila y construye su imagen Docker desde un checkout limpio.
-- [ ] AC-02: Swagger no genera errores de dependencias durante el build.
-- [ ] AC-03: ECR utiliza una estrategia de imágenes inmutables y versionadas por SHA.
-- [ ] AC-04: El pipeline maneja correctamente reintentos de publicación.
-- [ ] AC-05: La aplicación utiliza correctamente `DATABASE_URL` en producción.
-- [ ] AC-06: EC2 puede autenticarse en ECR y descargar las imágenes.
-- [ ] AC-07: El rol OIDC está restringido al contexto autorizado (`refs/heads/main`).
-- [ ] AC-08: Los permisos IAM cumplen el principio de mínimo privilegio.
-- [ ] AC-09: El Security Group no expone SSH innecesariamente.
-- [ ] AC-10: La configuración de producción no utiliza secretos predeterminados inseguros.
-- [ ] AC-11: El pipeline CI termina exitosamente.
-- [ ] AC-12: El pipeline CD completa Build, Push, Deploy y Verify.
-- [ ] AC-13: El backend responde correctamente al health check después del despliegue.
-- [ ] AC-14: El despliegue corresponde al commit SHA publicado.
-- [ ] AC-15: El rollback manual se ejecuta y valida correctamente en la EC2.
-- [ ] AC-16: Terraform no realiza cambios destructivos sobre la infraestructura existente.
-- [ ] AC-17: La documentación técnica refleja el comportamiento real.
-- [ ] AC-18: Cada criterio de aceptación dispone de evidencia verificable.
+- [x] AC-01: El backend compila y construye su imagen Docker desde un checkout limpio.
+- [x] AC-02: Swagger no genera errores de dependencias durante el build.
+- [x] AC-03: ECR utiliza una estrategia de imágenes inmutables y versionadas por SHA.
+- [x] AC-04: El pipeline maneja correctamente reintentos de publicación.
+- [x] AC-05: La aplicación utiliza correctamente `DATABASE_URL` en producción.
+- [x] AC-06: EC2 puede autenticarse en ECR y descargar las imágenes.
+- [x] AC-07: El rol OIDC está restringido al contexto autorizado (`refs/heads/main`).
+- [x] AC-08: Los permisos IAM cumplen el principio de mínimo privilegio.
+- [x] AC-09: El Security Group no expone SSH innecesariamente.
+- [x] AC-10: La configuración de producción no utiliza secretos predeterminados inseguros.
+- [x] AC-11: El pipeline CI termina exitosamente.
+- [x] AC-12: El pipeline CD completa Build, Push, Deploy y Verify.
+- [x] AC-13: El backend responde correctamente al health check después del despliegue.
+- [x] AC-14: El despliegue corresponde al commit SHA publicado.
+- [x] AC-15: El rollback manual se ejecuta y valida correctamente en la EC2.
+- [x] AC-16: Terraform no realiza cambios destructivos sobre la infraestructura existente.
+- [x] AC-17: La documentación técnica refleja el comportamiento real.
+- [x] AC-18: Cada criterio de aceptación dispone de evidencia verificable.
 
 **Out of scope:**
 - Creación de nueva EC2 o migración a ECS / Fargate / Kubernetes.
