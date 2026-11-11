@@ -21,15 +21,16 @@
 
 ## Current Phase
 
-Phase: Maintenance
+Phase: Active Delivery
 
 Reason:
 
 - Roadmap available
 - 3 materialized work item(s)
+- in-progress: 1
 - Ownership coverage 100%
 
-Recommended next: roadmap-agent
+Recommended next: implementation-agent, kaddo scan, kaddo owners suggest, kaddo guard
 
 Next step: Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.
 
@@ -38,7 +39,7 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 - Phase: Knowledge Refinement
 - Draft Work Items: 0
 - Ready Work Items: 0
-- In-progress Work Items: 0
+- In-progress Work Items: 1
 - Ownership coverage: 3/3
 - Remaining Work Item candidates: 0
 
@@ -52,6 +53,9 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 ## Project Route
 
 Route: pre-ai · Progress: 14/16
+
+Current:
+- Run guard
 
 Warnings:
 - Scan repository — Scan has warnings (e.g. no test directory detected).
@@ -127,7 +131,14 @@ No roadmap baseline found.
 
 ## Active Work Items
 
-No active work items found.
+- WI-003 [chore] (in-progress) — Automated Backend Deployment with Terraform, ECR & GitHub Actions · domains: infrastructure, delivery
+  - Source: manual
+
+## Delivery Mix
+
+Active Work Items by type:
+
+- Chores: 1
 
 ## Artifacts and Ownership
 
@@ -195,9 +206,12 @@ Read full skill definitions in `knowledge/skills/` or via the Kaddo MCP server (
 
 ## Recommended Agent Handoff
 
-Recommended next for the **Maintenance** phase:
+Recommended next for the **Active Delivery** phase:
 
-1. roadmap-agent
+1. implementation-agent
+2. kaddo scan
+3. kaddo owners suggest
+4. kaddo guard
 
 Next step:
 
@@ -205,5 +219,6 @@ Next step:
 
 ## Instructions for the LLM
 
-- No active work.
-- Use the roadmap-agent to plan the next initiative.
+- Continue the in-progress Work Item with the implementation-agent.
+- After changes, run `kaddo scan`, `kaddo owners suggest` and `kaddo guard`.
+- Do not commit, push or merge without explicit human confirmation.

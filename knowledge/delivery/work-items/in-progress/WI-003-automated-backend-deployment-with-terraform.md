@@ -2,11 +2,11 @@
 type: chore
 id: WI-003
 title: Automated Backend Deployment with Terraform, ECR & GitHub Actions
-status: completed
+status: in-progress
 work_type: chore
 created_at: '2026-11-11'
 ready_at: '2026-11-11'
-completed_at: '2026-11-11'
+reopened_at: '2026-11-11'
 source:
   type: manual
   inferred: false
@@ -126,20 +126,29 @@ Un pipeline completamente automatizado en GitHub Actions que autentica mediante 
 **Scope confidence:** high
 *Razones:* El proveedor OIDC de GitHub ya está registrado en la cuenta AWS (`arn:aws:iam::570743710918:oidc-provider/token.actions.githubusercontent.com`), el repositorio ECR ya existe, la EC2 está activa con su Security Group preparado en el puerto 8080 y la arquitectura objetivo está claramente acotada sin introducir cómputo extra ni costos adicionales.
 
+## Discrepancy & Reopening Rationale
+- **Identificación:** La primera ejecución del workflow CD (Run ID `42957001974`, commit `27d6f70088b8df4dacfa0e718656cfed039511f5`) falló durante el Docker Build debido a la exclusión de `docs/` en `.gitignore`. Por ende, no existe evidencia verificable de despliegue de extremo a extremo ni de rollback real.
+- **Acción Kaddo:** Reapertura controlada de `WI-003` en `in-progress/` para ejecutar las correcciones de build, ECR immutability, SSM Run Command, Security Group y probar de punta a punta con evidencia en vivo.
+
 **Acceptance criteria:**
-- [ ] AC-01: El repositorio ECR está definido y administrado mediante Terraform con política de lifecycle (retención máxima de imágenes) y tags inmutables.
-- [ ] AC-02: Terraform expone los outputs necesarios: `ecr_repository_url`, `deploy_role_arn`, `ec2_instance_id`.
-- [ ] AC-03: El IAM Role para GitHub Actions autentica vía OIDC restringiendo estrictamente `sub` a `repo:Trycatch-tv/tryckers-backend:ref:refs/heads/main` (o contexto autorizado) y `aud` a `sts.amazonaws.com`.
-- [ ] AC-04: El rol de GitHub Actions tiene únicamente permisos de mínimo privilegio para push en ECR y `ssm:SendCommand` sobre la instancia EC2 de Tryckers.
-- [ ] AC-05: La instancia EC2 tiene asignadas las políticas `AmazonSSMManagedInstanceCore` y `AmazonEC2ContainerRegistryReadOnly`, registrándose exitosamente en AWS SSM.
-- [ ] AC-06: Terraform no recrea, no destruye ni altera de forma destructiva la instancia EC2 existente ni la base de datos RDS.
-- [ ] AC-07: El workflow de CI (`.github/workflows/backend-ci.yml`) valida el código en Pull Requests (Go test, build y Docker build) y bloquea la integración si falla.
-- [ ] AC-08: El workflow de CD (`.github/workflows/backend-cd.yml`) se ejecuta en merge a `main`, autentica con OIDC y publica la imagen etiquetada con el commit SHA en ECR.
-- [ ] AC-09: El CD envía la orden de despliegue a la EC2 mediante SSM Run Command, espera su ejecución y falla si el comando en EC2 falla.
-- [ ] AC-10: El script `scripts/deploy.sh` en EC2 descarga la imagen correspondiente al commit SHA y actualiza el contenedor backend usando Docker Compose.
-- [ ] AC-11: El backend expone un endpoint `/health` que responde HTTP 200 y permite verificar el estado saludable tras el despliegue.
-- [ ] AC-12: El despliegue completo se realiza sin utilizar credenciales permanentes de AWS ni conexiones SSH.
-- [ ] AC-13: Existe documentación técnica en inglés en el repositorio detallando la arquitectura, variables de GitHub, flujo de despliegue, troubleshooting y procedimiento de rollback manual por commit SHA.
+- [ ] AC-01: El backend compila y construye su imagen Docker desde un checkout limpio.
+- [ ] AC-02: Swagger no genera errores de dependencias durante el build.
+- [ ] AC-03: ECR utiliza una estrategia de imágenes inmutables y versionadas por SHA.
+- [ ] AC-04: El pipeline maneja correctamente reintentos de publicación.
+- [ ] AC-05: La aplicación utiliza correctamente `DATABASE_URL` en producción.
+- [ ] AC-06: EC2 puede autenticarse en ECR y descargar las imágenes.
+- [ ] AC-07: El rol OIDC está restringido al contexto autorizado (`refs/heads/main`).
+- [ ] AC-08: Los permisos IAM cumplen el principio de mínimo privilegio.
+- [ ] AC-09: El Security Group no expone SSH innecesariamente.
+- [ ] AC-10: La configuración de producción no utiliza secretos predeterminados inseguros.
+- [ ] AC-11: El pipeline CI termina exitosamente.
+- [ ] AC-12: El pipeline CD completa Build, Push, Deploy y Verify.
+- [ ] AC-13: El backend responde correctamente al health check después del despliegue.
+- [ ] AC-14: El despliegue corresponde al commit SHA publicado.
+- [ ] AC-15: El rollback manual se ejecuta y valida correctamente en la EC2.
+- [ ] AC-16: Terraform no realiza cambios destructivos sobre la infraestructura existente.
+- [ ] AC-17: La documentación técnica refleja el comportamiento real.
+- [ ] AC-18: Cada criterio de aceptación dispone de evidencia verificable.
 
 **Out of scope:**
 - Creación de nueva EC2 o migración a ECS / Fargate / Kubernetes.
