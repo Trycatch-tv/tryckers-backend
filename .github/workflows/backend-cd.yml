@@ -42,17 +42,33 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Check if image tag already exists in Amazon ECR
+        id: check-ecr
+        run: |
+          IMAGE_EXISTS=$(aws ecr describe-images \
+            --repository-name tryckers-backend \
+            --image-ids imageTag=${{ github.sha }} \
+            --region ${{ vars.AWS_REGION || env.AWS_REGION }} \
+            --query "imageDetails[0].imageDigest" \
+            --output text 2>/dev/null || echo "not-found")
+          
+          if [ "$IMAGE_EXISTS" != "not-found" ] && [ -n "$IMAGE_EXISTS" ]; then
+            echo "Image for commit ${{ github.sha }} already exists in ECR. Skipping push to respect immutability."
+            echo "skip_push=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip_push=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build, tag, and push Docker image to Amazon ECR
+      - name: Build and push Docker image to Amazon ECR
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
-          tags: |
-            ${{ env.ECR_REPOSITORY_URL }}:${{ github.sha }}
-            ${{ env.ECR_REPOSITORY_URL }}:latest
+          push: ${{ steps.check-ecr.outputs.skip_push != 'true' }}
+          load: ${{ steps.check-ecr.outputs.skip_push == 'true' }}
+          tags: ${{ env.ECR_REPOSITORY_URL }}:${{ github.sha }}
 
       - name: Deploy to Amazon EC2 via AWS Systems Manager
         run: |

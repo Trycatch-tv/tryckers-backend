@@ -1,0 +1,1964 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A modern API for the Tryckers platform, providing user management and authentication services.\nThis API allows you to manage users, handle authentication, and access user profiles.",
+        "title": "Tryckers API",
+        "contact": {
+            "name": "API Support",
+            "url": "https://tryckers.com/support",
+            "email": "support@tryckers.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/cartelera": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve the most popular posts of the last 7 days, ordered by votes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get top posts of the week",
+                "responses": {
+                    "200": {
+                        "description": "Top posts of the week",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.ResponsePostDto"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new comment on a post. The user_id is taken from the JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Create a new comment",
+                "parameters": [
+                    {
+                        "description": "Comment data",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateCommentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created comment",
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update an existing comment. Only the comment author or an admin can update it.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Update a comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment update data",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateCommentDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated comment",
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Comment not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Soft-delete a comment. The comment author, post owner, or an admin can delete it.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Delete a comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Comment deleted successfully"
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Comment not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Authenticate a user and return their information with an access token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/LoginUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid credentials format",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Authentication failed or internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of all posts (excluding deleted)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get all posts",
+                "responses": {
+                    "200": {
+                        "description": "List of posts",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Post"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update an existing post. Only the post author or an admin can update it.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update a post",
+                "parameters": [
+                    {
+                        "description": "Post update data",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdatePostDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated post",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ResponsePostDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new post. The user_id is taken from the JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "parameters": [
+                    {
+                        "description": "Post data",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreatePostDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created post",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ResponsePostDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a specific post by its ID, including the logged user's vote",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post details",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ResponsePostDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Soft-delete a post (sets status to deleted). Only the post author or an admin can delete it.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete a post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Post deleted successfully"
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve all comments for a specific post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Get comments by post ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of comments",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/vote": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upvote or downvote a post. Vote value: 1 for upvote, -1 for downvote, 0 to remove vote.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Vote on a post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Vote data",
+                        "name": "vote",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.VotePostDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vote result",
+                        "schema": {
+                            "$ref": "#/definitions/models.PostVote"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/{username}": {
+            "get": {
+                "description": "Retrieve detailed profile information for a specific user by their username",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get user profile by username",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile information",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PublicUserResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh-token": {
+            "post": {
+                "description": "Generate new access and refresh tokens using a valid refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh access token",
+                "parameters": [
+                    {
+                        "description": "Refresh token",
+                        "name": "refresh_token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.RefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New tokens",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.RefreshTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired refresh token",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Register a new user in the system with the provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration information",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created user",
+                        "schema": {
+                            "$ref": "#/definitions/CreateUserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or country",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of all registered users in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "List of users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.PublicUserDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/avatar": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload and replace the authenticated user's profile avatar",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Upload current user avatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Avatar image",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated user",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid file",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove the authenticated user's profile avatar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Remove current user avatar",
+                "responses": {
+                    "200": {
+                        "description": "Updated user",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/banner": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload and replace the authenticated user's profile banner",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Upload current user banner",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Banner image",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated user",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid file",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove the authenticated user's profile banner",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Remove current user banner",
+                "responses": {
+                    "200": {
+                        "description": "Updated user",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/profile": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve the authenticated user's private profile",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get current user private profile",
+                "responses": {
+                    "200": {
+                        "description": "Private user profile",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Partially update allowlisted fields in the authenticated user's profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update current user profile",
+                "parameters": [
+                    {
+                        "description": "Profile fields",
+                        "name": "profile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateOwnProfileDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated private profile",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.PrivateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON or date format",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{ownerId}/posts": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve all posts from a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get posts by user ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID (UUID)",
+                        "name": "ownerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user posts",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.ResponsePostDto"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CreateUserDTO": {
+            "type": "object",
+            "required": [
+                "country",
+                "email",
+                "name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "country": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.Country"
+                        }
+                    ],
+                    "example": "US"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "securepassword123"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Error message"
+                }
+            }
+        },
+        "LoginUser": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "mypassword123"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "availability": {
+                    "type": "string",
+                    "example": "Full-time"
+                },
+                "avatar_url": {
+                    "type": "string",
+                    "example": "/uploads/avatars/avatar.jpg"
+                },
+                "banner_url": {
+                    "type": "string",
+                    "example": "/uploads/banners/banner.jpg"
+                },
+                "bio": {
+                    "type": "string",
+                    "example": "Passionate developer with 5+ years of experience"
+                },
+                "country": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.Country"
+                        }
+                    ],
+                    "example": "US"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "efset_score": {
+                    "type": "string",
+                    "example": "75"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "english_level": {
+                    "type": "string",
+                    "example": "Advanced"
+                },
+                "github_url": {
+                    "type": "string",
+                    "example": "https://github.com/johndoe"
+                },
+                "headline": {
+                    "type": "string",
+                    "example": "Full Stack Developer"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "interests": {
+                    "type": "string",
+                    "example": "JavaScript, Go, React"
+                },
+                "linkedin_url": {
+                    "type": "string",
+                    "example": "https://linkedin.com/in/johndoe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "pitch_video": {
+                    "type": "string",
+                    "example": "https://youtube.com/watch?v=example"
+                },
+                "points": {
+                    "type": "integer",
+                    "example": 1250
+                },
+                "profile_picture": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserRole"
+                        }
+                    ],
+                    "example": "developer"
+                },
+                "seniority": {
+                    "type": "string",
+                    "example": "Senior"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "dtos.AuthorDto": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "dtos.CreateCommentDto": {
+            "type": "object",
+            "required": [
+                "content",
+                "post_id",
+                "user_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.CreatePostDto": {
+            "type": "object",
+            "required": [
+                "content",
+                "status",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "minLength": 10,
+                    "example": "Este es el contenido de mi post..."
+                },
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/image.jpg"
+                },
+                "media_url": {
+                    "type": "string",
+                    "example": "https://example.com/video.mp4"
+                },
+                "status": {
+                    "enum": [
+                        "published",
+                        "draft"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostStatus"
+                        }
+                    ],
+                    "example": "draft"
+                },
+                "tags": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "go",
+                        "backend",
+                        "api"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 3,
+                    "example": "Mi primer post"
+                },
+                "type": {
+                    "enum": [
+                        "regular",
+                        "story",
+                        "video"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostType"
+                        }
+                    ],
+                    "example": "regular"
+                }
+            }
+        },
+        "dtos.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_data": {
+                    "$ref": "#/definitions/dtos.PrivateUserDTO"
+                }
+            }
+        },
+        "dtos.PrivateUserDTO": {
+            "type": "object",
+            "properties": {
+                "availability": {
+                    "type": "string",
+                    "example": "Full-time"
+                },
+                "avatar_url": {
+                    "type": "string",
+                    "example": "/uploads/avatars/avatar.jpg"
+                },
+                "banner_url": {
+                    "type": "string",
+                    "example": "/uploads/banners/banner.jpg"
+                },
+                "bio": {
+                    "type": "string",
+                    "example": "Passionate developer"
+                },
+                "birth_date": {
+                    "type": "string",
+                    "x-nullable": true,
+                    "example": "1990-01-15"
+                },
+                "country": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.Country"
+                        }
+                    ],
+                    "example": "CO"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "efset_score": {
+                    "type": "string",
+                    "example": "75"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "english_level": {
+                    "type": "string",
+                    "example": "Advanced"
+                },
+                "github_url": {
+                    "type": "string",
+                    "example": "https://github.com/johndoe"
+                },
+                "headline": {
+                    "type": "string",
+                    "example": "Full Stack Developer"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "interests": {
+                    "type": "string",
+                    "example": "Go, Angular"
+                },
+                "linkedin_url": {
+                    "type": "string",
+                    "example": "https://linkedin.com/in/johndoe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "pitch_video": {
+                    "type": "string",
+                    "example": "https://youtube.com/watch?v=example"
+                },
+                "points": {
+                    "type": "integer",
+                    "example": 1250
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.UserRole"
+                        }
+                    ],
+                    "example": "member"
+                },
+                "seniority": {
+                    "type": "string",
+                    "example": "Senior"
+                },
+                "status": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "dtos.PrivateUserResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/dtos.PrivateUserDTO"
+                }
+            }
+        },
+        "dtos.PublicUserDTO": {
+            "type": "object",
+            "properties": {
+                "availability": {
+                    "type": "string",
+                    "example": "Full-time"
+                },
+                "avatar_url": {
+                    "type": "string",
+                    "example": "/uploads/avatars/avatar.jpg"
+                },
+                "banner_url": {
+                    "type": "string",
+                    "example": "/uploads/banners/banner.jpg"
+                },
+                "bio": {
+                    "type": "string",
+                    "example": "Passionate developer"
+                },
+                "country": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.Country"
+                        }
+                    ],
+                    "example": "CO"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "english_level": {
+                    "type": "string",
+                    "example": "Advanced"
+                },
+                "github_url": {
+                    "type": "string",
+                    "example": "https://github.com/johndoe"
+                },
+                "headline": {
+                    "type": "string",
+                    "example": "Full Stack Developer"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "interests": {
+                    "type": "string",
+                    "example": "Go, Angular"
+                },
+                "linkedin_url": {
+                    "type": "string",
+                    "example": "https://linkedin.com/in/johndoe"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "pitch_video": {
+                    "type": "string",
+                    "example": "https://youtube.com/watch?v=example"
+                },
+                "points": {
+                    "type": "integer",
+                    "example": 1250
+                },
+                "seniority": {
+                    "type": "string",
+                    "example": "Senior"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                }
+            }
+        },
+        "dtos.PublicUserResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/dtos.PublicUserDTO"
+                }
+            }
+        },
+        "dtos.RefreshTokenRequest": {
+            "type": "object",
+            "required": [
+                "refresh_token"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.RefreshTokenResponse": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ResponsePostDto": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "$ref": "#/definitions/dtos.AuthorDto"
+                },
+                "comments_count": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "content": {
+                    "type": "string",
+                    "example": "Este es el contenido de mi post..."
+                },
+                "content_preview": {
+                    "type": "string",
+                    "example": "Este es el contenido..."
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-02-11T10:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/image.jpg"
+                },
+                "is_edited": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "media_url": {
+                    "type": "string",
+                    "example": "https://example.com/video.mp4"
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostStatus"
+                        }
+                    ],
+                    "example": "published"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "go",
+                        "backend",
+                        "api"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Mi primer post"
+                },
+                "type": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostType"
+                        }
+                    ],
+                    "example": "regular"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-02-11T12:30:00Z"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "user_vote": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "votes_count": {
+                    "type": "integer",
+                    "example": 42
+                }
+            }
+        },
+        "dtos.UpdateCommentDto": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.UpdateOwnProfileDTO": {
+            "type": "object",
+            "properties": {
+                "birth_date": {
+                    "type": "string",
+                    "format": "date",
+                    "x-nullable": true,
+                    "example": "1995-08-21"
+                }
+            }
+        },
+        "dtos.UpdatePostDto": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "minLength": 10,
+                    "example": "Contenido actualizado..."
+                },
+                "image": {
+                    "type": "string",
+                    "example": "https://example.com/new-image.jpg"
+                },
+                "media_url": {
+                    "type": "string",
+                    "example": "https://example.com/video.mp4"
+                },
+                "status": {
+                    "enum": [
+                        "published",
+                        "edited",
+                        "draft",
+                        "deleted"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostStatus"
+                        }
+                    ],
+                    "example": "published"
+                },
+                "tags": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 3,
+                    "example": "Título actualizado"
+                },
+                "type": {
+                    "enum": [
+                        "regular",
+                        "story",
+                        "video"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.PostType"
+                        }
+                    ],
+                    "example": "regular"
+                }
+            }
+        },
+        "dtos.VotePostDto": {
+            "type": "object",
+            "properties": {
+                "vote": {
+                    "description": "1 for upvote, -1 for downvote",
+                    "type": "integer"
+                }
+            }
+        },
+        "enums.Country": {
+            "type": "string",
+            "enum": [
+                "colombia",
+                "chile"
+            ],
+            "x-enum-varnames": [
+                "Colombia",
+                "Chile"
+            ]
+        },
+        "enums.PostStatus": {
+            "type": "string",
+            "enum": [
+                "published",
+                "edited",
+                "draft",
+                "deleted"
+            ],
+            "x-enum-varnames": [
+                "PUBLISHED",
+                "EDITED",
+                "DRAFT",
+                "DELETED"
+            ]
+        },
+        "enums.PostType": {
+            "type": "string",
+            "enum": [
+                "regular",
+                "story",
+                "video"
+            ],
+            "x-enum-varnames": [
+                "RegularPost",
+                "StoryPost",
+                "VideoPost"
+            ]
+        },
+        "enums.UserRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "member"
+            ],
+            "x-enum-varnames": [
+                "Admin",
+                "Member"
+            ]
+        },
+        "models.Comment": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "post": {
+                    "$ref": "#/definitions/models.Post"
+                },
+                "post_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Post": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Comment"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "media_url": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/enums.PostStatus"
+                },
+                "tags": {
+                    "description": "Tags es una cadena de tags separados por coma asociados al post",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/enums.PostType"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "votes_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PostVote": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "post": {
+                    "$ref": "#/definitions/models.Post"
+                },
+                "postID": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "vote": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token. Example: \"Bearer abcde12345\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "tags": [
+        {
+            "description": "User management operations",
+            "name": "Users"
+        },
+        {
+            "description": "Authentication operations",
+            "name": "Auth"
+        },
+        {
+            "description": "User profile operations",
+            "name": "Profile"
+        },
+        {
+            "description": "Post management operations",
+            "name": "Posts"
+        },
+        {
+            "description": "Comment management operations",
+            "name": "Comments"
+        }
+    ]
+}

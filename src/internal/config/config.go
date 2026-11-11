@@ -46,14 +46,18 @@ func getEnv(key, fallback string) string {
 }
 
 func InitGormDB(cfg Config) *gorm.DB {
-	dbUrl := fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.POSTGRES_USER,
-		cfg.POSTGRES_PASSWORD,
-		cfg.POSTGRES_HOST,
-		cfg.POSTGRES_PORT,
-		cfg.POSTGRES_DB,
-	)
+	dbUrl := cfg.DBUrl
+	if dbUrl == "" {
+		dbUrl = fmt.Sprintf(
+			"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+			cfg.POSTGRES_USER,
+			cfg.POSTGRES_PASSWORD,
+			cfg.POSTGRES_HOST,
+			cfg.POSTGRES_PORT,
+			cfg.POSTGRES_DB,
+		)
+	}
+
 	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Cannot connect to DB:", err)

@@ -56,14 +56,6 @@ resource "aws_security_group" "backend_sg" {
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
-    description = "SSH from anywhere"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
     description = "HTTP API traffic"
     from_port   = 8080
     to_port     = 8080
@@ -183,9 +175,7 @@ resource "aws_iam_role" "github_deploy_role" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          }
-          StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*"
+            "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:ref:refs/heads/main"
           }
         }
       }
@@ -233,8 +223,7 @@ resource "aws_iam_policy" "github_deploy_policy" {
         ]
         Resource = [
           aws_instance.backend.arn,
-          "arn:aws:ssm:${var.aws_region}:*:document/AWS-RunShellScript",
-          "arn:aws:ssm:${var.aws_region}:*:document/*"
+          "arn:aws:ssm:${var.aws_region}:*:document/AWS-RunShellScript"
         ]
       }
     ]

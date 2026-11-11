@@ -45,13 +45,32 @@ cd "${DEPLOY_DIR}"
 
 # Login to Amazon ECR using instance IAM credentials
 echo "Logging into Amazon ECR..."
-aws ecr get-login-password --region "${AWS_REGION}" | docker login --username AWS --password-stdin "${ECR_REPOSITORY_URL}"
+ECR_REGISTRY="${ECR_REPOSITORY_URL%%/*}"
+aws ecr get-login-password --region "${AWS_REGION}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
 # Fetch database URL from SSM Parameter Store if not present
 if [ -z "${DATABASE_URL:-}" ]; then
   echo "Retrieving Database URL from SSM Parameter Store..."
   DATABASE_URL=$(aws ssm get-parameter --name "/tryckers/database/url" --with-decryption --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || true)
   export DATABASE_URL
+fi
+
+# Fetch JWT secret from SSM Parameter Store if not present
+if [ -z "${JWT_SECRET:-}" ]; then
+  echo "Retrieving JWT Secret from SSM Parameter Store..."
+  JWT_SECRET=$(aws ssm get-parameter --name "/tryckers/jwt/secret" --with-decryption --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || true)
+  export JWT_SECRET
+fi
+
+# Validate mandatory production variables
+if [ -z "${DATABASE_URL:-}" ]; then
+  echo "ERROR: DATABASE_URL is not set and could not be retrieved from SSM parameter /tryckers/database/url"
+  exit 1
+fi
+
+if [ -z "${JWT_SECRET:-}" ]; then
+  echo "ERROR: JWT_SECRET is not set and could not be retrieved from SSM parameter /tryckers/jwt/secret"
+  exit 1
 fi
 
 # Pull the new image

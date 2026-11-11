@@ -1,0 +1,1312 @@
+basePath: /api/v1
+definitions:
+  CreateUserDTO:
+    properties:
+      country:
+        allOf:
+        - $ref: '#/definitions/enums.Country'
+        example: US
+      email:
+        example: john.doe@example.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+      password:
+        example: securepassword123
+        minLength: 8
+        type: string
+      username:
+        example: johndoe
+        type: string
+    required:
+    - country
+    - email
+    - name
+    - password
+    - username
+    type: object
+  ErrorResponse:
+    properties:
+      error:
+        example: Error message
+        type: string
+    type: object
+  LoginUser:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: mypassword123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  User:
+    properties:
+      availability:
+        example: Full-time
+        type: string
+      avatar_url:
+        example: /uploads/avatars/avatar.jpg
+        type: string
+      banner_url:
+        example: /uploads/banners/banner.jpg
+        type: string
+      bio:
+        example: Passionate developer with 5+ years of experience
+        type: string
+      country:
+        allOf:
+        - $ref: '#/definitions/enums.Country'
+        example: US
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      efset_score:
+        example: "75"
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      english_level:
+        example: Advanced
+        type: string
+      github_url:
+        example: https://github.com/johndoe
+        type: string
+      headline:
+        example: Full Stack Developer
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      interests:
+        example: JavaScript, Go, React
+        type: string
+      linkedin_url:
+        example: https://linkedin.com/in/johndoe
+        type: string
+      name:
+        example: John Doe
+        type: string
+      pitch_video:
+        example: https://youtube.com/watch?v=example
+        type: string
+      points:
+        example: 1250
+        type: integer
+      profile_picture:
+        example: https://example.com/profile.jpg
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/enums.UserRole'
+        example: developer
+      seniority:
+        example: Senior
+        type: string
+      status:
+        example: true
+        type: boolean
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      username:
+        example: johndoe
+        type: string
+    type: object
+  dtos.AuthorDto:
+    properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      username:
+        example: johndoe
+        type: string
+    type: object
+  dtos.CreateCommentDto:
+    properties:
+      content:
+        type: string
+      image:
+        type: string
+      post_id:
+        type: string
+      status:
+        type: boolean
+      user_id:
+        type: string
+    required:
+    - content
+    - post_id
+    - user_id
+    type: object
+  dtos.CreatePostDto:
+    properties:
+      content:
+        example: Este es el contenido de mi post...
+        maxLength: 10000
+        minLength: 10
+        type: string
+      image:
+        example: https://example.com/image.jpg
+        type: string
+      media_url:
+        example: https://example.com/video.mp4
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.PostStatus'
+        enum:
+        - published
+        - draft
+        example: draft
+      tags:
+        example:
+        - go
+        - backend
+        - api
+        items:
+          type: string
+        maxItems: 10
+        type: array
+      title:
+        example: Mi primer post
+        maxLength: 500
+        minLength: 3
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/enums.PostType'
+        enum:
+        - regular
+        - story
+        - video
+        example: regular
+    required:
+    - content
+    - status
+    - title
+    - type
+    type: object
+  dtos.LoginResponse:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user_data:
+        $ref: '#/definitions/dtos.PrivateUserDTO'
+    type: object
+  dtos.PrivateUserDTO:
+    properties:
+      availability:
+        example: Full-time
+        type: string
+      avatar_url:
+        example: /uploads/avatars/avatar.jpg
+        type: string
+      banner_url:
+        example: /uploads/banners/banner.jpg
+        type: string
+      bio:
+        example: Passionate developer
+        type: string
+      birth_date:
+        example: "1990-01-15"
+        type: string
+        x-nullable: true
+      country:
+        allOf:
+        - $ref: '#/definitions/enums.Country'
+        example: CO
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      efset_score:
+        example: "75"
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      english_level:
+        example: Advanced
+        type: string
+      github_url:
+        example: https://github.com/johndoe
+        type: string
+      headline:
+        example: Full Stack Developer
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      interests:
+        example: Go, Angular
+        type: string
+      linkedin_url:
+        example: https://linkedin.com/in/johndoe
+        type: string
+      name:
+        example: John Doe
+        type: string
+      pitch_video:
+        example: https://youtube.com/watch?v=example
+        type: string
+      points:
+        example: 1250
+        type: integer
+      role:
+        allOf:
+        - $ref: '#/definitions/enums.UserRole'
+        example: member
+      seniority:
+        example: Senior
+        type: string
+      status:
+        example: true
+        type: boolean
+      updated_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      username:
+        example: johndoe
+        type: string
+    type: object
+  dtos.PrivateUserResponse:
+    properties:
+      user:
+        $ref: '#/definitions/dtos.PrivateUserDTO'
+    type: object
+  dtos.PublicUserDTO:
+    properties:
+      availability:
+        example: Full-time
+        type: string
+      avatar_url:
+        example: /uploads/avatars/avatar.jpg
+        type: string
+      banner_url:
+        example: /uploads/banners/banner.jpg
+        type: string
+      bio:
+        example: Passionate developer
+        type: string
+      country:
+        allOf:
+        - $ref: '#/definitions/enums.Country'
+        example: CO
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      english_level:
+        example: Advanced
+        type: string
+      github_url:
+        example: https://github.com/johndoe
+        type: string
+      headline:
+        example: Full Stack Developer
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      interests:
+        example: Go, Angular
+        type: string
+      linkedin_url:
+        example: https://linkedin.com/in/johndoe
+        type: string
+      name:
+        example: John Doe
+        type: string
+      pitch_video:
+        example: https://youtube.com/watch?v=example
+        type: string
+      points:
+        example: 1250
+        type: integer
+      seniority:
+        example: Senior
+        type: string
+      username:
+        example: johndoe
+        type: string
+    type: object
+  dtos.PublicUserResponse:
+    properties:
+      user:
+        $ref: '#/definitions/dtos.PublicUserDTO'
+    type: object
+  dtos.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  dtos.RefreshTokenResponse:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+  dtos.ResponsePostDto:
+    properties:
+      author:
+        $ref: '#/definitions/dtos.AuthorDto'
+      comments_count:
+        example: 5
+        type: integer
+      content:
+        example: Este es el contenido de mi post...
+        type: string
+      content_preview:
+        example: Este es el contenido...
+        type: string
+      created_at:
+        example: "2026-02-11T10:00:00Z"
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      image:
+        example: https://example.com/image.jpg
+        type: string
+      is_edited:
+        example: false
+        type: boolean
+      media_url:
+        example: https://example.com/video.mp4
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.PostStatus'
+        example: published
+      tags:
+        example:
+        - go
+        - backend
+        - api
+        items:
+          type: string
+        type: array
+      title:
+        example: Mi primer post
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/enums.PostType'
+        example: regular
+      updated_at:
+        example: "2026-02-11T12:30:00Z"
+        type: string
+      user_id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      user_vote:
+        example: 1
+        type: integer
+      votes_count:
+        example: 42
+        type: integer
+    type: object
+  dtos.UpdateCommentDto:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+    type: object
+  dtos.UpdateOwnProfileDTO:
+    properties:
+      birth_date:
+        example: "1995-08-21"
+        format: date
+        type: string
+        x-nullable: true
+    type: object
+  dtos.UpdatePostDto:
+    properties:
+      content:
+        example: Contenido actualizado...
+        maxLength: 10000
+        minLength: 10
+        type: string
+      image:
+        example: https://example.com/new-image.jpg
+        type: string
+      media_url:
+        example: https://example.com/video.mp4
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/enums.PostStatus'
+        enum:
+        - published
+        - edited
+        - draft
+        - deleted
+        example: published
+      tags:
+        items:
+          type: string
+        maxItems: 10
+        type: array
+      title:
+        example: Título actualizado
+        maxLength: 500
+        minLength: 3
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/enums.PostType'
+        enum:
+        - regular
+        - story
+        - video
+        example: regular
+    type: object
+  dtos.VotePostDto:
+    properties:
+      vote:
+        description: 1 for upvote, -1 for downvote
+        type: integer
+    type: object
+  enums.Country:
+    enum:
+    - colombia
+    - chile
+    type: string
+    x-enum-varnames:
+    - Colombia
+    - Chile
+  enums.PostStatus:
+    enum:
+    - published
+    - edited
+    - draft
+    - deleted
+    type: string
+    x-enum-varnames:
+    - PUBLISHED
+    - EDITED
+    - DRAFT
+    - DELETED
+  enums.PostType:
+    enum:
+    - regular
+    - story
+    - video
+    type: string
+    x-enum-varnames:
+    - RegularPost
+    - StoryPost
+    - VideoPost
+  enums.UserRole:
+    enum:
+    - admin
+    - member
+    type: string
+    x-enum-varnames:
+    - Admin
+    - Member
+  models.Comment:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      post:
+        $ref: '#/definitions/models.Post'
+      post_id:
+        type: string
+      status:
+        type: boolean
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/User'
+      user_id:
+        type: string
+    type: object
+  models.Post:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      media_url:
+        type: string
+      status:
+        $ref: '#/definitions/enums.PostStatus'
+      tags:
+        description: Tags es una cadena de tags separados por coma asociados al post
+        type: string
+      title:
+        type: string
+      type:
+        $ref: '#/definitions/enums.PostType'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/User'
+      user_id:
+        type: string
+      votes_count:
+        type: integer
+    type: object
+  models.PostVote:
+    properties:
+      createdAt:
+        type: string
+      post:
+        $ref: '#/definitions/models.Post'
+      postID:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/User'
+      userID:
+        type: string
+      vote:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@tryckers.com
+    name: API Support
+    url: https://tryckers.com/support
+  description: |-
+    A modern API for the Tryckers platform, providing user management and authentication services.
+    This API allows you to manage users, handle authentication, and access user profiles.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Tryckers API
+  version: "1.0"
+paths:
+  /cartelera:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the most popular posts of the last 7 days, ordered by
+        votes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Top posts of the week
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ResponsePostDto'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get top posts of the week
+      tags:
+      - Posts
+  /comments:
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment on a post. The user_id is taken from the JWT
+        token.
+      parameters:
+      - description: Comment data
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateCommentDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created comment
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new comment
+      tags:
+      - Comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft-delete a comment. The comment author, post owner, or an admin
+        can delete it.
+      parameters:
+      - description: Comment ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Comment deleted successfully
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Comment not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a comment
+      tags:
+      - Comments
+    put:
+      consumes:
+      - application/json
+      description: Update an existing comment. Only the comment author or an admin
+        can update it.
+      parameters:
+      - description: Comment ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment update data
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateCommentDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated comment
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Comment not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a comment
+      tags:
+      - Comments
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return their information with an access
+        token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/LoginUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User information
+          schema:
+            $ref: '#/definitions/dtos.LoginResponse'
+        "400":
+          description: Invalid credentials format
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Authentication failed or internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all posts (excluding deleted)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of posts
+          schema:
+            items:
+              $ref: '#/definitions/models.Post'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all posts
+      tags:
+      - Posts
+    post:
+      consumes:
+      - application/json
+      description: Create a new post. The user_id is taken from the JWT token.
+      parameters:
+      - description: Post data
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreatePostDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created post
+          schema:
+            $ref: '#/definitions/dtos.ResponsePostDto'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new post
+      tags:
+      - Posts
+    put:
+      consumes:
+      - application/json
+      description: Update an existing post. Only the post author or an admin can update
+        it.
+      parameters:
+      - description: Post update data
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdatePostDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated post
+          schema:
+            $ref: '#/definitions/dtos.ResponsePostDto'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Post not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a post
+      tags:
+      - Posts
+  /posts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft-delete a post (sets status to deleted). Only the post author
+        or an admin can delete it.
+      parameters:
+      - description: Post ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Post deleted successfully
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Post not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a post
+      tags:
+      - Posts
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific post by its ID, including the logged user's
+        vote
+      parameters:
+      - description: Post ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Post details
+          schema:
+            $ref: '#/definitions/dtos.ResponsePostDto'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Post not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a post by ID
+      tags:
+      - Posts
+  /posts/{id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all comments for a specific post
+      parameters:
+      - description: Post ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of comments
+          schema:
+            items:
+              $ref: '#/definitions/models.Comment'
+            type: array
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get comments by post ID
+      tags:
+      - Comments
+  /posts/{id}/vote:
+    post:
+      consumes:
+      - application/json
+      description: 'Upvote or downvote a post. Vote value: 1 for upvote, -1 for downvote,
+        0 to remove vote.'
+      parameters:
+      - description: Post ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Vote data
+        in: body
+        name: vote
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.VotePostDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Vote result
+          schema:
+            $ref: '#/definitions/models.PostVote'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Vote on a post
+      tags:
+      - Posts
+  /profile/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed profile information for a specific user by their
+        username
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile information
+          schema:
+            $ref: '#/definitions/dtos.PublicUserResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get user profile by username
+      tags:
+      - Profile
+  /refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Generate new access and refresh tokens using a valid refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: New tokens
+          schema:
+            $ref: '#/definitions/dtos.RefreshTokenResponse'
+        "400":
+          description: Invalid request format
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Invalid or expired refresh token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user in the system with the provided information
+      parameters:
+      - description: User registration information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/CreateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created user
+          schema:
+            $ref: '#/definitions/CreateUserDTO'
+        "400":
+          description: Invalid input or country
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Register a new user
+      tags:
+      - Auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all registered users in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            items:
+              $ref: '#/definitions/dtos.PublicUserDTO'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - Users
+  /users/{ownerId}/posts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all posts from a specific user
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: ownerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user posts
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ResponsePostDto'
+            type: array
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get posts by user ID
+      tags:
+      - Posts
+  /users/me/avatar:
+    delete:
+      description: Remove the authenticated user's profile avatar
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Remove current user avatar
+      tags:
+      - Profile
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload and replace the authenticated user's profile avatar
+      parameters:
+      - description: Avatar image
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "400":
+          description: Invalid file
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload current user avatar
+      tags:
+      - Profile
+  /users/me/banner:
+    delete:
+      description: Remove the authenticated user's profile banner
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Remove current user banner
+      tags:
+      - Profile
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload and replace the authenticated user's profile banner
+      parameters:
+      - description: Banner image
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "400":
+          description: Invalid file
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload current user banner
+      tags:
+      - Profile
+  /users/me/profile:
+    get:
+      description: Retrieve the authenticated user's private profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Private user profile
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user private profile
+      tags:
+      - Profile
+    patch:
+      consumes:
+      - application/json
+      description: Partially update allowlisted fields in the authenticated user's
+        profile
+      parameters:
+      - description: Profile fields
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateOwnProfileDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated private profile
+          schema:
+            $ref: '#/definitions/dtos.PrivateUserResponse'
+        "400":
+          description: Invalid JSON or date format
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "422":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update current user profile
+      tags:
+      - Profile
+securityDefinitions:
+  BearerAuth:
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+      abcde12345"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: User management operations
+  name: Users
+- description: Authentication operations
+  name: Auth
+- description: User profile operations
+  name: Profile
+- description: Post management operations
+  name: Posts
+- description: Comment management operations
+  name: Comments
