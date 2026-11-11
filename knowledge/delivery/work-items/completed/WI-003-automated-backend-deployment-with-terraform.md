@@ -2,10 +2,11 @@
 type: chore
 id: WI-003
 title: Automated Backend Deployment with Terraform, ECR & GitHub Actions
-status: ready
+status: completed
 work_type: chore
 created_at: '2026-11-11'
 ready_at: '2026-11-11'
+completed_at: '2026-11-11'
 source:
   type: manual
   inferred: false
@@ -28,6 +29,12 @@ summary: Implementar un pipeline CI/CD completo con GitHub Actions, Terraform (E
 ---
 
 # WI-003 — Automated Backend Deployment with Terraform, ECR & GitHub Actions
+
+## Learnings
+- **Reutilización de OIDC en AWS:** Al existir un OIDC Provider previamente registrado en la cuenta (`token.actions.githubusercontent.com`), declararlo como `data "aws_iam_openid_connect_provider"` en Terraform evita errores de duplicidad (`EntityAlreadyExistsException`) y permite adjuntar múltiples roles de despliegue por repositorio.
+- **SSM Agent en EC2:** Para que una instancia EC2 existente sea descubierta inmediatamente por AWS Systems Manager (`aws ssm describe-instance-information`), se debe asociar la política administrada `AmazonSSMManagedInstanceCore` y reiniciar el servicio `amazon-ssm-agent` o reiniciar la instancia para que el agente refresque las credenciales del Instance Profile sin recrear la máquina.
+- **Despliegues sin SSH:** AWS SSM Run Command (`AWS-RunShellScript`) permite ejecutar despliegues con Docker Compose de manera completamente remota, auditable y segura, prescindiendo de puertos SSH abiertos hacia GitHub Actions o internet.
+
 
 **Actor and outcome:**
 El desarrollador/mantenedor del backend integra cambios aprobados en la rama `main` de `Trycatch-tv/tryckers-backend`, y el sistema compila, prueba, empaqueta la imagen Docker en Amazon ECR y despliega automáticamente el nuevo contenedor en Amazon EC2 mediante AWS Systems Manager (SSM) sin intervención manual, sin SSH y sin credenciales estáticas de AWS en GitHub.

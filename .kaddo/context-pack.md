@@ -21,16 +21,15 @@
 
 ## Current Phase
 
-Phase: Active Delivery
+Phase: Maintenance
 
 Reason:
 
 - Roadmap available
 - 3 materialized work item(s)
-- ready: 1
 - Ownership coverage 100%
 
-Recommended next: implementation-agent
+Recommended next: roadmap-agent
 
 Next step: Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.
 
@@ -38,7 +37,7 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 
 - Phase: Knowledge Refinement
 - Draft Work Items: 0
-- Ready Work Items: 1
+- Ready Work Items: 0
 - In-progress Work Items: 0
 - Ownership coverage: 3/3
 - Remaining Work Item candidates: 0
@@ -128,14 +127,7 @@ No roadmap baseline found.
 
 ## Active Work Items
 
-- WI-003 [chore] (ready) — Automated Backend Deployment with Terraform, ECR & GitHub Actions · domains: infrastructure, delivery
-  - Source: manual
-
-## Delivery Mix
-
-Active Work Items by type:
-
-- Chores: 1
+No active work items found.
 
 ## Artifacts and Ownership
 
@@ -203,9 +195,9 @@ Read full skill definitions in `knowledge/skills/` or via the Kaddo MCP server (
 
 ## Recommended Agent Handoff
 
-Recommended next for the **Active Delivery** phase:
+Recommended next for the **Maintenance** phase:
 
-1. implementation-agent
+1. roadmap-agent
 
 Next step:
 
@@ -213,6 +205,5 @@ Next step:
 
 ## Instructions for the LLM
 
-- Use the implementation-agent.
-- Suggest a branch name only.
-- Do not run git commands.
+- No active work.
+- Use the roadmap-agent to plan the next initiative.
