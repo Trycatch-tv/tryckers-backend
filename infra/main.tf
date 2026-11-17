@@ -1,6 +1,7 @@
 locals {
-  api_base_url    = "${trimsuffix(var.api_public_origin, "/")}/api/v1"
-  frontend_origin = "https://main.${aws_amplify_app.frontend.default_domain}"
+  effective_api_origin = var.api_public_origin != "" ? var.api_public_origin : "http://${aws_eip.backend_eip.public_ip}:8080"
+  api_base_url         = "${trimsuffix(local.effective_api_origin, "/")}/api/v1"
+  frontend_origin      = "https://main.${aws_amplify_app.frontend.default_domain}"
 }
 
 # 1. IAM Role and Profile for EC2
@@ -135,6 +136,16 @@ resource "aws_instance" "backend" {
     ignore_changes = [
       ami
     ]
+  }
+}
+
+# Elastic IP for EC2 backend (static public IP)
+resource "aws_eip" "backend_eip" {
+  instance = aws_instance.backend.id
+  domain   = "vpc"
+
+  tags = {
+    Name = "${var.project_name}-backend-eip"
   }
 }
 

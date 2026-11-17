@@ -23,13 +23,13 @@ variable "github_repo" {
 }
 
 variable "api_public_origin" {
-  description = "Public HTTPS origin of the backend API"
+  description = "Public origin of the backend API. If empty, defaults to http://<ec2-elastic-ip>:8080."
   type        = string
-  default     = "https://api.tryckers.com"
+  default     = ""
 
   validation {
-    condition     = can(regex("^https://", var.api_public_origin))
-    error_message = "The api_public_origin must start with 'https://'."
+    condition     = var.api_public_origin == "" || can(regex("^https?://", var.api_public_origin))
+    error_message = "The api_public_origin must be empty or start with 'http://' or 'https://'."
   }
 }
 
