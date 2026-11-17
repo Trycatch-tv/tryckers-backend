@@ -1,5 +1,5 @@
 locals {
-  effective_api_origin = var.api_public_origin != "" ? var.api_public_origin : "http://${aws_eip.backend_eip.public_ip}:8080"
+  effective_api_origin = var.api_public_origin != "" ? var.api_public_origin : "https://${aws_cloudfront_distribution.api_distribution.domain_name}"
   api_base_url         = "${trimsuffix(local.effective_api_origin, "/")}/api/v1"
   frontend_origin      = "https://main.${aws_amplify_app.frontend.default_domain}"
 }
@@ -146,6 +146,63 @@ resource "aws_eip" "backend_eip" {
 
   tags = {
     Name = "${var.project_name}-backend-eip"
+  }
+}
+
+# CloudFront Data Sources for Managed Policies
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
+# CloudFront HTTPS Distribution for Backend API
+resource "aws_cloudfront_distribution" "api_distribution" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "CloudFront HTTPS distribution for Tryckers Backend API"
+  price_class         = "PriceClass_100"
+  wait_for_deployment = false
+
+  origin {
+    domain_name = aws_eip.backend_eip.public_dns
+    origin_id   = "EC2-${aws_instance.backend.id}"
+
+    custom_origin_config {
+      http_port                = 8080
+      https_port               = 443
+      origin_protocol_policy   = "http-only"
+      origin_ssl_protocols     = ["TLSv1.2"]
+      origin_keepalive_timeout = 5
+      origin_read_timeout      = 30
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "EC2-${aws_instance.backend.id}"
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+
+  tags = {
+    Name = "${var.project_name}-api-cf"
   }
 }
 

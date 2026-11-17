@@ -35,4 +35,9 @@ output "frontend_origin" {
   description = "Public origin of the frontend"
 }
 
+output "cloudfront_domain_name" {
+  value       = aws_cloudfront_distribution.api_distribution.domain_name
+  description = "CloudFront HTTPS domain name for the backend API"
+}
+
 
