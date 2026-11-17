@@ -62,6 +62,13 @@ if [ -z "${JWT_SECRET:-}" ]; then
   export JWT_SECRET
 fi
 
+# Fetch Frontend Origin from SSM Parameter Store if not present
+if [ -z "${FRONTEND_URL:-}" ]; then
+  echo "Retrieving Frontend Origin from SSM Parameter Store..."
+  FRONTEND_URL=$(aws ssm get-parameter --name "/tryckers/frontend/origin" --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || true)
+  export FRONTEND_URL
+fi
+
 # Validate mandatory production variables
 if [ -z "${DATABASE_URL:-}" ]; then
   echo "ERROR: DATABASE_URL is not set and could not be retrieved from SSM parameter /tryckers/database/url"
@@ -73,6 +80,11 @@ if [ -z "${JWT_SECRET:-}" ]; then
   exit 1
 fi
 
+if [ -z "${FRONTEND_URL:-}" ]; then
+  echo "ERROR: FRONTEND_URL is not set and could not be retrieved from SSM parameter /tryckers/frontend/origin"
+  exit 1
+fi
+
 # Pull the new image
 echo "Pulling Docker image ${ECR_REPOSITORY_URL}:${IMAGE_TAG}..."
 docker pull "${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
@@ -80,6 +92,9 @@ docker pull "${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
 # Deploy container
 export ECR_REPOSITORY_URL
 export IMAGE_TAG
+export DATABASE_URL
+export JWT_SECRET
+export FRONTEND_URL
 echo "Updating container with Docker Compose..."
 docker compose -f docker-compose.prod.yml up -d --no-deps api
 

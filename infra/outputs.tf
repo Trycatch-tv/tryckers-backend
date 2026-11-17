@@ -24,4 +24,14 @@ output "deploy_role_arn" {
   description = "IAM Role ARN for GitHub Actions OIDC deploy"
 }
 
+output "api_base_url" {
+  value       = local.api_base_url
+  description = "Public backend API URL"
+}
+
+output "frontend_origin" {
+  value       = local.frontend_origin
+  description = "Public origin of the frontend"
+}
+
 

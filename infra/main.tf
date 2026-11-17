@@ -1,3 +1,8 @@
+locals {
+  api_base_url    = "${trimsuffix(var.api_public_origin, "/")}/api/v1"
+  frontend_origin = "https://main.${aws_amplify_app.frontend.default_domain}"
+}
+
 # 1. IAM Role and Profile for EC2
 resource "aws_iam_role" "ec2_role" {
   name = "${var.project_name}-ec2-role"
@@ -31,6 +36,28 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm" {
 resource "aws_iam_role_policy_attachment" "ec2_ecr_read" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+# Attach SSM Parameter Store Read Policy for /tryckers/* to EC2 Role
+resource "aws_iam_role_policy" "ec2_ssm_params" {
+  name = "${var.project_name}-ec2-ssm-params"
+  role = aws_iam_role.ec2_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Resource = [
+          "arn:aws:ssm:${var.aws_region}:*:parameter/${var.project_name}/*"
+        ]
+      }
+    ]
+  })
 }
 
 # Data source for latest Amazon Linux 2 AMI
@@ -103,6 +130,12 @@ resource "aws_instance" "backend" {
   tags = {
     Name = "${var.project_name}-backend"
   }
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 }
 
 # 3. RDS PostgreSQL Single AZ
@@ -123,8 +156,22 @@ resource "aws_db_instance" "database" {
 resource "aws_amplify_app" "frontend" {
   name = "${var.project_name}-frontend"
 
+  environment_variables = {
+    API_BASE_URL  = local.api_base_url
+    _LIVE_UPDATES = "[{\"name\":\"Amplify CLI\",\"pkg\":\"@aws-amplify/cli\",\"type\":\"npm\",\"version\":\"latest\"}]"
+  }
+
   lifecycle {
-    ignore_changes = all
+    ignore_changes = [
+      repository,
+      oauth_token,
+      access_token,
+      build_spec,
+      custom_rule,
+      iam_service_role_arn,
+      auto_branch_creation_config,
+      auto_branch_creation_patterns
+    ]
   }
 }
 
@@ -169,6 +216,13 @@ resource "aws_ssm_parameter" "db_url" {
   name  = "/${var.project_name}/database/url"
   type  = "SecureString"
   value = "postgres://postgres:${var.db_password}@${aws_db_instance.database.endpoint}/${var.project_name}"
+}
+
+resource "aws_ssm_parameter" "frontend_origin" {
+  name        = "/${var.project_name}/frontend/origin"
+  description = "Public origin of the frontend for backend CORS"
+  type        = "String"
+  value       = local.frontend_origin
 }
 
 # 8. GitHub Actions OIDC Authentication & Deploy Role

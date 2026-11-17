@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-11T05:04:31.427Z",
+  "generatedAt": "2026-11-17T01:39:31.037Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -37,8 +37,52 @@
     "summary": "",
     "roadmapSummary": "",
     "inventoryAvailable": true,
-    "workItems": [],
-    "activeWorkItems": [],
+    "workItems": [
+      {
+        "id": "WI-004",
+        "type": "bugfix",
+        "title": "Centralized Environment Configuration with Terraform",
+        "status": "ready",
+        "lifecycle": "ready",
+        "knowledgeLevel": "",
+        "domains": [
+          "frontend",
+          "backend",
+          "infrastructure",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "affectedModules": [
+          "core"
+        ]
+      }
+    ],
+    "activeWorkItems": [
+      {
+        "id": "WI-004",
+        "type": "bugfix",
+        "title": "Centralized Environment Configuration with Terraform",
+        "status": "ready",
+        "lifecycle": "ready",
+        "knowledgeLevel": "",
+        "domains": [
+          "frontend",
+          "backend",
+          "infrastructure",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "affectedModules": [
+          "core"
+        ]
+      }
+    ],
     "completedWorkItems": [
       {
         "id": "WI-001",
@@ -174,6 +218,27 @@
         "affectedModules": [
           "core"
         ]
+      },
+      {
+        "id": "WI-004",
+        "type": "bugfix",
+        "title": "Centralized Environment Configuration with Terraform",
+        "status": "ready",
+        "lifecycle": "ready",
+        "knowledgeLevel": "",
+        "domains": [
+          "frontend",
+          "backend",
+          "infrastructure",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "artifacts": [
@@ -215,6 +280,23 @@
           "docker-compose.prod.yml",
           "src/cmd/main.go",
           "src/internal/api/routes/router.go"
+        ]
+      },
+      {
+        "id": "WI-004",
+        "type": "bugfix",
+        "title": "Centralized Environment Configuration with Terraform",
+        "summary": "Centralizar en Terraform la configuración de las URLs públicas utilizadas por frontend y backend, garantizando que Amplify compile con API_BASE_URL HTTPS y el backend configure CORS con el origen de Amplify sin fallbacks inseguros a localhost en producción.",
+        "codeGlobs": [
+          "infra/**/*.tf",
+          "scripts/*.sh",
+          "docker-compose.prod.yml",
+          "src/cmd/main.go",
+          "src/internal/config/config.go",
+          "tryckers-frontend/src/environments/*.ts",
+          "tryckers-frontend/angular.json",
+          "tryckers-frontend/amplify.yml",
+          "tryckers-frontend/scripts/*.mjs"
         ]
       }
     ]
@@ -259,6 +341,7 @@
         "WI-001-agregar-fecha-de-cumplea-os.md",
         "WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md",
         "WI-003-automated-backend-deployment-with-terraform.md",
+        "WI-004-centralized-environment-configuration-with-terraform.md",
         "roadmap.md"
       ]
     }
@@ -295,26 +378,28 @@
     "present": true,
     "initiatives": 0,
     "work_item_candidates": 0,
-    "materialized_work_items": 3,
+    "materialized_work_items": 4,
     "remaining_work_item_candidates": 0,
     "candidates": 0,
-    "materialized": 3,
+    "materialized": 4,
     "remaining": 0
   },
   "phase": {
-    "phase": "Maintenance",
+    "phase": "Active Delivery",
     "reasons": [
       "Roadmap available",
-      "3 materialized work item(s)",
+      "4 materialized work item(s)",
+      "ready: 1",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
-      "roadmap-agent"
+      "implementation-agent"
     ],
     "nextStep": "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.",
     "llmInstructions": [
-      "No active work.",
-      "Use the roadmap-agent to plan the next initiative."
+      "Use the implementation-agent.",
+      "Suggest a branch name only.",
+      "Do not run git commands."
     ]
   },
   "nextStepRecommendation": {
@@ -329,13 +414,17 @@
     "draft_work_items": 0,
     "refined_draft_work_items": 0,
     "refined_draft_ids": [],
-    "ready_work_items": 0,
-    "ready_work_item_ids": [],
-    "ready_multirepo_wi_ids": [],
+    "ready_work_items": 1,
+    "ready_work_item_ids": [
+      "WI-004"
+    ],
+    "ready_multirepo_wi_ids": [
+      "WI-004"
+    ],
     "in_progress_work_items": 0,
     "blocked_work_items": 0,
-    "total_work_items": 3,
-    "ownership_coverage": "3/3",
+    "total_work_items": 4,
+    "ownership_coverage": "4/4",
     "remaining_work_item_candidates": 0,
     "decision_candidates": 4,
     "accepted_adrs": 4,
@@ -423,17 +512,19 @@
     }
   },
   "workItemSummary": {
-    "total": 3,
-    "active": 0,
+    "total": 4,
+    "active": 1,
     "draft": 0,
-    "ready": 0,
+    "ready": 1,
     "in_progress": 0,
     "blocked": 0,
     "completed": 3,
     "archived": 0,
-    "summary": "completed-only"
+    "summary": "ready"
   },
-  "deliveryMix": {},
+  "deliveryMix": {
+    "bugfix": 1
+  },
   "external": [],
   "graph": {
     "generatedAt": "2026-08-04T04:37:00.586Z",
@@ -766,14 +857,15 @@
   ],
   "handoff": {
     "recommendedAgents": [
-      "roadmap-agent"
+      "implementation-agent"
     ],
     "nextSteps": [
       "Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions."
     ],
     "instructions": [
-      "No active work.",
-      "Use the roadmap-agent to plan the next initiative."
+      "Use the implementation-agent.",
+      "Suggest a branch name only.",
+      "Do not run git commands."
     ],
     "operatingRules": [
       "**Never run `git commit`, `git push` or `git merge` without explicit human confirmation.**",

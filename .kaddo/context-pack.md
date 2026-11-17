@@ -21,15 +21,16 @@
 
 ## Current Phase
 
-Phase: Maintenance
+Phase: Active Delivery
 
 Reason:
 
 - Roadmap available
-- 3 materialized work item(s)
+- 4 materialized work item(s)
+- ready: 1
 - Ownership coverage 100%
 
-Recommended next: roadmap-agent
+Recommended next: implementation-agent
 
 Next step: Run `kaddo questions` to see source locations and resolution guidance, then resolve, assume or defer the blocking open questions.
 
@@ -37,9 +38,9 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 
 - Phase: Knowledge Refinement
 - Draft Work Items: 0
-- Ready Work Items: 0
+- Ready Work Items: 1
 - In-progress Work Items: 0
-- Ownership coverage: 3/3
+- Ownership coverage: 4/4
 - Remaining Work Item candidates: 0
 
 ## Next Step Recommendation
@@ -86,6 +87,7 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 - ✓ WI-001-agregar-fecha-de-cumplea-os.md
 - ✓ WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md
 - ✓ WI-003-automated-backend-deployment-with-terraform.md
+- ✓ WI-004-centralized-environment-configuration-with-terraform.md
 - ✓ roadmap.md
 
 ## Technical Inventory
@@ -120,20 +122,28 @@ No project knowledge summary found yet.
 
 - Initiatives: 0
 - Work Item candidates: 0
-- Materialized Work Items: 3
+- Materialized Work Items: 4
 - Remaining Work Item candidates: 0
 
 No roadmap baseline found.
 
 ## Active Work Items
 
-No active work items found.
+- WI-004 [bugfix] (ready) — Centralized Environment Configuration with Terraform · domains: frontend, backend, infrastructure, delivery
+  - Source: manual
+
+## Delivery Mix
+
+Active Work Items by type:
+
+- Bugfixs: 1
 
 ## Artifacts and Ownership
 
 - WI-001 [feature] owns: src/internal/models/user.go, src/internal/dtos/userUpdate.go, src/internal/api/handlers/user_handler.go, src/internal/api/routes/router.go, src/internal/repository/user_repository.go, src/internal/services/user_service.go, tryckers-frontend/src/app/auth/interfaces/auth-response.ts, tryckers-frontend/src/app/pages/settings-page/settings-page.component.ts, tryckers-frontend/src/app/tryckers/pages/profile-page/**
 - WI-002 [chore] owns: infra/**/*.tf
 - WI-003 [chore] owns: infra/**/*.tf, .github/workflows/*.yml, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/api/routes/router.go
+- WI-004 [bugfix] owns: infra/**/*.tf, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/config/config.go, tryckers-frontend/src/environments/*.ts, tryckers-frontend/angular.json, tryckers-frontend/amplify.yml, tryckers-frontend/scripts/*.mjs
 
 ## Mapped Modules
 
@@ -195,9 +205,9 @@ Read full skill definitions in `knowledge/skills/` or via the Kaddo MCP server (
 
 ## Recommended Agent Handoff
 
-Recommended next for the **Maintenance** phase:
+Recommended next for the **Active Delivery** phase:
 
-1. roadmap-agent
+1. implementation-agent
 
 Next step:
 
@@ -205,5 +215,6 @@ Next step:
 
 ## Instructions for the LLM
 
-- No active work.
-- Use the roadmap-agent to plan the next initiative.
+- Use the implementation-agent.
+- Suggest a branch name only.
+- Do not run git commands.

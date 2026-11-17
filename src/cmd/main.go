@@ -65,6 +65,7 @@ func main() {
 	r := gin.Default()
 
 	// configuración de cors
+	log.Printf("Configuring CORS with allowed origin: %s", cfg.FRONTEND_URL)
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{cfg.FRONTEND_URL},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

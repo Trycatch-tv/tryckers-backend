@@ -22,3 +22,14 @@ variable "github_repo" {
   default     = "Trycatch-tv/tryckers-backend"
 }
 
+variable "api_public_origin" {
+  description = "Public HTTPS origin of the backend API"
+  type        = string
+  default     = "https://api.tryckers.com"
+
+  validation {
+    condition     = can(regex("^https://", var.api_public_origin))
+    error_message = "The api_public_origin must start with 'https://'."
+  }
+}
+
