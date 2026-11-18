@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-11-17T02:42:25.351Z",
+  "generatedAt": "2026-11-18T04:08:22.415Z",
   "project": {
     "name": "tryckers-backend",
     "state": "pre-ai",
@@ -129,6 +129,30 @@
         "affectedModules": [
           "core"
         ]
+      },
+      {
+        "id": "WI-005",
+        "type": "chore",
+        "title": "Custom Domains and DNS Management with Terraform",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure",
+          "frontend",
+          "backend",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "archivedWorkItems": [],
@@ -222,6 +246,30 @@
         "affectedModules": [
           "core"
         ]
+      },
+      {
+        "id": "WI-005",
+        "type": "chore",
+        "title": "Custom Domains and DNS Management with Terraform",
+        "status": "completed",
+        "lifecycle": "completed",
+        "knowledgeLevel": "",
+        "domains": [
+          "infrastructure",
+          "frontend",
+          "backend",
+          "delivery"
+        ],
+        "source": {
+          "type": "manual",
+          "inferred": false
+        },
+        "implementationStatus": "not-assessed",
+        "validationStatus": "not-assessed",
+        "releaseStatus": "not-assessed",
+        "affectedModules": [
+          "core"
+        ]
       }
     ],
     "artifacts": [
@@ -281,6 +329,23 @@
           "tryckers-frontend/amplify.yml",
           "tryckers-frontend/scripts/*.mjs"
         ]
+      },
+      {
+        "id": "WI-005",
+        "type": "chore",
+        "title": "Custom Domains and DNS Management with Terraform",
+        "summary": "Configurar dominios personalizados (tryckers.trycatch.tv y api.tryckers.trycatch.tv) mediante Terraform reutilizando la zona DNS existente en Netlify, AWS Amplify, ACM (us-east-1) y CloudFront, actualizando API_BASE_URL y CORS sin migrar DNS a Route 53 ni destruir recursos existentes.",
+        "codeGlobs": [
+          "infra/provider.tf",
+          "infra/variables.tf",
+          "infra/main.tf",
+          "infra/outputs.tf",
+          "infra/netlify-dns.tf",
+          "infra/amplify-domains.tf",
+          "infra/certificates.tf",
+          "infra/README.md",
+          "infra/terraform.tfvars.example"
+        ]
       }
     ]
   },
@@ -325,6 +390,7 @@
         "WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md",
         "WI-003-automated-backend-deployment-with-terraform.md",
         "WI-004-centralized-environment-configuration-with-terraform.md",
+        "WI-005-custom-domains-and-dns-management-with-terraform.md",
         "roadmap.md"
       ]
     }
@@ -361,17 +427,17 @@
     "present": true,
     "initiatives": 0,
     "work_item_candidates": 0,
-    "materialized_work_items": 4,
+    "materialized_work_items": 5,
     "remaining_work_item_candidates": 0,
     "candidates": 0,
-    "materialized": 4,
+    "materialized": 5,
     "remaining": 0
   },
   "phase": {
     "phase": "Maintenance",
     "reasons": [
       "Roadmap available",
-      "4 materialized work item(s)",
+      "5 materialized work item(s)",
       "Ownership coverage 100%"
     ],
     "recommendedAgents": [
@@ -400,8 +466,8 @@
     "ready_multirepo_wi_ids": [],
     "in_progress_work_items": 0,
     "blocked_work_items": 0,
-    "total_work_items": 4,
-    "ownership_coverage": "4/4",
+    "total_work_items": 5,
+    "ownership_coverage": "5/5",
     "remaining_work_item_candidates": 0,
     "decision_candidates": 4,
     "accepted_adrs": 4,
@@ -489,13 +555,13 @@
     }
   },
   "workItemSummary": {
-    "total": 4,
+    "total": 5,
     "active": 0,
     "draft": 0,
     "ready": 0,
     "in_progress": 0,
     "blocked": 0,
-    "completed": 4,
+    "completed": 5,
     "archived": 0,
     "summary": "completed-only"
   },

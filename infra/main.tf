@@ -1,8 +1,11 @@
 locals {
-  effective_api_origin = var.api_public_origin != "" ? var.api_public_origin : "https://${aws_cloudfront_distribution.api_distribution.domain_name}"
+  frontend_fqdn        = "${var.frontend_subdomain}.${var.root_domain}"
+  backend_fqdn         = "${var.backend_subdomain}.${var.root_domain}"
+  effective_api_origin = var.api_public_origin != "" ? var.api_public_origin : "https://${local.backend_fqdn}"
   api_base_url         = "${trimsuffix(local.effective_api_origin, "/")}/api/v1"
-  frontend_origin      = "https://main.${aws_amplify_app.frontend.default_domain}"
+  frontend_origin      = "https://${local.frontend_fqdn}"
 }
+
 
 # 1. IAM Role and Profile for EC2
 resource "aws_iam_role" "ec2_role" {
@@ -93,6 +96,11 @@ resource "aws_security_group_rule" "rds_ingress_from_backend" {
   description              = "Allow PostgreSQL access from backend EC2"
 }
 
+# AWS Managed Prefix List for CloudFront origin-facing servers
+data "aws_ec2_managed_prefix_list" "cloudfront" {
+  name = "com.amazonaws.global.cloudfront.origin-facing"
+}
+
 # Security Group for EC2 Backend
 resource "aws_security_group" "backend_sg" {
   name        = "${var.project_name}-backend-sg"
@@ -100,12 +108,13 @@ resource "aws_security_group" "backend_sg" {
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
-    description = "HTTP API traffic"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description     = "HTTP API traffic from CloudFront only"
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    prefix_list_ids = [data.aws_ec2_managed_prefix_list.cloudfront.id]
   }
+
 
   egress {
     description = "Allow all outbound traffic"
@@ -165,6 +174,8 @@ resource "aws_cloudfront_distribution" "api_distribution" {
   comment             = "CloudFront HTTPS distribution for Tryckers Backend API"
   price_class         = "PriceClass_100"
   wait_for_deployment = false
+  aliases             = [local.backend_fqdn]
+
 
   origin {
     domain_name = aws_eip.backend_eip.public_dns
@@ -198,8 +209,11 @@ resource "aws_cloudfront_distribution" "api_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = aws_acm_certificate_validation.api.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
+
 
   tags = {
     Name = "${var.project_name}-api-cf"

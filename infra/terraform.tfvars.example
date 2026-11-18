@@ -1,0 +1,12 @@
+# Copy this file to terraform.tfvars (do not commit terraform.tfvars or tokens)
+# Required environment variables before running Terraform:
+#   $env:NETLIFY_API_TOKEN = "<your-netlify-personal-access-token>"
+#   $env:AWS_PROFILE or AWS credentials configured
+
+aws_region         = "us-west-2"
+project_name       = "tryckers"
+github_repo        = "Trycatch-tv/tryckers-backend"
+root_domain        = "trycatch.tv"
+frontend_subdomain = "tryckers"
+backend_subdomain  = "api.tryckers"
+# db_password      = "<set-via-TF_VAR_db_password-or-cli-var>"

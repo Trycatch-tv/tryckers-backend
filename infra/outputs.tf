@@ -40,4 +40,15 @@ output "cloudfront_domain_name" {
   description = "CloudFront HTTPS domain name for the backend API"
 }
 
+output "netlify_zone_id" {
+  value       = data.netlify_dns_zone.trycatch.id
+  description = "Reused Netlify DNS zone ID for trycatch.tv"
+}
+
+output "acm_certificate_arn" {
+  value       = aws_acm_certificate.api.arn
+  description = "ACM certificate ARN (us-east-1) for backend custom domain"
+}
+
+
 

@@ -26,7 +26,7 @@ Phase: Maintenance
 Reason:
 
 - Roadmap available
-- 4 materialized work item(s)
+- 5 materialized work item(s)
 - Ownership coverage 100%
 
 Recommended next: roadmap-agent
@@ -39,7 +39,7 @@ Next step: Run `kaddo questions` to see source locations and resolution guidance
 - Draft Work Items: 0
 - Ready Work Items: 0
 - In-progress Work Items: 0
-- Ownership coverage: 4/4
+- Ownership coverage: 5/5
 - Remaining Work Item candidates: 0
 
 ## Next Step Recommendation
@@ -87,6 +87,7 @@ Knowledge maturity — Business: Consolidated · Product: Structured · Tech: St
 - ✓ WI-002-habilitar-terraform-para-hacer-iac-y-desplegar-en-.md
 - ✓ WI-003-automated-backend-deployment-with-terraform.md
 - ✓ WI-004-centralized-environment-configuration-with-terraform.md
+- ✓ WI-005-custom-domains-and-dns-management-with-terraform.md
 - ✓ roadmap.md
 
 ## Technical Inventory
@@ -121,7 +122,7 @@ No project knowledge summary found yet.
 
 - Initiatives: 0
 - Work Item candidates: 0
-- Materialized Work Items: 4
+- Materialized Work Items: 5
 - Remaining Work Item candidates: 0
 
 No roadmap baseline found.
@@ -136,6 +137,7 @@ No active work items found.
 - WI-002 [chore] owns: infra/**/*.tf
 - WI-003 [chore] owns: infra/**/*.tf, .github/workflows/*.yml, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/api/routes/router.go
 - WI-004 [bugfix] owns: infra/**/*.tf, scripts/*.sh, docker-compose.prod.yml, src/cmd/main.go, src/internal/config/config.go, tryckers-frontend/src/environments/*.ts, tryckers-frontend/angular.json, tryckers-frontend/amplify.yml, tryckers-frontend/scripts/*.mjs
+- WI-005 [chore] owns: infra/provider.tf, infra/variables.tf, infra/main.tf, infra/outputs.tf, infra/netlify-dns.tf, infra/amplify-domains.tf, infra/certificates.tf, infra/README.md, infra/terraform.tfvars.example
 
 ## Mapped Modules
 
