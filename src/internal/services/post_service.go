@@ -6,13 +6,23 @@ import (
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	apperrors "github.com/Trycatch-tv/tryckers-backend/src/internal/errors"
 	models "github.com/Trycatch-tv/tryckers-backend/src/internal/models"
-	repository "github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	uuid "github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+type PostRepositoryInterface interface {
+	CreatePost(post models.Post) (models.Post, error)
+	GetAllPosts() ([]models.Post, error)
+	GetPostById(id uuid.UUID, loggedUserId *uuid.UUID) (models.Post, int8, error)
+	UpdatePost(post *models.Post) (models.Post, error)
+	DeletePost(post *models.Post) (models.Post, error)
+	GetPostsByUserId(userId uuid.UUID, loggedUserId *uuid.UUID) ([]models.Post, map[uuid.UUID]int8, error)
+	PostVote(postId uuid.UUID, userId uuid.UUID, vote int8) (models.PostVote, error)
+	GetTopPostsOfTheWeek(limit int) ([]models.Post, error)
+}
+
 type PostService struct {
-	Repo *repository.PostRepository
+	Repo PostRepositoryInterface
 }
 
 func (s *PostService) CreatePost(post models.Post) (models.Post, error) {
