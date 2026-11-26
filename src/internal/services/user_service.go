@@ -9,14 +9,24 @@ import (
 	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	apperrors "github.com/Trycatch-tv/tryckers-backend/src/internal/errors"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
-	"github.com/Trycatch-tv/tryckers-backend/src/internal/repository"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services/storage"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/google/uuid"
 )
 
+type UserRepositoryInterface interface {
+	GetAll() ([]models.User, error)
+	CreateUser(user *models.User) (models.User, error)
+	FindByEmail(email string) (models.User, error)
+	FindByUsername(username string) (models.User, error)
+	FindByID(id uuid.UUID) (models.User, error)
+	UpdateAvatarURL(id uuid.UUID, avatarURL string) (models.User, error)
+	UpdateBannerURL(id uuid.UUID, bannerURL string) (models.User, error)
+	UpdateProfile(id uuid.UUID, updates map[string]interface{}) (models.User, error)
+}
+
 type UserService struct {
-	Repo    *repository.UserRepository
+	Repo    UserRepositoryInterface
 	Storage *storage.LocalStorage
 }
 
@@ -209,10 +219,11 @@ func (s *UserService) UpdateProfile(userID uuid.UUID, req *dtos.UpdateProfileDTO
 	}
 
 	if req.Country != nil {
-		if !enums.IsValidCountry(string(*req.Country)) {
+		normalizedCountry := enums.Country(strings.ToLower(strings.TrimSpace(string(*req.Country))))
+		if !enums.IsValidCountry(string(normalizedCountry)) {
 			return models.User{}, apperrors.NewBadRequest("país inválido")
 		}
-		updates["country"] = *req.Country
+		updates["country"] = normalizedCountry
 	}
 
 	if req.Headline != nil {

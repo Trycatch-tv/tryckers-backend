@@ -59,10 +59,12 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	if !enums.IsValidCountry(string(newUser.Country)) {
+	normalizedCountry := enums.Country(strings.ToLower(strings.TrimSpace(string(newUser.Country))))
+	if !enums.IsValidCountry(string(normalizedCountry)) {
 		HandleBadRequest(c, "país inválido")
 		return
 	}
+	newUser.Country = normalizedCountry
 
 	userCreated, err := h.Service.CreateUser(&newUser)
 	if err != nil {
