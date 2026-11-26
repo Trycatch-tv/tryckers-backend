@@ -85,6 +85,11 @@ if [ -z "${FRONTEND_URL:-}" ]; then
   exit 1
 fi
 
+# Reclaim disk space from previous unused images before pulling the new image
+echo "Pruning unused Docker resources before pull..."
+docker container prune -f || true
+docker image prune -af || true
+
 # Pull the new image
 echo "Pulling Docker image ${ECR_REPOSITORY_URL}:${IMAGE_TAG}..."
 docker pull "${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
@@ -121,9 +126,9 @@ if [ "$HEALTHY" = false ]; then
   exit 1
 fi
 
-# Prune dangling images to save disk space
+# Prune old replaced images after healthy rollout to save disk space
 echo "Pruning unused images..."
-docker image prune -f
+docker image prune -af || true
 
 echo "=== Deployment Successfully Completed ==="
 echo "Deployed Image: ${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
