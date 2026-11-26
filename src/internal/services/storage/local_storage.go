@@ -1,8 +1,7 @@
 package storage
 
 import (
-	"crypto/rand"
-	"encoding/hex"
+	"context"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -10,119 +9,77 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
-const (
-	AvatarKind = "avatars"
-	BannerKind = "banners"
-)
-
-var allowedImageTypes = map[string]string{
-	"image/jpeg": ".jpg",
-	"image/png":  ".png",
-	"image/webp": ".webp",
-}
-
+// LocalStorage se conserva únicamente como fallback para pruebas unitarias y entornos sin conexión.
 type LocalStorage struct {
-	RootDir   string
-	PublicURL string
+	RootDir       string
+	PublicBaseURL string
 }
 
-type SaveOptions struct {
-	Kind     string
-	UserID   string
-	MaxBytes int64
-}
-
-func NewLocalStorage(rootDir, publicURL string) *LocalStorage {
+func NewLocalStorage(rootDir, publicBaseURL string) *LocalStorage {
 	return &LocalStorage{
-		RootDir:   rootDir,
-		PublicURL: strings.TrimRight(publicURL, "/"),
+		RootDir:       rootDir,
+		PublicBaseURL: strings.TrimRight(strings.TrimSpace(publicBaseURL), "/"),
 	}
 }
 
-func (s *LocalStorage) SaveImage(fileHeader *multipart.FileHeader, options SaveOptions) (string, error) {
-	if fileHeader == nil {
-		return "", fmt.Errorf("archivo requerido")
-	}
-
-	if options.Kind != AvatarKind && options.Kind != BannerKind {
-		return "", fmt.Errorf("tipo de media invalido")
-	}
-
-	if fileHeader.Size <= 0 {
-		return "", fmt.Errorf("archivo vacio")
-	}
-
-	if fileHeader.Size > options.MaxBytes {
-		return "", fmt.Errorf("archivo supera el tamano maximo permitido")
-	}
-
-	file, err := fileHeader.Open()
+func (s *LocalStorage) SaveImage(_ context.Context, fileHeader *multipart.FileHeader, options SaveOptions) (string, error) {
+	img, err := ValidateAndReadImage(fileHeader, options)
 	if err != nil {
-		return "", fmt.Errorf("no se pudo abrir el archivo: %w", err)
-	}
-	defer file.Close()
-
-	buffer := make([]byte, 512)
-	bytesRead, err := file.Read(buffer)
-	if err != nil && err != io.EOF {
-		return "", fmt.Errorf("no se pudo leer el archivo: %w", err)
+		return "", err
 	}
 
-	mimeType := http.DetectContentType(buffer[:bytesRead])
-	extension, ok := allowedImageTypes[mimeType]
-	if !ok {
-		return "", fmt.Errorf("tipo de archivo no permitido")
-	}
+	objectKey := GenerateObjectKey(options.Kind, options.OwnerID, img.Extension)
+	targetPath := filepath.Join(s.RootDir, filepath.FromSlash(objectKey))
 
-	if _, err := file.Seek(0, io.SeekStart); err != nil {
-		return "", fmt.Errorf("no se pudo preparar el archivo: %w", err)
-	}
-
-	targetDir := filepath.Join(s.RootDir, options.Kind)
-	if err := os.MkdirAll(targetDir, 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
 		return "", fmt.Errorf("no se pudo crear el directorio de media: %w", err)
 	}
 
-	fileName := s.safeFileName(options.Kind, options.UserID, extension)
-	targetPath := filepath.Join(targetDir, fileName)
-
-	target, err := os.Create(targetPath)
-	if err != nil {
-		return "", fmt.Errorf("no se pudo guardar el archivo: %w", err)
-	}
-	defer target.Close()
-
-	if _, err := io.Copy(target, file); err != nil {
-		_ = os.Remove(targetPath)
+	if err := os.WriteFile(targetPath, img.Data, 0644); err != nil {
 		return "", fmt.Errorf("no se pudo escribir el archivo: %w", err)
 	}
 
-	return fmt.Sprintf("%s/%s/%s", s.PublicURL, options.Kind, fileName), nil
+	return objectKey, nil
 }
 
-func (s *LocalStorage) DeleteByPublicURL(publicURL string) {
-	if publicURL == "" || !strings.HasPrefix(publicURL, s.PublicURL+"/") {
-		return
+func (s *LocalStorage) GetObject(_ context.Context, objectKey string) (io.ReadCloser, string, error) {
+	if !IsManagedObjectKey(objectKey) {
+		return nil, "", fmt.Errorf("object_key invalido")
 	}
 
-	relativePath := strings.TrimPrefix(publicURL, s.PublicURL+"/")
-	cleanPath := filepath.Clean(relativePath)
+	targetPath := filepath.Join(s.RootDir, filepath.FromSlash(objectKey))
+	file, err := os.Open(targetPath)
+	if err != nil {
+		return nil, "", err
+	}
+
+	buf := make([]byte, 512)
+	n, _ := file.Read(buf)
+	_, _ = file.Seek(0, io.SeekStart)
+	contentType := http.DetectContentType(buf[:n])
+
+	return file, contentType, nil
+}
+
+func (s *LocalStorage) DeleteObject(_ context.Context, objectKey string) error {
+	if !IsManagedObjectKey(objectKey) {
+		return nil
+	}
+
+	cleanPath := filepath.Clean(filepath.FromSlash(objectKey))
 	if strings.HasPrefix(cleanPath, "..") || filepath.IsAbs(cleanPath) {
-		return
+		return nil
 	}
 
-	_ = os.Remove(filepath.Join(s.RootDir, cleanPath))
+	err := os.Remove(filepath.Join(s.RootDir, cleanPath))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return err
 }
 
-func (s *LocalStorage) safeFileName(kind, userID, extension string) string {
-	randomBytes := make([]byte, 8)
-	if _, err := rand.Read(randomBytes); err != nil {
-		copy(randomBytes, []byte(fmt.Sprintf("%d", time.Now().UnixNano())))
-	}
-
-	safeUserID := strings.NewReplacer("/", "-", "\\", "-", " ", "-").Replace(userID)
-	return fmt.Sprintf("%s-%s-%d-%s%s", kind, safeUserID, time.Now().UnixNano(), hex.EncodeToString(randomBytes), extension)
+func (s *LocalStorage) ResolveURL(objectKey string) string {
+	return ResolveMediaURL(s.PublicBaseURL, objectKey)
 }

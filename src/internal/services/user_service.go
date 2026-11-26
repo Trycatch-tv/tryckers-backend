@@ -1,6 +1,8 @@
 package services
 
 import (
+	"context"
+	"log"
 	"mime/multipart"
 	"strings"
 	"time"
@@ -27,7 +29,16 @@ type UserRepositoryInterface interface {
 
 type UserService struct {
 	Repo    UserRepositoryInterface
-	Storage *storage.LocalStorage
+	Storage storage.StorageService
+}
+
+func (s *UserService) resolveUserMedia(u *models.User) {
+	if u == nil || s.Storage == nil {
+		return
+	}
+	u.AvatarURL = s.Storage.ResolveURL(u.AvatarURL)
+	u.ProfilePicture = s.Storage.ResolveURL(u.ProfilePicture)
+	u.BannerURL = s.Storage.ResolveURL(u.BannerURL)
 }
 
 const (
@@ -36,7 +47,14 @@ const (
 )
 
 func (s *UserService) GetAllUsers() ([]models.User, error) {
-	return s.Repo.GetAll()
+	users, err := s.Repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	for i := range users {
+		s.resolveUserMedia(&users[i])
+	}
+	return users, nil
 }
 
 func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) {
@@ -89,6 +107,8 @@ func (s *UserService) Login(user *dtos.LoginUser) (dtos.LoginResponse, error) {
 		return dtos.LoginResponse{}, apperrors.NewInternalError("error al generar refresh token", err)
 	}
 
+	s.resolveUserMedia(&userData)
+
 	return dtos.LoginResponse{
 		UserData:     userData,
 		Token:        token,
@@ -101,66 +121,85 @@ func (s *UserService) Perfil(username string) (models.User, error) {
 	if err != nil {
 		return models.User{}, apperrors.ErrUserNotFound
 	}
-
+	s.resolveUserMedia(&userPerfil)
 	return userPerfil, nil
 }
 
 func (s *UserService) UploadAvatar(userID uuid.UUID, fileHeader *multipart.FileHeader) (models.User, error) {
+	ctx := context.Background()
 	user, err := s.Repo.FindByID(userID)
 	if err != nil {
 		return models.User{}, apperrors.ErrUserNotFound
 	}
 
-	avatarURL, err := s.Storage.SaveImage(fileHeader, storage.SaveOptions{
+	objectKey, err := s.Storage.SaveImage(ctx, fileHeader, storage.SaveOptions{
 		Kind:     storage.AvatarKind,
-		UserID:   userID.String(),
+		OwnerID:  userID.String(),
 		MaxBytes: maxAvatarBytes,
 	})
 	if err != nil {
 		return models.User{}, apperrors.NewBadRequest(err.Error())
 	}
 
-	updatedUser, err := s.Repo.UpdateAvatarURL(userID, avatarURL)
+	updatedUser, err := s.Repo.UpdateAvatarURL(userID, objectKey)
 	if err != nil {
-		s.Storage.DeleteByPublicURL(avatarURL)
+		if delErr := s.Storage.DeleteObject(ctx, objectKey); delErr != nil {
+			log.Printf("warning: failed to rollback avatar object %s: %v", objectKey, delErr)
+		}
 		return models.User{}, apperrors.NewInternalError("error al actualizar avatar", err)
 	}
 
-	s.Storage.DeleteByPublicURL(user.AvatarURL)
-	if user.ProfilePicture != user.AvatarURL {
-		s.Storage.DeleteByPublicURL(user.ProfilePicture)
+	if user.AvatarURL != "" && user.AvatarURL != objectKey {
+		if delErr := s.Storage.DeleteObject(ctx, user.AvatarURL); delErr != nil {
+			log.Printf("warning: failed to delete previous avatar %s: %v", user.AvatarURL, delErr)
+		}
+	}
+	if user.ProfilePicture != "" && user.ProfilePicture != user.AvatarURL && user.ProfilePicture != objectKey {
+		if delErr := s.Storage.DeleteObject(ctx, user.ProfilePicture); delErr != nil {
+			log.Printf("warning: failed to delete previous profile picture %s: %v", user.ProfilePicture, delErr)
+		}
 	}
 
+	s.resolveUserMedia(&updatedUser)
 	return updatedUser, nil
 }
 
 func (s *UserService) UploadBanner(userID uuid.UUID, fileHeader *multipart.FileHeader) (models.User, error) {
+	ctx := context.Background()
 	user, err := s.Repo.FindByID(userID)
 	if err != nil {
 		return models.User{}, apperrors.ErrUserNotFound
 	}
 
-	bannerURL, err := s.Storage.SaveImage(fileHeader, storage.SaveOptions{
+	objectKey, err := s.Storage.SaveImage(ctx, fileHeader, storage.SaveOptions{
 		Kind:     storage.BannerKind,
-		UserID:   userID.String(),
+		OwnerID:  userID.String(),
 		MaxBytes: maxBannerBytes,
 	})
 	if err != nil {
 		return models.User{}, apperrors.NewBadRequest(err.Error())
 	}
 
-	updatedUser, err := s.Repo.UpdateBannerURL(userID, bannerURL)
+	updatedUser, err := s.Repo.UpdateBannerURL(userID, objectKey)
 	if err != nil {
-		s.Storage.DeleteByPublicURL(bannerURL)
+		if delErr := s.Storage.DeleteObject(ctx, objectKey); delErr != nil {
+			log.Printf("warning: failed to rollback banner object %s: %v", objectKey, delErr)
+		}
 		return models.User{}, apperrors.NewInternalError("error al actualizar banner", err)
 	}
 
-	s.Storage.DeleteByPublicURL(user.BannerURL)
+	if user.BannerURL != "" && user.BannerURL != objectKey {
+		if delErr := s.Storage.DeleteObject(ctx, user.BannerURL); delErr != nil {
+			log.Printf("warning: failed to delete previous banner %s: %v", user.BannerURL, delErr)
+		}
+	}
 
+	s.resolveUserMedia(&updatedUser)
 	return updatedUser, nil
 }
 
 func (s *UserService) RemoveAvatar(userID uuid.UUID) (models.User, error) {
+	ctx := context.Background()
 	user, err := s.Repo.FindByID(userID)
 	if err != nil {
 		return models.User{}, apperrors.ErrUserNotFound
@@ -171,15 +210,19 @@ func (s *UserService) RemoveAvatar(userID uuid.UUID) (models.User, error) {
 		return models.User{}, apperrors.NewInternalError("error al remover avatar", err)
 	}
 
-	s.Storage.DeleteByPublicURL(user.AvatarURL)
-	if user.ProfilePicture != user.AvatarURL {
-		s.Storage.DeleteByPublicURL(user.ProfilePicture)
+	if user.AvatarURL != "" {
+		_ = s.Storage.DeleteObject(ctx, user.AvatarURL)
+	}
+	if user.ProfilePicture != "" && user.ProfilePicture != user.AvatarURL {
+		_ = s.Storage.DeleteObject(ctx, user.ProfilePicture)
 	}
 
+	s.resolveUserMedia(&updatedUser)
 	return updatedUser, nil
 }
 
 func (s *UserService) RemoveBanner(userID uuid.UUID) (models.User, error) {
+	ctx := context.Background()
 	user, err := s.Repo.FindByID(userID)
 	if err != nil {
 		return models.User{}, apperrors.ErrUserNotFound
@@ -190,8 +233,11 @@ func (s *UserService) RemoveBanner(userID uuid.UUID) (models.User, error) {
 		return models.User{}, apperrors.NewInternalError("error al remover banner", err)
 	}
 
-	s.Storage.DeleteByPublicURL(user.BannerURL)
+	if user.BannerURL != "" {
+		_ = s.Storage.DeleteObject(ctx, user.BannerURL)
+	}
 
+	s.resolveUserMedia(&updatedUser)
 	return updatedUser, nil
 }
 
@@ -258,6 +304,7 @@ func (s *UserService) UpdateProfile(userID uuid.UUID, req *dtos.UpdateProfileDTO
 	}
 
 	if len(updates) == 0 {
+		s.resolveUserMedia(&user)
 		return user, nil
 	}
 
@@ -266,6 +313,7 @@ func (s *UserService) UpdateProfile(userID uuid.UUID, req *dtos.UpdateProfileDTO
 		return models.User{}, apperrors.NewInternalError("error al actualizar perfil", err)
 	}
 
+	s.resolveUserMedia(&updatedUser)
 	return updatedUser, nil
 }
 

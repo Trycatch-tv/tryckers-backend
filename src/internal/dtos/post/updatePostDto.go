@@ -11,7 +11,7 @@ type UpdatePostDto struct {
 	ID       uuid.UUID         `json:"id" swaggerignore:"true"`
 	Title    *string           `json:"title,omitempty" binding:"omitempty,min=3,max=500" example:"Título actualizado"`
 	Content  *string           `json:"content,omitempty" binding:"omitempty,min=10,max=10000" example:"Contenido actualizado..."`
-	Image    *string           `json:"image,omitempty" binding:"omitempty,url" example:"https://example.com/new-image.jpg"`
+	Image    *string           `json:"image,omitempty" binding:"omitempty,max=1000" example:"posts/user-id/uuid.webp"`
 	Type     *enums.PostType   `json:"type,omitempty" binding:"omitempty,oneof=regular story video" example:"regular"`
 	Tags     []string          `json:"tags,omitempty" binding:"omitempty,max=10,dive,min=2,max=50"`
 	Status   *enums.PostStatus `json:"status,omitempty" binding:"omitempty,oneof=published edited draft deleted" example:"published"`

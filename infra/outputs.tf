@@ -50,5 +50,15 @@ output "acm_certificate_arn" {
   description = "ACM certificate ARN (us-east-1) for backend custom domain"
 }
 
+output "media_bucket_name" {
+  value       = aws_s3_bucket.media_storage.bucket
+  description = "Production S3 media storage bucket name"
+}
+
+output "media_public_base_url" {
+  value       = local.effective_api_origin
+  description = "Public CloudFront base URL for S3 media delivery"
+}
+
 
 

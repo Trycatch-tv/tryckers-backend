@@ -7,6 +7,7 @@ import (
 	_ "github.com/Trycatch-tv/tryckers-backend/docs"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/api/routes"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/migrations"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -60,6 +61,9 @@ func main() {
 	// Enable UUID extension
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	db.AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{}, &models.PostVote{})
+	if err := migrations.CleanupLegacyMediaReferences(db); err != nil {
+		log.Fatalf("Failed to run legacy media cleanup migration: %v", err)
+	}
 
 	// Initialize Gin with default middleware
 	r := gin.Default()
@@ -75,7 +79,6 @@ func main() {
 
 	// Servir archivos estáticos de la carpeta docs
 	r.Static("/docs", "./docs")
-	r.Static("/uploads", "./uploads")
 
 	swaggerURL := fmt.Sprintf("http://localhost:%s/docs/swagger.json", cfg.Port)
 

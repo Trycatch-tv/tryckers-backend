@@ -191,6 +191,12 @@ resource "aws_cloudfront_distribution" "api_distribution" {
     }
   }
 
+  origin {
+    domain_name              = aws_s3_bucket.media_storage.bucket_regional_domain_name
+    origin_id                = "S3-${aws_s3_bucket.media_storage.id}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.media_oac.id
+  }
+
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
@@ -200,6 +206,33 @@ resource "aws_cloudfront_distribution" "api_distribution" {
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "avatars/*"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-${aws_s3_bucket.media_storage.id}"
+    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "banners/*"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-${aws_s3_bucket.media_storage.id}"
+    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern           = "posts/*"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-${aws_s3_bucket.media_storage.id}"
+    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
   restrictions {
@@ -260,6 +293,17 @@ resource "aws_amplify_app" "frontend" {
 # 5. S3 for media storage
 resource "aws_s3_bucket" "media_storage" {
   bucket = "${var.project_name}-media-storage"
+
+  tags = {
+    Name        = "${var.project_name}-media-storage"
+    Project     = var.project_name
+    Environment = "prod"
+    ManagedBy   = "terraform"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # 6. ECR for Docker images

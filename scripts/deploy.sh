@@ -69,6 +69,24 @@ if [ -z "${FRONTEND_URL:-}" ]; then
   export FRONTEND_URL
 fi
 
+# Fetch Storage configuration from SSM Parameter Store
+if [ -z "${STORAGE_DRIVER:-}" ]; then
+  STORAGE_DRIVER=$(aws ssm get-parameter --name "/tryckers/storage/driver" --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || echo "s3")
+  export STORAGE_DRIVER
+fi
+
+if [ -z "${S3_BUCKET:-}" ]; then
+  echo "Retrieving S3 Bucket from SSM Parameter Store..."
+  S3_BUCKET=$(aws ssm get-parameter --name "/tryckers/storage/s3-bucket" --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || true)
+  export S3_BUCKET
+fi
+
+if [ -z "${MEDIA_PUBLIC_BASE_URL:-}" ]; then
+  echo "Retrieving Media Public Base URL from SSM Parameter Store..."
+  MEDIA_PUBLIC_BASE_URL=$(aws ssm get-parameter --name "/tryckers/storage/media-public-base-url" --region "${AWS_REGION}" --query "Parameter.Value" --output text 2>/dev/null || true)
+  export MEDIA_PUBLIC_BASE_URL
+fi
+
 # Validate mandatory production variables
 if [ -z "${DATABASE_URL:-}" ]; then
   echo "ERROR: DATABASE_URL is not set and could not be retrieved from SSM parameter /tryckers/database/url"
@@ -100,6 +118,10 @@ export IMAGE_TAG
 export DATABASE_URL
 export JWT_SECRET
 export FRONTEND_URL
+export STORAGE_DRIVER
+export AWS_REGION
+export S3_BUCKET
+export MEDIA_PUBLIC_BASE_URL
 echo "Updating container with Docker Compose..."
 docker compose -f docker-compose.prod.yml up -d --no-deps api
 

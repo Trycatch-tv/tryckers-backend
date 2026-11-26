@@ -410,3 +410,29 @@ func (h *PostHandler) Cartelera(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+// UploadPostImage sube una imagen de portada para publicación al storage (S3) y retorna object_key y url resuelta.
+func (h *PostHandler) UploadPostImage(c *gin.Context) {
+	userId, _, err := getAuthUser(c)
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		HandleBadRequest(c, "archivo requerido")
+		return
+	}
+
+	objectKey, url, err := h.Service.UploadPostImage(c.Request.Context(), userId, file)
+	if err != nil {
+		HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"object_key": objectKey,
+		"url":        url,
+	})
+}

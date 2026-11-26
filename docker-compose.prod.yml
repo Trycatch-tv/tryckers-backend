@@ -10,6 +10,10 @@ services:
       - DATABASE_URL=${DATABASE_URL:?DATABASE_URL is required}
       - FRONTEND_URL=${FRONTEND_URL:?FRONTEND_URL is required}
       - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
+      - STORAGE_DRIVER=${STORAGE_DRIVER:-s3}
+      - AWS_REGION=${AWS_REGION:-us-west-2}
+      - S3_BUCKET=${S3_BUCKET:?S3_BUCKET is required}
+      - MEDIA_PUBLIC_BASE_URL=${MEDIA_PUBLIC_BASE_URL:?MEDIA_PUBLIC_BASE_URL is required}
     networks:
       - tryckers_network
 

@@ -11,30 +11,38 @@ import (
 )
 
 type Config struct {
-	Port              string
-	DBUrl             string
-	POSTGRES_DB       string
-	POSTGRES_USER     string
-	POSTGRES_PASSWORD string
-	POSTGRES_HOST     string
-	POSTGRES_PORT     string
-	JWT_SECRET        string
-	FRONTEND_URL      string
+	Port               string
+	DBUrl              string
+	POSTGRES_DB        string
+	POSTGRES_USER      string
+	POSTGRES_PASSWORD  string
+	POSTGRES_HOST      string
+	POSTGRES_PORT      string
+	JWT_SECRET         string
+	FRONTEND_URL       string
+	StorageDriver      string
+	AWSRegion          string
+	S3Bucket           string
+	MediaPublicBaseURL string
 }
 
 func Load() Config {
 	_ = godotenv.Load()
 
 	return Config{
-		Port:              getEnv("PORT", "8080"),
-		DBUrl:             getEnv("DATABASE_URL", ""),
-		POSTGRES_DB:       getEnv("POSTGRES_DB", ""),
-		POSTGRES_USER:     getEnv("POSTGRES_USER", ""),
-		POSTGRES_PASSWORD: getEnv("POSTGRES_PASSWORD", ""),
-		POSTGRES_HOST:     getEnv("POSTGRES_HOST", "localhost"),
-		POSTGRES_PORT:     getEnv("POSTGRES_PORT", "5432"),
-		JWT_SECRET:        getEnv("JWT_SECRET", ""),
-		FRONTEND_URL:      getEnv("FRONTEND_URL", "http://localhost:4200"),
+		Port:               getEnv("PORT", "8080"),
+		DBUrl:              getEnv("DATABASE_URL", ""),
+		POSTGRES_DB:        getEnv("POSTGRES_DB", ""),
+		POSTGRES_USER:      getEnv("POSTGRES_USER", ""),
+		POSTGRES_PASSWORD:  getEnv("POSTGRES_PASSWORD", ""),
+		POSTGRES_HOST:      getEnv("POSTGRES_HOST", "localhost"),
+		POSTGRES_PORT:      getEnv("POSTGRES_PORT", "5432"),
+		JWT_SECRET:         getEnv("JWT_SECRET", ""),
+		FRONTEND_URL:       getEnv("FRONTEND_URL", "http://localhost:4200"),
+		StorageDriver:      getEnv("STORAGE_DRIVER", "local"),
+		AWSRegion:          getEnv("AWS_REGION", "us-west-2"),
+		S3Bucket:           getEnv("S3_BUCKET", ""),
+		MediaPublicBaseURL: getEnv("MEDIA_PUBLIC_BASE_URL", ""),
 	}
 }
 
