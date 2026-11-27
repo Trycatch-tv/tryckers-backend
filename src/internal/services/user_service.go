@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	enums "github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
@@ -62,10 +63,12 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	if err != nil {
 		return models.User{}, err
 	}
-	// Username canónico: sin espacios al borde y en minúsculas. Garantiza que la unicidad
-	// no admita duplicados que difieran solo en mayúsculas y que la búsqueda case-insensitive
-	// de perfil siempre coincida.
-	normalizedUsername := strings.ToLower(strings.TrimSpace(user.Username))
+	// Username canónico: sin espacios al borde ni espacios internos, y en minúsculas.
+	trimmedUsername := strings.TrimSpace(user.Username)
+	if trimmedUsername == "" || strings.ContainsFunc(trimmedUsername, unicode.IsSpace) {
+		return models.User{}, apperrors.NewBadRequest("el nombre de usuario no puede contener espacios en blanco")
+	}
+	normalizedUsername := strings.ToLower(trimmedUsername)
 	newUser := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
