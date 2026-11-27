@@ -2,17 +2,27 @@ entities:
   - id: tryckers-frontend
     kind: application
     label: tryckers-frontend
-    purpose: Interfaz de usuario web para la plataforma Tryckers (Directorio,
-      Perfiles, Cartelera)
+    purpose: Interfaz web Angular 20 (SPA) desplegada en AWS Amplify
+      (https://tryckers.trycatch.tv) para directorio, perfiles, cartelera,
+      publicaciones y gestión de sesión con refresh tokens
   - id: tryckers-backend
     kind: service
     label: tryckers-backend
-    purpose: API REST para gestión de usuarios, perfiles, publicaciones e interacciones
+    purpose: API REST en Go/Gin desplegada en Docker sobre AWS EC2
+      (https://api.tryckers.trycatch.tv) para autenticación JWT, perfiles,
+      publicaciones, votos, comentarios y carga multimedia
+    knowledge:
+      - ADR-001-s3-compatible-storage-driver
+      - ADR-003-refresh-token-rotation-and-storage
   - id: postgres-db
     kind: datastore
     label: postgres-db
-    purpose: Almacenamiento relacional principal (usuarios, credenciales, posts,
-      comentarios)
+    purpose: Amazon RDS PostgreSQL en VPC privada para persistencia relacional de
+      usuarios, credenciales, publicaciones, votos, comentarios y claves de
+      objetos S3 (object_key)
+    knowledge:
+      - ADR-002-relational-skills-and-tags
+      - ADR-004-database-migrations-engine
   - id: local-storage
     kind: datastore
     label: local-storage
@@ -22,8 +32,24 @@ entities:
   - id: external-services
     kind: external-system
     label: external-services
-    purpose: Visualización de información externa (URLs referenciadas en el perfil
-      de usuario)
+    purpose: Enlaces externos referenciados en perfiles de usuario (GitHub,
+      LinkedIn, YouTube)
+  - id: s3-media-storage
+    kind: datastore
+    label: s3-media-storage
+    purpose: Buckets privados de Amazon S3 con cifrado SSE-S3
+      (tryckers-media-storage en Prod y tryckers-media-storage-dev en Dev) para
+      avatares, banners e imágenes de publicaciones
+    knowledge:
+      - ADR-001-s3-compatible-storage-driver
+  - id: cloudfront-media-cdn
+    kind: service
+    label: cloudfront-media-cdn
+    purpose: Distribución Amazon CloudFront con Origin Access Control (OAC) para
+      entrega HTTPS de archivos multimedia desde el bucket S3 privado en
+      producción
+    knowledge:
+      - ADR-001-s3-compatible-storage-driver
 relationships:
   - from: tryckers-frontend
     to: tryckers-backend
@@ -40,3 +66,15 @@ relationships:
   - from: tryckers-frontend
     to: external-services
     type: integrates-with
+  - from: tryckers-frontend
+    to: cloudfront-media-cdn
+    type: reads-from
+  - from: tryckers-backend
+    to: s3-media-storage
+    type: reads-from
+  - from: tryckers-backend
+    to: s3-media-storage
+    type: writes-to
+  - from: cloudfront-media-cdn
+    to: s3-media-storage
+    type: reads-from
