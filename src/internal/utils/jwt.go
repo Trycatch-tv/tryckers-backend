@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/config"
@@ -13,13 +14,15 @@ var secretKey = []byte(config.Load().JWT_SECRET)
 var signingMethod = jwt.SigningMethodHS256
 var tokenExpirationTime = 5 * time.Hour             // el tiempo de expiración de los access tokens
 var refreshTokenExpirationTime = 7 * 24 * time.Hour // el tiempo de expiración de los refresh tokens (7 días)
+var nowFunc = time.Now
 
 func CreateToken(userId string, role enums.UserRole) (string, error) {
+	now := nowFunc()
 	token := jwt.NewWithClaims(signingMethod,
 		jwt.MapClaims{
 			"sub":  userId,
-			"iat":  time.Now().Unix(),
-			"exp":  time.Now().Add(tokenExpirationTime).Unix(),
+			"iat":  now.Unix(),
+			"exp":  now.Add(tokenExpirationTime).Unix(),
 			"role": role,
 			"type": "access",
 		})
@@ -34,11 +37,12 @@ func CreateToken(userId string, role enums.UserRole) (string, error) {
 
 // CreateRefreshToken genera un refresh token con mayor tiempo de expiración
 func CreateRefreshToken(userId string, role enums.UserRole) (string, error) {
+	now := nowFunc()
 	token := jwt.NewWithClaims(signingMethod,
 		jwt.MapClaims{
 			"sub":  userId,
-			"iat":  time.Now().Unix(),
-			"exp":  time.Now().Add(refreshTokenExpirationTime).Unix(),
+			"iat":  now.Unix(),
+			"exp":  now.Add(refreshTokenExpirationTime).Unix(),
 			"role": role,
 			"type": "refresh",
 		})
@@ -53,7 +57,12 @@ func CreateRefreshToken(userId string, role enums.UserRole) (string, error) {
 
 // RefreshAccessToken verifica el refresh token y genera nuevos tokens
 func RefreshAccessToken(refreshToken string) (accessToken string, newRefreshToken string, err error) {
-	claims, err := VerifyToken(refreshToken)
+	trimmed := strings.TrimSpace(refreshToken)
+	if trimmed == "" {
+		return "", "", errors.New("refresh token inválido o expirado")
+	}
+
+	claims, err := VerifyToken(trimmed)
 	if err != nil {
 		return "", "", errors.New("refresh token inválido o expirado")
 	}
@@ -65,12 +74,12 @@ func RefreshAccessToken(refreshToken string) (accessToken string, newRefreshToke
 	}
 
 	userId, ok := claims["sub"].(string)
-	if !ok {
+	if !ok || strings.TrimSpace(userId) == "" {
 		return "", "", errors.New("no se pudo extraer el userId del token")
 	}
 
 	roleStr, ok := claims["role"].(string)
-	if !ok {
+	if !ok || strings.TrimSpace(roleStr) == "" {
 		return "", "", errors.New("no se pudo extraer el role del token")
 	}
 	role := enums.UserRole(roleStr)
@@ -91,12 +100,27 @@ func RefreshAccessToken(refreshToken string) (accessToken string, newRefreshToke
 }
 
 func VerifyToken(tokenString string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
-	})
+	trimmed := strings.TrimSpace(tokenString)
+	if trimmed == "" {
+		return jwt.MapClaims{}, errors.New("token vacío")
+	}
+
+	token, err := jwt.Parse(
+		trimmed,
+		func(token *jwt.Token) (interface{}, error) {
+			return secretKey, nil
+		},
+		jwt.WithValidMethods([]string{signingMethod.Alg()}),
+		jwt.WithExpirationRequired(),
+		jwt.WithTimeFunc(nowFunc),
+	)
 
 	if err != nil {
 		return jwt.MapClaims{}, err
+	}
+
+	if !token.Valid {
+		return jwt.MapClaims{}, errors.New("token inválido")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
