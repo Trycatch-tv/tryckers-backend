@@ -186,6 +186,12 @@ func (h *UserHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 
+	req.RefreshToken = strings.TrimSpace(req.RefreshToken)
+	if req.RefreshToken == "" {
+		HandleBadRequest(c, "refresh_token es requerido")
+		return
+	}
+
 	accessToken, refreshToken, err := utils.RefreshAccessToken(req.RefreshToken)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "code": 401})

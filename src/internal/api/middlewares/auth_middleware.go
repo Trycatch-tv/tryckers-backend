@@ -29,7 +29,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if tokenType, ok := claims["type"].(string); ok && tokenType == "refresh" {
+		if tokenType, ok := claims["type"].(string); !ok || tokenType != "access" {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "token invalid",
 			})

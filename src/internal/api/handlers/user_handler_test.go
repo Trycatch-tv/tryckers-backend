@@ -7,9 +7,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/dtos"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/enums"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/models"
 	"github.com/Trycatch-tv/tryckers-backend/src/internal/services"
+	"github.com/Trycatch-tv/tryckers-backend/src/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -179,5 +181,57 @@ func TestUserHandler_UpdateMe_RejectsInvalidCountryAndAcceptsCanonical(t *testin
 	}
 	if repo.lastUpdates["country"] != enums.Mexico {
 		t.Fatalf("expected country updated to mexico, got %v", repo.lastUpdates["country"])
+	}
+}
+
+func TestUserHandler_RefreshToken_ValidAndInvalidCases(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	handler := &UserHandler{Service: &services.UserService{Repo: &stubUserRepo{}}}
+	r := gin.New()
+	r.POST("/api/v1/refresh-token", handler.RefreshToken)
+
+	// 1. Blank refresh_token -> 400
+	blankReq := httptest.NewRequest(http.MethodPost, "/api/v1/refresh-token", bytes.NewBufferString(`{"refresh_token":"   "}`))
+	blankReq.Header.Set("Content-Type", "application/json")
+	blankRec := httptest.NewRecorder()
+	r.ServeHTTP(blankRec, blankReq)
+	if blankRec.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 for blank refresh_token, got %d", blankRec.Code)
+	}
+
+	// 2. Access token sent as refresh_token -> 401
+	accessToken, err := utils.CreateToken(uuid.New().String(), enums.Member)
+	if err != nil {
+		t.Fatalf("CreateToken failed: %v", err)
+	}
+	accessPayload, _ := json.Marshal(dtos.RefreshTokenRequest{RefreshToken: accessToken})
+	accessReq := httptest.NewRequest(http.MethodPost, "/api/v1/refresh-token", bytes.NewBuffer(accessPayload))
+	accessReq.Header.Set("Content-Type", "application/json")
+	accessRec := httptest.NewRecorder()
+	r.ServeHTTP(accessRec, accessReq)
+	if accessRec.Code != http.StatusUnauthorized {
+		t.Fatalf("expected 401 when sending access token to /refresh-token, got %d", accessRec.Code)
+	}
+
+	// 3. Valid refresh_token -> 200 with {token, refresh_token}
+	refreshToken, err := utils.CreateRefreshToken(uuid.New().String(), enums.Member)
+	if err != nil {
+		t.Fatalf("CreateRefreshToken failed: %v", err)
+	}
+	validPayload, _ := json.Marshal(dtos.RefreshTokenRequest{RefreshToken: refreshToken})
+	validReq := httptest.NewRequest(http.MethodPost, "/api/v1/refresh-token", bytes.NewBuffer(validPayload))
+	validReq.Header.Set("Content-Type", "application/json")
+	validRec := httptest.NewRecorder()
+	r.ServeHTTP(validRec, validReq)
+	if validRec.Code != http.StatusOK {
+		t.Fatalf("expected 200 for valid refresh token, got %d (%s)", validRec.Code, validRec.Body.String())
+	}
+
+	var resp dtos.RefreshTokenResponse
+	if err := json.Unmarshal(validRec.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("failed to decode refresh response: %v", err)
+	}
+	if resp.Token == "" || resp.RefreshToken == "" {
+		t.Fatalf("expected non-empty token and refresh_token, got %+v", resp)
 	}
 }
