@@ -58,3 +58,21 @@ func TestUserService_CreateUser_NormalizesUsername(t *testing.T) {
 		t.Fatalf("expected persisted username %q, got %q", "deiby7h322", got)
 	}
 }
+
+func TestUserService_CreateUser_RejectsWhitespaceInUsername(t *testing.T) {
+	repo := &stubUserRepo{}
+	svc := &UserService{Repo: repo}
+
+	for _, bad := range []string{"   ", "juan perez", "deiby\tdev"} {
+		_, err := svc.CreateUser(&dtos.CreateUserDTO{
+			Name:     "Test User",
+			Username: bad,
+			Country:  enums.Colombia,
+			Email:    "test@test.com",
+			Password: "password123",
+		})
+		if err == nil {
+			t.Fatalf("expected error for username %q, got nil", bad)
+		}
+	}
+}
