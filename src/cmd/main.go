@@ -64,6 +64,9 @@ func main() {
 	if err := migrations.CleanupLegacyMediaReferences(db); err != nil {
 		log.Fatalf("Failed to run legacy media cleanup migration: %v", err)
 	}
+	if err := migrations.EnsureUsernameCIUniqueIndex(db); err != nil {
+		log.Fatalf("Failed to ensure case-insensitive username unique index: %v", err)
+	}
 
 	// Initialize Gin with default middleware
 	r := gin.Default()

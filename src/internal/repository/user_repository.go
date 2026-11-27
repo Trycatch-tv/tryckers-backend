@@ -42,7 +42,7 @@ func (r *UserRepository) FindByUsername(username string) (models.User, error) {
 	var foundUser models.User
 	// Comparación case-insensitive: los usernames se persisten normalizados en minúsculas,
 	// pero registros antiguos pueden tener mayúsculas. LOWER en ambos lados los encuentra igual.
-	result := r.DB.Where("LOWER(username) = LOWER(?)", username).First(&foundUser)
+	result := r.DB.Where("LOWER(TRIM(username)) = LOWER(TRIM(?))", username).First(&foundUser)
 	if result.Error != nil {
 		return models.User{}, fmt.Errorf("error al buscar usuario por username: %w", result.Error)
 	}

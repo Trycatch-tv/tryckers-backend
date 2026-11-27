@@ -79,7 +79,7 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	createdUser, err := s.Repo.CreateUser(&newUser)
 	if err != nil {
 		errMsg := err.Error()
-		if strings.Contains(errMsg, "uni_users_username") {
+		if strings.Contains(errMsg, "uni_users_username") || strings.Contains(errMsg, "idx_users_username_lower_unique") {
 			return models.User{}, apperrors.ErrDuplicateUsername
 		}
 		if strings.Contains(errMsg, "uni_users_email") {

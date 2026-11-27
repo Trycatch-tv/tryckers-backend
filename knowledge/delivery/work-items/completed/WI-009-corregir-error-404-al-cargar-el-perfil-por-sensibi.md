@@ -146,3 +146,19 @@ profiles, iam, backend
 ## Aprendizaje
 
 Cuando un identificador se normaliza al leer (ToLower en el handler), hay que normalizarlo también al escribir; si no, la escritura y la lectura divergen y el lookup exacto falla. La corrección combina lectura idempotente case-insensitive (`LOWER(username) = LOWER(?)`, que recupera datos antiguos sin migración) con normalización en el registro (persistir el username canónico). La normalización canónica vive en el servicio, no en el handler, para que aplique sin importar el punto de entrada.
+
+---
+
+## Revisión técnica, integración y refuerzo (PR #47 + Issue #42)
+
+- **PR integrada:** https://github.com/Trycatch-tv/tryckers-backend/pull/47 (autor: `@Deibyth`, merge commit `7c23a10`).
+- **Issue relacionado:** https://github.com/Trycatch-tv/tryckers-frontend/issues/42.
+- **Auditoría RDS previa (SSM `7bc75b1b`):**
+  - 13 usuarios históricos con mayúsculas (incluyendo `Deiby7h322`, `Calebdev`, `Charles `, `Kmilostk `, `Gutiérrez `).
+  - **0 duplicados lógicos** por `LOWER(TRIM(username))`.
+- **Refuerzo mínimo aplicado (AC-04):**
+  - Migración idempotente `migrations/002_username_case_insensitive_unique_index.sql` y `EnsureUsernameCIUniqueIndex` en arranque (`src/cmd/main.go`): `CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_lower_unique ON users (LOWER(TRIM(username)))`.
+  - `FindByUsername` actualizado a `LOWER(TRIM(username)) = LOWER(TRIM(?))` para cubrir también registros históricos con espacios al borde.
+  - Mapeo de `idx_users_username_lower_unique` → `apperrors.ErrDuplicateUsername` en `UserService.CreateUser`.
+- **Pruebas reales contra PostgreSQL (`user_repository_pg_test.go`):**
+  - `TestPostgres_UsernameLookupNormalizationAndCaseInsensitiveUniqueness` → **PASS (0.51s)** probando búsqueda mixta/minúsculas/mayúsculas, espacios históricos, rechazo real `SQLSTATE 23505` al intentar duplicar un usuario histórico mixto, normalización en registro y 404 para usuario inexistente.

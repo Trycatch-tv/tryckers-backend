@@ -38,7 +38,7 @@ func TestUserRepository_FindByUsername_IsCaseInsensitive(t *testing.T) {
 	if sql == "" {
 		t.Fatalf("expected FindByUsername to build a query, captured empty SQL")
 	}
-	if !strings.Contains(sql, "lower(username) = lower(") {
-		t.Fatalf("expected FindByUsername to compare with LOWER on both sides, got: %s", sql)
+	if !strings.Contains(sql, "lower(trim(username)) = lower(trim(") {
+		t.Fatalf("expected FindByUsername to compare with LOWER(TRIM(...)) on both sides, got: %s", sql)
 	}
 }
