@@ -62,10 +62,14 @@ func (s *UserService) CreateUser(user *dtos.CreateUserDTO) (models.User, error) 
 	if err != nil {
 		return models.User{}, err
 	}
+	// Username canónico: sin espacios al borde y en minúsculas. Garantiza que la unicidad
+	// no admita duplicados que difieran solo en mayúsculas y que la búsqueda case-insensitive
+	// de perfil siempre coincida.
+	normalizedUsername := strings.ToLower(strings.TrimSpace(user.Username))
 	newUser := models.User{
 		Name:     user.Name,
 		Email:    user.Email,
-		Username: user.Username,
+		Username: normalizedUsername,
 		Password: string(hashedPassword),
 		Role:     enums.Member,
 		Points:   0,
